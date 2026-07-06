@@ -46,7 +46,7 @@ export function HeroWindow({
     <section className="hero-window">
       <div className="hero-window-bar">
         <div className="hero-brand">
-          <span className="hero-brand-dot" />
+          <img className="hero-brand-logo" src="/logo.png" alt="" aria-hidden="true" />
           <span>pwlo.dev</span>
         </div>
         <div className="hero-controls">

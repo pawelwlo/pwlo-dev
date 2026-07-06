@@ -21,7 +21,7 @@ type ProjectTranslation = {
   };
 };
 
-type Copy = {
+export type Copy = {
   localeLabel: string;
   themeLight: string;
   themeDark: string;
@@ -49,6 +49,46 @@ type Copy = {
   };
   footer: {
     builtWith: string;
+  };
+  compactLayout: {
+    menu: string;
+    closeMenu: string;
+    sections: {
+      projects: string;
+      openSource: string;
+      seo: string;
+      contact: string;
+    };
+    projectsEyebrow: string;
+    projectsTitle: string;
+    openSourceEyebrow: string;
+    openSourceTitle: string;
+    openSourceSubtitle: string;
+    seoEyebrow: string;
+    seoTitle: string;
+    seoSubtitle: string;
+  };
+  osLayout: {
+    mobileTitle: string;
+    tabletTitle: string;
+    back: string;
+    settings: string;
+    dock: {
+      projects: string;
+      contact: string;
+      seo: string;
+      openSource: string;
+    };
+    apps: {
+      projects: string;
+      openSource: string;
+      seo: string;
+      contact: string;
+      tech: string;
+      about: string;
+      leads: string;
+      settings: string;
+    };
   };
   windowTitles: Record<WindowId, string>;
   desktopIcons: Record<WindowId, { label: string; subtitle: string }>;
@@ -481,6 +521,46 @@ export const copyByLocale: Record<Locale, Copy> = {
     footer: {
       builtWith: "Built with love and performance",
     },
+    compactLayout: {
+      menu: "Menu",
+      closeMenu: "Close menu",
+      sections: {
+        projects: "Projects",
+        openSource: "Open Source",
+        seo: "SEO & Speed",
+        contact: "Contact",
+      },
+      projectsEyebrow: "Selected work",
+      projectsTitle: "iOS-style project snapshots",
+      openSourceEyebrow: "Open source stack",
+      openSourceTitle: "Tools I ship with",
+      openSourceSubtitle: "A curated toolkit for fast, maintainable builds.",
+      seoEyebrow: "SEO and performance",
+      seoTitle: "Readable, fast, conversion-focused pages.",
+      seoSubtitle: "Clean structure, fast rendering, and measurable outcomes on every screen.",
+    },
+    osLayout: {
+      mobileTitle: "pwloOS Mobile",
+      tabletTitle: "pwloOS Tablet",
+      back: "Back",
+      settings: "Settings",
+      dock: {
+        projects: "Projects",
+        contact: "Contact",
+        seo: "SEO & Speed",
+        openSource: "Open Source",
+      },
+      apps: {
+        projects: "Projects",
+        openSource: "Open Source",
+        seo: "SEO & Speed",
+        contact: "Contact",
+        tech: "Tech Stack",
+        about: "About Me",
+        leads: "Leads",
+        settings: "Settings",
+      },
+    },
     windowTitles: {
       projects: "Projects",
       about: "About Pawel",
@@ -614,6 +694,46 @@ export const copyByLocale: Record<Locale, Copy> = {
     footer: {
       builtWith: "Zbudowane z mysla o jakosci i wydajnosci",
     },
+    compactLayout: {
+      menu: "Menu",
+      closeMenu: "Zamknij menu",
+      sections: {
+        projects: "Projekty",
+        openSource: "Open Source",
+        seo: "SEO i szybkosc",
+        contact: "Kontakt",
+      },
+      projectsEyebrow: "Wybrane realizacje",
+      projectsTitle: "Migawki projektow w stylu iOS",
+      openSourceEyebrow: "Open source stack",
+      openSourceTitle: "Narzedia, z ktorymi wdrazam",
+      openSourceSubtitle: "Starannie dobrany zestaw do szybkich i latwych w utrzymaniu projektow.",
+      seoEyebrow: "SEO i wydajnosc",
+      seoTitle: "Czytelne, szybkie i nastawione na konwersje strony.",
+      seoSubtitle: "Czysta struktura, szybkie renderowanie i mierzalne wyniki na kazdym ekranie.",
+    },
+    osLayout: {
+      mobileTitle: "pwloOS Mobile",
+      tabletTitle: "pwloOS Tablet",
+      back: "Wstecz",
+      settings: "Ustawienia",
+      dock: {
+        projects: "Projekty",
+        contact: "Kontakt",
+        seo: "SEO i szybkosc",
+        openSource: "Open Source",
+      },
+      apps: {
+        projects: "Projekty",
+        openSource: "Open Source",
+        seo: "SEO i szybkosc",
+        contact: "Kontakt",
+        tech: "Tech stack",
+        about: "O mnie",
+        leads: "Leady",
+        settings: "Ustawienia",
+      },
+    },
     windowTitles: {
       projects: "Projekty",
       about: "O Pawle",
@@ -746,6 +866,46 @@ export const copyByLocale: Record<Locale, Copy> = {
     },
     footer: {
       builtWith: "Gebaut mit Fokus auf Qualitaet und Performance",
+    },
+    compactLayout: {
+      menu: "Menue",
+      closeMenu: "Menue schliessen",
+      sections: {
+        projects: "Projekte",
+        openSource: "Open Source",
+        seo: "SEO und Speed",
+        contact: "Kontakt",
+      },
+      projectsEyebrow: "Ausgewaehlte Arbeiten",
+      projectsTitle: "Projekt-Snapshots im iOS-Stil",
+      openSourceEyebrow: "Open-Source-Stack",
+      openSourceTitle: "Tools, mit denen ich ausliefere",
+      openSourceSubtitle: "Ein kuratierter Stack fuer schnelle und wartbare Builds.",
+      seoEyebrow: "SEO und Performance",
+      seoTitle: "Lesbare, schnelle und conversion-starke Seiten.",
+      seoSubtitle: "Saubere Struktur, schnelles Rendering und messbare Resultate auf jedem Screen.",
+    },
+    osLayout: {
+      mobileTitle: "pwloOS Mobile",
+      tabletTitle: "pwloOS Tablet",
+      back: "Zurueck",
+      settings: "Einstellungen",
+      dock: {
+        projects: "Projekte",
+        contact: "Kontakt",
+        seo: "SEO und Speed",
+        openSource: "Open Source",
+      },
+      apps: {
+        projects: "Projekte",
+        openSource: "Open Source",
+        seo: "SEO und Speed",
+        contact: "Kontakt",
+        tech: "Tech Stack",
+        about: "Ueber mich",
+        leads: "Leads",
+        settings: "Einstellungen",
+      },
     },
     windowTitles: {
       projects: "Projekte",

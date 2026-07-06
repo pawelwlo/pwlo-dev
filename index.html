@@ -2,13 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
       content="pwlo.dev - performance-focused web development for businesses and creators."
     />
     <title>pwlo.dev | Ultra-fast Modern Websites</title>
+    <script>
+      ;(() => {
+        try {
+          const savedTheme = window.localStorage.getItem("pwlo-theme")
+          const theme = savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark"
+          window.localStorage.setItem("pwlo-theme", theme)
+          document.documentElement.dataset.theme = theme
+        } catch {
+          document.documentElement.dataset.theme = "dark"
+        }
+      })()
+    </script>
     <script type="module">
       if (import.meta.hot?.on) {
         import.meta.hot.on('vite:error', (error) => {

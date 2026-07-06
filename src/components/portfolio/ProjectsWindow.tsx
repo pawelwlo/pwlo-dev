@@ -44,15 +44,9 @@ export function ProjectsWindow({
                 <span />
                 <span />
               </div>
-              <div className="project-shot-screen">
-                <strong>{projectCopy.title}</strong>
-                <p>{project.domain}</p>
-                <div className="project-shot-metrics">
-                  {projectCopy.screenshotDetails.map((detail) => (
-                    <span key={detail}>{detail}</span>
-                  ))}
-                </div>
-              </div>
+              <a className="project-shot-screen" href={project.previewUrl} target="_blank" rel="noreferrer" aria-label={project.domain}>
+                <img className="project-shot-image" src={project.screenshotSrc} alt={`${projectCopy.title} preview`} />
+              </a>
             </div>
 
             <div className="project-content">
@@ -61,7 +55,6 @@ export function ProjectsWindow({
                   <h3>{projectCopy.title}</h3>
                   <p>{projectCopy.description}</p>
                 </div>
-                <span className="performance-pill">{projectCopy.performanceBadge}</span>
               </div>
 
               <a
@@ -101,9 +94,6 @@ export function ProjectsWindow({
             <span className="eyebrow">{copy.caseStudy}</span>
             <h3>{selectedProjectCopy.title}</h3>
           </div>
-          <span className="performance-pill performance-pill-accent">
-            {selectedProjectCopy.performanceBadge}
-          </span>
         </div>
 
         <a

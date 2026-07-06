@@ -21,6 +21,7 @@ import { DesktopIcon } from "@/components/os/DesktopIcon";
 import { WindowFrame, type ResizeDirection } from "@/components/os/WindowFrame";
 import { HeroWindow } from "@/components/portfolio/HeroWindow";
 import { LeadsWindow } from "@/components/portfolio/LeadsWindow";
+import { OsHomeLayout } from "@/components/portfolio/OsHomeLayout";
 import { ProjectsWindow } from "@/components/portfolio/ProjectsWindow";
 import {
   AboutWindow,
@@ -84,6 +85,8 @@ const initialWindowStates: Record<WindowId, WindowState> = {
   speed: { minimized: false, maximized: false, previousRect: null },
   leads: { minimized: false, maximized: false, previousRect: null },
 };
+
+const compactLayoutBreakpoint = 1100;
 
 type DragState = {
   id: WindowId;
@@ -192,13 +195,14 @@ export default function Home() {
     }).format(new Date()),
   );
   const [isCompactLayout, setIsCompactLayout] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth <= 860 : false,
+    typeof window !== "undefined" ? window.innerWidth <= compactLayoutBreakpoint : false,
   );
   const desktopSurfaceRef = useRef<HTMLDivElement | null>(null);
   const iconDragStateRef = useRef<DragState | null>(null);
   const windowDragStateRef = useRef<WindowDragState | null>(null);
   const resizeStateRef = useRef<ResizeState | null>(null);
   const suppressClickRef = useRef<WindowId | null>(null);
+  const autoMaximizedRef = useRef<Set<WindowId>>(new Set());
 
   useEffect(() => {
     const savedTheme = window.localStorage.getItem("pwlo-theme");
@@ -261,7 +265,7 @@ export default function Home() {
 
   useEffect(() => {
     const updateLayoutMode = () => {
-      setIsCompactLayout(window.innerWidth <= 860);
+      setIsCompactLayout(window.innerWidth <= compactLayoutBreakpoint);
     };
 
     updateLayoutMode();
@@ -374,6 +378,74 @@ export default function Home() {
     openWindow(windowId);
   }, [openWindow]);
 
+  const maybeAutoMaximizeWindow = useCallback(
+    (windowId: WindowId) => {
+      if (isCompactLayout || !desktopSurfaceRef.current) {
+        return false;
+      }
+
+      const bounds = desktopSurfaceRef.current.getBoundingClientRect();
+
+      if (bounds.width < 1200 || bounds.height < 720) {
+        return false;
+      }
+
+      const previousRect = windowRects[windowId];
+
+      if (previousRect.width >= bounds.width * 0.92 && previousRect.height >= bounds.height * 0.92) {
+        return false;
+      }
+
+      setWindowRects((currentRects) => ({
+        ...currentRects,
+        [windowId]: {
+          ...currentRects[windowId],
+          x: 0,
+          y: 0,
+          width: bounds.width,
+          height: bounds.height,
+        },
+      }));
+
+      setWindowStates((current) => {
+        const state = current[windowId];
+
+        if (state.maximized) {
+          return current;
+        }
+
+        return {
+          ...current,
+          [windowId]: {
+            ...state,
+            minimized: false,
+            maximized: true,
+            previousRect,
+          },
+        };
+      });
+
+      focusWindow(windowId);
+      return true;
+    },
+    [focusWindow, isCompactLayout, windowRects],
+  );
+
+  const openFromIconWithAutoMaximize = useCallback(
+    (windowId: WindowId) => {
+      openFromIcon(windowId);
+
+      if (autoMaximizedRef.current.has(windowId)) {
+        return;
+      }
+
+      if (maybeAutoMaximizeWindow(windowId)) {
+        autoMaximizedRef.current.add(windowId);
+      }
+    },
+    [maybeAutoMaximizeWindow, openFromIcon],
+  );
+
   const handleContactSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -391,6 +463,8 @@ export default function Home() {
 
     const form = event.currentTarget;
     const formData = new FormData(event.currentTarget);
+    const projectType = String(formData.get("projectType") ?? "");
+    const submissionDurationMs = Math.max(0, Date.now() - Number(formData.get("startedAt") ?? Date.now()));
     setIsSubmittingInquiry(true);
     setContactStatus(null);
 
@@ -398,12 +472,12 @@ export default function Home() {
       await submitLead({
         name: String(formData.get("name") ?? ""),
         email: String(formData.get("email") ?? ""),
-        projectType: String(formData.get("projectType") ?? ""),
+        projectType,
         message: String(formData.get("message") ?? ""),
         locale,
         pageOrigin: window.location.href,
         website: String(formData.get("website") ?? ""),
-        submissionDurationMs: Math.max(0, Date.now() - Number(formData.get("startedAt") ?? Date.now())),
+        submissionDurationMs,
       });
     } catch (error) {
       console.error("Failed to submit lead", error);
@@ -554,6 +628,7 @@ export default function Home() {
   };
 
   const closeWindowWithState = (windowId: WindowId) => {
+    autoMaximizedRef.current.delete(windowId);
     setWindowStates((current) => ({
       ...current,
       [windowId]: {
@@ -565,6 +640,24 @@ export default function Home() {
     }));
     closeWindow(windowId);
   };
+
+  useEffect(() => {
+    if (isCompactLayout) {
+      return;
+    }
+
+    openWindows
+      .filter((windowId) => !windowStates[windowId].minimized)
+      .forEach((windowId) => {
+        if (autoMaximizedRef.current.has(windowId)) {
+          return;
+        }
+
+        if (maybeAutoMaximizeWindow(windowId)) {
+          autoMaximizedRef.current.add(windowId);
+        }
+      });
+  }, [isCompactLayout, maybeAutoMaximizeWindow, openWindows, windowStates]);
 
   const windowContent = useMemo<Record<WindowId, JSX.Element>>(
     () => ({
@@ -578,7 +671,7 @@ export default function Home() {
           selectedProjectId={selectedProjectId}
           onSelectProject={(projectId) => {
             selectProject(projectId);
-            openFromIcon("projects");
+            openFromIconWithAutoMaximize("projects");
           }}
         />
       ),
@@ -606,13 +699,45 @@ export default function Home() {
         />
       ),
     }),
-    [adminKey, contactStatus?.message, contactStatus?.tone, copy, handleContactSubmit, handleRefreshLeads, isLoadingLeads, isSubmittingInquiry, leads, leadsError, locale, openFromIcon, selectProject, selectedProjectId],
+    [adminKey, contactStatus?.message, contactStatus?.tone, copy, handleContactSubmit, handleRefreshLeads, isLoadingLeads, isSubmittingInquiry, leads, leadsError, locale, openFromIconWithAutoMaximize, selectProject, selectedProjectId],
   );
+
+  if (isCompactLayout) {
+    return (
+      <OsHomeLayout
+        locale={locale}
+        copy={copy}
+        localTime={localTime}
+        selectedProjectId={selectedProjectId}
+        onSelectProject={selectProject}
+        onSubmitContact={handleContactSubmit}
+        isSubmittingInquiry={isSubmittingInquiry}
+        contactStatusMessage={contactStatus?.message ?? null}
+        contactStatusTone={contactStatus?.tone ?? null}
+        adminKey={adminKey}
+        onAdminKeyChange={setAdminKey}
+        onRefreshLeads={handleRefreshLeads}
+        isLoadingLeads={isLoadingLeads}
+        leadsError={leadsError}
+        leads={leads}
+        onChangeLocale={setLocale}
+        onToggleTheme={toggleTheme}
+        isDark={theme === "dark"}
+      />
+    );
+  }
 
   return (
     <main className="portfolio-shell">
       <div className="shell-noise" aria-hidden="true" />
       <div className="shell-grid" aria-hidden="true" />
+
+      <div className="system-status-bar" aria-label="System Status Bar">
+        <span className="system-status-item">{copy.statusBar.localTime}: {localTime}</span>
+        <span className="system-status-item">{copy.statusBar.os}</span>
+        <span className="system-status-item">{copy.statusBar.performance}</span>
+        <span className="system-status-item system-status-online">{copy.statusBar.online}</span>
+      </div>
 
       <section className="hero-section">
         <HeroWindow
@@ -621,26 +746,12 @@ export default function Home() {
           isDark={theme === "dark"}
           onChangeLocale={setLocale}
           onToggleTheme={toggleTheme}
-          onOpenProjects={() => openFromIcon("projects")}
-          onOpenContact={() => openFromIcon("contact")}
+          onOpenProjects={() => openFromIconWithAutoMaximize("projects")}
+          onOpenContact={() => openFromIconWithAutoMaximize("contact")}
         />
       </section>
 
       <section className="desktop-section">
-        <div className="system-status-bar" aria-label="System Status Bar">
-          <span className="system-status-item">{copy.statusBar.localTime}: {localTime}</span>
-          <span className="system-status-item">{copy.statusBar.os}</span>
-          <span className="system-status-item">{copy.statusBar.performance}</span>
-          <span className="system-status-item system-status-online">{copy.statusBar.online}</span>
-        </div>
-
-        <div className="desktop-section-header">
-          <div>
-            <span className="eyebrow">{copy.desktop.eyebrow}</span>
-            <h2>{copy.desktop.title}</h2>
-          </div>
-        </div>
-
         <div
           className="desktop-surface"
           ref={desktopSurfaceRef}
@@ -685,7 +796,7 @@ export default function Home() {
                       originY: position.y,
                     };
                   }}
-                  onOpen={() => openFromIcon(item.id)}
+                  onOpen={() => openFromIconWithAutoMaximize(item.id)}
                 />
               );
             })}

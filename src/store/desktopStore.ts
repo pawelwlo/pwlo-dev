@@ -20,9 +20,23 @@ type DesktopStore = {
   selectProject: (projectId: string) => void;
 };
 
+const initialTheme: ThemeMode = (() => {
+  if (typeof window === "undefined") {
+    return "dark";
+  }
+
+  const datasetTheme = window.document?.documentElement?.dataset?.theme;
+
+  if (datasetTheme === "light" || datasetTheme === "dark") {
+    return datasetTheme;
+  }
+
+  return "dark";
+})();
+
 export const useDesktopStore = create<DesktopStore>((set) => ({
   locale: "en",
-  theme: "light",
+  theme: initialTheme,
   openWindows: ["projects"],
   activeWindow: "projects",
   selectedProjectId: projects[0].id,

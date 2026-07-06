@@ -56,6 +56,16 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
+  Object.defineProperty(window, "innerWidth", {
+    writable: true,
+    configurable: true,
+    value: 1280,
+  });
+  Object.defineProperty(window, "innerHeight", {
+    writable: true,
+    configurable: true,
+    value: 900,
+  });
   window.localStorage.clear();
   submitLeadMock.mockClear();
   fetchAdminLeadsMock.mockClear();
@@ -88,7 +98,7 @@ describe("Home", () => {
 
     fireEvent.click(screen.getAllByRole("button", { name: /Contact Start a project 24h/i })[0]);
 
-    expect(screen.getAllByText("hi@pwlo.dev").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("pawel@pwlo.dev").length).toBeGreaterThan(0);
     expect(screen.getAllByRole("heading", { name: /Let's build something fast./i }).length).toBeGreaterThan(0);
   });
 

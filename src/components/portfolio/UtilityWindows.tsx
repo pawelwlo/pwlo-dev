@@ -43,9 +43,12 @@ export function AboutWindow({ copy }: CopyProps) {
     <div className="about-layout">
       <div className="about-photo-card">
         <div className="about-photo-placeholder">
-          <span>PW</span>
+          <img
+            className="about-photo-image"
+            src="/5F3C3F67-00F2-49E1-8E7B-73E2F7D2ECD9_1_201_a.jpeg"
+            alt="Pawel Wlodarczyk"
+          />
         </div>
-        <p>{copy.about.photoPlaceholder}</p>
       </div>
 
       <div className="about-copy">
@@ -95,7 +98,7 @@ export function SpeedWindow({ copy }: CopyProps) {
 
       <a
         className="primary-button button-link"
-        href={`mailto:hi@pwlo.dev?subject=${encodeURIComponent(copy.speed.ctaSubject)}`}
+        href={`mailto:pawel@pwlo.dev?subject=${encodeURIComponent(copy.speed.ctaSubject)}`}
       >
         {copy.speed.cta}
         <ArrowRight size={16} />
@@ -126,9 +129,7 @@ export function ContactWindow({
       <div className="contact-intro">
         <span className="eyebrow">{copy.contact.eyebrow}</span>
         <h3>{copy.contact.title}</h3>
-        <a className="contact-email" href="mailto:hi@pwlo.dev">
-          hi@pwlo.dev
-        </a>
+        <a className="contact-email" href="mailto:pawel@pwlo.dev">pawel@pwlo.dev</a>
 
         <div className="social-row">
           <a href="https://github.com/" target="_blank" rel="noreferrer" aria-label="GitHub">
@@ -137,7 +138,7 @@ export function ContactWindow({
           <a href="https://linkedin.com/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
             <Linkedin size={18} />
           </a>
-          <a href="mailto:hi@pwlo.dev" aria-label="Email">
+          <a href="mailto:pawel@pwlo.dev" aria-label="Email">
             <Mail size={18} />
           </a>
         </div>

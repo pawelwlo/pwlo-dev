@@ -12,6 +12,7 @@ export type Project = {
   title: string;
   domain: string;
   previewUrl: string;
+  screenshotSrc: string;
   description: string;
   tech: string[];
   performanceBadge: string;
@@ -42,6 +43,7 @@ export const projects: Project[] = [
     title: "Dieta Na Codzien",
     domain: "dietanacodzien.pl",
     previewUrl: "https://dietanacodzien.pl",
+    screenshotSrc: "/dietanacodzien.png",
     description: "Nutrition-focused production website presented as a live portfolio project preview.",
     tech: ["Production site", "Live domain", "Responsive UI"],
     performanceBadge: "Live preview",
@@ -65,6 +67,7 @@ export const projects: Project[] = [
     title: "Magic Colouring Book",
     domain: "magiccolouringbook.app",
     previewUrl: "https://magiccolouringbook.app",
+    screenshotSrc: "/magicbook.png",
     description: "Interactive app project listed with a direct live preview for fast portfolio browsing.",
     tech: ["Web app", "Interactive UI", "Live domain"],
     performanceBadge: "Live preview",
@@ -91,6 +94,7 @@ export const projects: Project[] = [
     title: "Instant Jobs",
     domain: "instant-jobs.com",
     previewUrl: "https://instant-jobs.com",
+    screenshotSrc: "/instantjobs.png",
     description: "Job-focused live project entry with direct access to the production domain.",
     tech: ["Platform", "Live domain", "Responsive UI"],
     performanceBadge: "Live preview",
@@ -115,6 +119,7 @@ export const imageStyle = {
     title: "Hotel Worker",
     domain: "hotelworker.app",
     previewUrl: "https://hotelworker.app",
+    screenshotSrc: "/hotelworker.png",
     description: "Hospitality-focused app entry added with a clean live preview link.",
     tech: ["Web app", "Live domain", "Production preview"],
     performanceBadge: "Live preview",
@@ -136,6 +141,7 @@ export const imageStyle = {
     title: "Coffee Bagus",
     domain: "coffeebagus.com",
     previewUrl: "https://coffeebagus.com",
+    screenshotSrc: "/coffeebagus.png",
     description: "Brand site portfolio entry with a direct preview to the live domain.",
     tech: ["Brand site", "Live domain", "Responsive UI"],
     performanceBadge: "Live preview",
@@ -158,6 +164,7 @@ export const imageStyle = {
     title: "Task Tracker",
     domain: "tasktracker.pl",
     previewUrl: "https://tasktracker.pl",
+    screenshotSrc: "/tasktracker.png",
     description: "Productivity project card linked directly to the production preview.",
     tech: ["Productivity app", "Live domain", "Production preview"],
     performanceBadge: "Live preview",
