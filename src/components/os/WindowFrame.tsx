@@ -59,11 +59,6 @@ export function WindowFrame({
         lang={locale}
         onPointerDown={(event) => onDragStart?.(event)}
       >
-        <div className="window-controls" aria-hidden="true">
-          <span className="window-dot window-dot-red" />
-          <span className="window-dot window-dot-yellow" />
-          <span className="window-dot window-dot-green" />
-        </div>
         <div className="window-title">{title}</div>
         <div className="window-actions">
           <button

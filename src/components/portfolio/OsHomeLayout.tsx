@@ -279,10 +279,18 @@ export function OsHomeLayout({
       <header className="os-topbar" aria-label={homeTitle}>
         <div className="os-topbar-left">{localTime}</div>
         <div className="os-topbar-title">
-          <img className="os-topbar-logo" src="/logo.png" alt="" aria-hidden="true" />
+          <img
+            className="os-topbar-logo"
+            src="/logo.webp"
+            alt=""
+            width="18"
+            height="18"
+            decoding="async"
+            aria-hidden="true"
+          />
           <span>{navTitle}</span>
         </div>
-        <div className="os-topbar-right" aria-label={copy.statusBar.online} title={copy.statusBar.online}>
+        <div className="os-topbar-right" aria-hidden="true" title={copy.statusBar.online}>
           <span className="os-status-dot" aria-hidden="true" />
         </div>
       </header>
@@ -416,7 +424,13 @@ export function OsHomeLayout({
                             }}
                           >
                             <div className="os-project-thumb" aria-hidden="true">
-                              <img className="os-project-thumb-image" src={project.screenshotSrc} alt="" />
+                              <img
+                                className="os-project-thumb-image"
+                                src={project.screenshotSrc}
+                                alt=""
+                                loading="lazy"
+                                decoding="async"
+                              />
                             </div>
                             <div className="os-card-body">
                               <div className="os-card-heading">

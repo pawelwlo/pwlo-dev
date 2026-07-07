@@ -1,0 +1,46 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="1200" height="630" rx="40" fill="#090B10"/>
+<rect x="36" y="36" width="1128" height="558" rx="32" fill="url(#panel)"/>
+<rect x="76" y="88" width="352" height="454" rx="28" fill="url(#sidebar)"/>
+<rect x="460" y="88" width="664" height="218" rx="28" fill="url(#hero)"/>
+<rect x="460" y="334" width="320" height="208" rx="28" fill="#111722"/>
+<rect x="804" y="334" width="320" height="208" rx="28" fill="#111722"/>
+<rect x="76" y="88" width="352" height="454" rx="28" stroke="#FFFFFF" stroke-opacity="0.08"/>
+<rect x="460" y="88" width="664" height="218" rx="28" stroke="#FFFFFF" stroke-opacity="0.08"/>
+<rect x="460" y="334" width="320" height="208" rx="28" stroke="#FFFFFF" stroke-opacity="0.08"/>
+<rect x="804" y="334" width="320" height="208" rx="28" stroke="#FFFFFF" stroke-opacity="0.08"/>
+<circle cx="146" cy="158" r="34" fill="url(#accent)"/>
+<path d="M162 184H123V177.467H116.5V151.334H162V184ZM123 177.467H155.5V157.867H123V177.467ZM139.25 167.6L134.654 172.222L130.058 167.6L134.654 162.978L139.25 167.6ZM152.25 167.597L147.654 172.219L143.058 167.597L147.654 162.975L152.25 167.597Z" fill="#06110B"/>
+<text x="76" y="240" fill="#F5F7FB" font-family="Inter, Arial, sans-serif" font-size="68" font-weight="700">pwlo.dev</text>
+<text x="76" y="300" fill="#A6B1C2" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="500">Performance-focused web development</text>
+<text x="76" y="340" fill="#A6B1C2" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="500">for businesses and creators.</text>
+<text x="500" y="168" fill="#F5F7FB" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="600">Ultra-fast modern websites.</text>
+<text x="500" y="214" fill="#8FA0B8" font-family="Inter, Arial, sans-serif" font-size="18">SEO, Core Web Vitals, accessibility and clean delivery.</text>
+<rect x="500" y="246" width="180" height="12" rx="6" fill="#32F08C"/>
+<rect x="500" y="374" width="156" height="12" rx="6" fill="#32F08C"/>
+<rect x="500" y="408" width="212" height="12" rx="6" fill="#2A3548"/>
+<text x="500" y="472" fill="#F5F7FB" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600">SEO</text>
+<text x="500" y="508" fill="#8FA0B8" font-family="Inter, Arial, sans-serif" font-size="17">Structured metadata, technical SEO and content clarity.</text>
+<rect x="844" y="374" width="156" height="12" rx="6" fill="#32F08C"/>
+<rect x="844" y="408" width="196" height="12" rx="6" fill="#2A3548"/>
+<text x="844" y="472" fill="#F5F7FB" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600">Performance</text>
+<text x="844" y="508" fill="#8FA0B8" font-family="Inter, Arial, sans-serif" font-size="17">Lean bundles, optimized assets and measurable UX.</text>
+<defs>
+<linearGradient id="panel" x1="85" y1="44" x2="1079" y2="593" gradientUnits="userSpaceOnUse">
+<stop stop-color="#0D1118"/>
+<stop offset="1" stop-color="#0A0E15"/>
+</linearGradient>
+<linearGradient id="sidebar" x1="76" y1="88" x2="428" y2="542" gradientUnits="userSpaceOnUse">
+<stop stop-color="#101621"/>
+<stop offset="1" stop-color="#0C1119"/>
+</linearGradient>
+<linearGradient id="hero" x1="460" y1="88" x2="1124" y2="306" gradientUnits="userSpaceOnUse">
+<stop stop-color="#152134"/>
+<stop offset="1" stop-color="#101825"/>
+</linearGradient>
+<linearGradient id="accent" x1="112" y1="124" x2="180" y2="192" gradientUnits="userSpaceOnUse">
+<stop stop-color="#72F8B1"/>
+<stop offset="1" stop-color="#32F08C"/>
+</linearGradient>
+</defs>
+</svg>

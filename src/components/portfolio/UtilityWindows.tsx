@@ -47,6 +47,8 @@ export function AboutWindow({ copy }: CopyProps) {
             className="about-photo-image"
             src="/5F3C3F67-00F2-49E1-8E7B-73E2F7D2ECD9_1_201_a.jpeg"
             alt="Pawel Wlodarczyk"
+            loading="lazy"
+            decoding="async"
           />
         </div>
       </div>

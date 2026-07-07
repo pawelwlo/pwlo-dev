@@ -150,7 +150,7 @@ describe("Home", () => {
   it("switches the active case study when a project is selected", () => {
     render(<Home />);
 
-    fireEvent.click(screen.getAllByRole("button", { name: /Open Case Study/i })[1]);
+    fireEvent.click(screen.getAllByRole("button", { name: /Magic Colouring Book/i })[0]);
 
     expect(screen.getAllByText("magiccolouringbook.app").length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Live application preview available now/i).length).toBeGreaterThan(0);

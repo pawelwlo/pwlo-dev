@@ -1,4 +1,5 @@
 import { ArrowUpRight, Code2, Rocket, SearchCheck, TimerReset } from "lucide-react";
+import type { KeyboardEvent } from "react";
 
 import { projects } from "@/data/portfolioData";
 import { getProjectTranslation, type Locale } from "@/i18n/translations";
@@ -35,17 +36,44 @@ export function ProjectsWindow({
       <div className="project-grid">
         {projects.map((project) => {
           const projectCopy = getProjectTranslation(locale, project.id);
+          const handleSelectProject = () => onSelectProject(project.id);
+          const handleProjectCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              handleSelectProject();
+            }
+          };
 
           return (
-          <article key={project.id} className="project-card">
+          <article
+            key={project.id}
+            className="project-card"
+            role="button"
+            tabIndex={0}
+            onClick={handleSelectProject}
+            onKeyDown={handleProjectCardKeyDown}
+          >
             <div className="project-shot">
               <div className="project-shot-bar">
                 <span />
                 <span />
                 <span />
               </div>
-              <a className="project-shot-screen" href={project.previewUrl} target="_blank" rel="noreferrer" aria-label={project.domain}>
-                <img className="project-shot-image" src={project.screenshotSrc} alt={`${projectCopy.title} preview`} />
+              <a
+                className="project-shot-screen"
+                href={project.previewUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={project.domain}
+                onClick={(event) => event.stopPropagation()}
+              >
+                <img
+                  className="project-shot-image"
+                  src={project.screenshotSrc}
+                  alt={`${projectCopy.title} preview`}
+                  loading="lazy"
+                  decoding="async"
+                />
               </a>
             </div>
 
@@ -62,6 +90,7 @@ export function ProjectsWindow({
                 href={project.previewUrl}
                 target="_blank"
                 rel="noreferrer"
+                onClick={(event) => event.stopPropagation()}
               >
                 {project.domain}
                 <ArrowUpRight size={14} />
@@ -75,14 +104,6 @@ export function ProjectsWindow({
                 ))}
               </div>
 
-              <button
-                className="text-button"
-                type="button"
-                onClick={() => onSelectProject(project.id)}
-              >
-                {copy.openCaseStudy}
-                <ArrowUpRight size={16} />
-              </button>
             </div>
           </article>
         )})}

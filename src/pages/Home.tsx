@@ -31,8 +31,8 @@ import {
 } from "@/components/portfolio/UtilityWindows";
 import { desktopIcons, type WindowId } from "@/data/portfolioData";
 import { copyByLocale, type Locale } from "@/i18n/translations";
+import { getLocalePath } from "@/lib/localeRouting";
 import { fetchAdminLeads, submitLead, type LeadRecord } from "@/lib/leadsApi";
-import { isSupabaseConfigured } from "@/lib/supabase";
 import { useDesktopStore } from "@/store/desktopStore";
 
 const iconMap: Record<WindowId, LucideIcon> = {
@@ -45,12 +45,12 @@ const iconMap: Record<WindowId, LucideIcon> = {
 };
 
 const initialPositions: Record<WindowId, { x: number; y: number }> = {
-  projects: { x: 24, y: 28 },
-  about: { x: 24, y: 136 },
-  tech: { x: 24, y: 244 },
-  contact: { x: 24, y: 352 },
-  speed: { x: 24, y: 460 },
-  leads: { x: 24, y: 568 },
+  projects: { x: 20, y: 24 },
+  about: { x: 20, y: 116 },
+  tech: { x: 20, y: 208 },
+  contact: { x: 20, y: 300 },
+  speed: { x: 20, y: 392 },
+  leads: { x: 20, y: 484 },
 };
 
 type WindowRect = {
@@ -63,12 +63,12 @@ type WindowRect = {
 };
 
 const initialWindowRects: Record<WindowId, WindowRect> = {
-  projects: { x: 290, y: 32, width: 880, height: 650, minWidth: 560, minHeight: 420 },
-  about: { x: 690, y: 96, width: 520, height: 320, minWidth: 380, minHeight: 250 },
-  tech: { x: 650, y: 448, width: 540, height: 300, minWidth: 380, minHeight: 240 },
-  contact: { x: 320, y: 530, width: 560, height: 290, minWidth: 400, minHeight: 250 },
-  speed: { x: 760, y: 520, width: 420, height: 250, minWidth: 320, minHeight: 220 },
-  leads: { x: 510, y: 120, width: 720, height: 520, minWidth: 520, minHeight: 360 },
+  projects: { x: 272, y: 24, width: 648, height: 352, minWidth: 560, minHeight: 320 },
+  about: { x: 940, y: 24, width: 280, height: 168, minWidth: 280, minHeight: 168 },
+  tech: { x: 940, y: 208, width: 280, height: 168, minWidth: 280, minHeight: 168 },
+  contact: { x: 272, y: 396, width: 468, height: 170, minWidth: 400, minHeight: 170 },
+  speed: { x: 756, y: 396, width: 464, height: 170, minWidth: 320, minHeight: 170 },
+  leads: { x: 320, y: 88, width: 780, height: 440, minWidth: 520, minHeight: 360 },
 };
 
 type WindowState = {
@@ -87,6 +87,10 @@ const initialWindowStates: Record<WindowId, WindowState> = {
 };
 
 const compactLayoutBreakpoint = 1100;
+const autoMaximizeWindowIds = new Set<WindowId>(["projects"]);
+const isSupabaseConfigured = Boolean(
+  import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY,
+);
 
 type DragState = {
   id: WindowId;
@@ -204,16 +208,26 @@ export default function Home() {
   const suppressClickRef = useRef<WindowId | null>(null);
   const autoMaximizedRef = useRef<Set<WindowId>>(new Set());
 
+  const handleLocaleChange = useCallback(
+    (nextLocale: Locale) => {
+      if (nextLocale === locale) {
+        return;
+      }
+
+      const nextPath = getLocalePath(nextLocale);
+
+      window.localStorage.setItem("pwlo-locale", nextLocale);
+      setLocale(nextLocale);
+      window.location.assign(nextPath);
+    },
+    [locale, setLocale],
+  );
+
   useEffect(() => {
     const savedTheme = window.localStorage.getItem("pwlo-theme");
-    const savedLocale = window.localStorage.getItem("pwlo-locale");
 
     if (savedTheme === "dark" || savedTheme === "light") {
       setTheme(savedTheme);
-    }
-
-    if (savedLocale === "en" || savedLocale === "pl" || savedLocale === "de") {
-      setLocale(savedLocale as Locale);
     }
 
     const savedAdminKey = window.localStorage.getItem("pwlo-admin-key");
@@ -221,7 +235,7 @@ export default function Home() {
     if (savedAdminKey) {
       setAdminKey(savedAdminKey);
     }
-  }, [setLocale, setTheme]);
+  }, [setTheme]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -249,8 +263,13 @@ export default function Home() {
       hour: "2-digit",
       minute: "2-digit",
     });
+    let isMounted = true;
 
     const updateTime = () => {
+      if (!isMounted) {
+        return;
+      }
+
       setLocalTime(formatter.format(new Date()));
     };
 
@@ -259,6 +278,7 @@ export default function Home() {
     const intervalId = window.setInterval(updateTime, 1000);
 
     return () => {
+      isMounted = false;
       window.clearInterval(intervalId);
     };
   }, [locale]);
@@ -434,6 +454,10 @@ export default function Home() {
   const openFromIconWithAutoMaximize = useCallback(
     (windowId: WindowId) => {
       openFromIcon(windowId);
+
+      if (!autoMaximizeWindowIds.has(windowId)) {
+        return;
+      }
 
       if (autoMaximizedRef.current.has(windowId)) {
         return;
@@ -641,24 +665,6 @@ export default function Home() {
     closeWindow(windowId);
   };
 
-  useEffect(() => {
-    if (isCompactLayout) {
-      return;
-    }
-
-    openWindows
-      .filter((windowId) => !windowStates[windowId].minimized)
-      .forEach((windowId) => {
-        if (autoMaximizedRef.current.has(windowId)) {
-          return;
-        }
-
-        if (maybeAutoMaximizeWindow(windowId)) {
-          autoMaximizedRef.current.add(windowId);
-        }
-      });
-  }, [isCompactLayout, maybeAutoMaximizeWindow, openWindows, windowStates]);
-
   const windowContent = useMemo<Record<WindowId, JSX.Element>>(
     () => ({
       projects: (
@@ -720,7 +726,7 @@ export default function Home() {
         isLoadingLeads={isLoadingLeads}
         leadsError={leadsError}
         leads={leads}
-        onChangeLocale={setLocale}
+        onChangeLocale={handleLocaleChange}
         onToggleTheme={toggleTheme}
         isDark={theme === "dark"}
       />
@@ -744,7 +750,7 @@ export default function Home() {
           locale={locale}
           copy={copy}
           isDark={theme === "dark"}
-          onChangeLocale={setLocale}
+          onChangeLocale={handleLocaleChange}
           onToggleTheme={toggleTheme}
           onOpenProjects={() => openFromIconWithAutoMaximize("projects")}
           onOpenContact={() => openFromIconWithAutoMaximize("contact")}

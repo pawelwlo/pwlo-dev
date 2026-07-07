@@ -2,6 +2,7 @@ import { create } from "zustand";
 
 import { projects, type WindowId } from "@/data/portfolioData";
 import type { Locale } from "@/i18n/translations";
+import { getLocaleFromPath, isLocale } from "@/lib/localeRouting";
 
 type ThemeMode = "light" | "dark";
 
@@ -20,6 +21,20 @@ type DesktopStore = {
   selectProject: (projectId: string) => void;
 };
 
+const initialLocale: Locale = (() => {
+  if (typeof window === "undefined") {
+    return "en";
+  }
+
+  const documentLocale = window.document?.documentElement?.lang;
+
+  if (isLocale(documentLocale)) {
+    return documentLocale;
+  }
+
+  return getLocaleFromPath(window.location.pathname);
+})();
+
 const initialTheme: ThemeMode = (() => {
   if (typeof window === "undefined") {
     return "dark";
@@ -35,7 +50,7 @@ const initialTheme: ThemeMode = (() => {
 })();
 
 export const useDesktopStore = create<DesktopStore>((set) => ({
-  locale: "en",
+  locale: initialLocale,
   theme: initialTheme,
   openWindows: ["projects"],
   activeWindow: "projects",
