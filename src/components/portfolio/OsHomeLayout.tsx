@@ -3,6 +3,12 @@ import {
   ArrowLeft,
   ArrowUpRight,
   ChevronRight,
+  Cloud,
+  CloudFog,
+  CloudLightning,
+  CloudRain,
+  CloudSnow,
+  CloudSun,
   FolderKanban,
   Gauge,
   Globe,
@@ -11,7 +17,9 @@ import {
   Settings,
   ShieldCheck,
   Sparkles,
+  SunMedium,
   UserRound,
+  type LucideIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ComponentType, type FormEvent } from "react";
 
@@ -73,6 +81,80 @@ type OsIconConfig = {
   tintClass: string;
 };
 
+const privacyConsentStorageKey = "pwlo-privacy-accepted-v2";
+const garmischWeatherUrl =
+  "https://api.open-meteo.com/v1/forecast?latitude=47.4917&longitude=11.0955&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1";
+
+type WeatherSnapshot = {
+  temperature: number;
+  high: number;
+  low: number;
+  weatherCode: number;
+};
+
+const defaultWeatherSnapshot: WeatherSnapshot = {
+  temperature: 14,
+  high: 18,
+  low: 9,
+  weatherCode: 2,
+};
+
+function getWeatherPresentation(weatherCode: number, locale: Locale): { label: string; icon: LucideIcon } {
+  if (weatherCode === 0) {
+    return {
+      label: locale === "pl" ? "Bezchmurnie" : locale === "de" ? "Klar" : "Clear",
+      icon: SunMedium,
+    };
+  }
+
+  if (weatherCode === 1 || weatherCode === 2) {
+    return {
+      label: locale === "pl" ? "Czesciowe zachmurzenie" : locale === "de" ? "Teilweise bewolkt" : "Partly Cloudy",
+      icon: CloudSun,
+    };
+  }
+
+  if (weatherCode === 3) {
+    return {
+      label: locale === "pl" ? "Pochmurno" : locale === "de" ? "Bewoelkt" : "Cloudy",
+      icon: Cloud,
+    };
+  }
+
+  if (weatherCode === 45 || weatherCode === 48) {
+    return {
+      label: locale === "pl" ? "Mgla" : locale === "de" ? "Nebel" : "Fog",
+      icon: CloudFog,
+    };
+  }
+
+  if ((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82)) {
+    return {
+      label: locale === "pl" ? "Deszcz" : locale === "de" ? "Regen" : "Rain",
+      icon: CloudRain,
+    };
+  }
+
+  if ((weatherCode >= 71 && weatherCode <= 77) || weatherCode === 85 || weatherCode === 86) {
+    return {
+      label: locale === "pl" ? "Snieg" : locale === "de" ? "Schnee" : "Snow",
+      icon: CloudSnow,
+    };
+  }
+
+  if (weatherCode >= 95) {
+    return {
+      label: locale === "pl" ? "Burza" : locale === "de" ? "Gewitter" : "Storm",
+      icon: CloudLightning,
+    };
+  }
+
+  return {
+    label: locale === "pl" ? "Zachmurzenie" : locale === "de" ? "Wolken" : "Cloudy",
+    icon: Cloud,
+  };
+}
+
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -101,14 +183,39 @@ export function OsHomeLayout({
   const [appTransitionState, setAppTransitionState] = useState<"idle" | "opening" | "closing">("idle");
   const [projectView, setProjectView] = useState<"grid" | "detail">("grid");
   const transitionTimerRef = useRef<number | null>(null);
+  const unlockTimerRef = useRef<number | null>(null);
+  const [lockscreenState, setLockscreenState] = useState<"locked" | "unlocking" | "unlocked">(() => {
+    if (typeof window === "undefined") {
+      return "locked";
+    }
+
+    try {
+      return window.localStorage.getItem(privacyConsentStorageKey) === "true" ? "unlocked" : "locked";
+    } catch {
+      return "locked";
+    }
+  });
+  const [isPrivacyInfoExpanded, setIsPrivacyInfoExpanded] = useState(false);
+  const [weatherSnapshot, setWeatherSnapshot] = useState<WeatherSnapshot>(defaultWeatherSnapshot);
 
   const isTablet = typeof window !== "undefined" ? window.innerWidth >= 768 : false;
   const homeTitle = isTablet ? copy.osLayout.tabletTitle : copy.osLayout.mobileTitle;
+  const isLockscreenVisible = lockscreenState !== "unlocked";
 
   const selectedProject = useMemo(
     () => projects.find((project) => project.id === selectedProjectId) ?? projects[0],
     [selectedProjectId],
   );
+  const lockscreenDate = new Intl.DateTimeFormat(locale, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  }).format(new Date());
+  const weatherPresentation = useMemo(
+    () => getWeatherPresentation(weatherSnapshot.weatherCode, locale),
+    [weatherSnapshot.weatherCode, locale],
+  );
+  const WeatherIcon = weatherPresentation.icon;
 
   const icons: OsIconConfig[] = [
     {
@@ -201,9 +308,63 @@ export function OsHomeLayout({
       if (transitionTimerRef.current) {
         window.clearTimeout(transitionTimerRef.current);
       }
+
+      if (unlockTimerRef.current) {
+        window.clearTimeout(unlockTimerRef.current);
+      }
     },
     [],
   );
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const loadWeather = async () => {
+      try {
+        const response = await fetch(garmischWeatherUrl);
+
+        if (!response.ok) {
+          throw new Error("Weather request failed");
+        }
+
+        const data = (await response.json()) as {
+          current?: {
+            temperature_2m?: number;
+            weather_code?: number;
+          };
+          daily?: {
+            temperature_2m_max?: number[];
+            temperature_2m_min?: number[];
+          };
+        };
+
+        if (isCancelled) {
+          return;
+        }
+
+        setWeatherSnapshot({
+          temperature: Math.round(data.current?.temperature_2m ?? defaultWeatherSnapshot.temperature),
+          high: Math.round(data.daily?.temperature_2m_max?.[0] ?? defaultWeatherSnapshot.high),
+          low: Math.round(data.daily?.temperature_2m_min?.[0] ?? defaultWeatherSnapshot.low),
+          weatherCode: data.current?.weather_code ?? defaultWeatherSnapshot.weatherCode,
+        });
+      } catch {
+        if (!isCancelled) {
+          setWeatherSnapshot(defaultWeatherSnapshot);
+        }
+      }
+    };
+
+    void loadWeather();
+    const refreshId = window.setInterval(() => {
+      void loadWeather();
+    }, 30 * 60 * 1000);
+
+    return () => {
+      isCancelled = true;
+      window.clearInterval(refreshId);
+    };
+  }, []);
 
   const openApp = (appId: OsAppId) => {
     if (transitionTimerRef.current) {
@@ -235,8 +396,22 @@ export function OsHomeLayout({
     }, 240);
   };
 
-  const openFromSidebar = (appId: Exclude<OsAppId, "home">) => {
-    openApp(appId);
+  const acceptPrivacyNotice = () => {
+    if (unlockTimerRef.current) {
+      window.clearTimeout(unlockTimerRef.current);
+    }
+
+    try {
+      window.localStorage.setItem(privacyConsentStorageKey, "true");
+    } catch {
+      // Ignore storage errors and continue to unlock the UI.
+    }
+
+    setIsPrivacyInfoExpanded(false);
+    setLockscreenState("unlocking");
+    unlockTimerRef.current = window.setTimeout(() => {
+      setLockscreenState("unlocked");
+    }, 380);
   };
 
   const appShellClassName =
@@ -273,87 +448,122 @@ export function OsHomeLayout({
   const isHomeActive = activeApp === "home";
 
   return (
-    <main className="os-shell" data-os-mode={activeApp === "home" ? "home" : "app"}>
+    <main
+      className={`os-shell ${isLockscreenVisible ? "os-shell-locked" : ""}`}
+      data-os-mode={activeApp === "home" ? "home" : "app"}
+    >
       <div className="os-wallpaper" aria-hidden="true" />
 
-      <header className="os-topbar" aria-label={homeTitle}>
+      {isLockscreenVisible ? (
+        <div
+          className={`os-lockscreen ${lockscreenState === "unlocking" ? "os-lockscreen-unlocking" : ""}`}
+          aria-label={copy.osLayout.lockscreen.title}
+        >
+          <div className="os-lockscreen-header">
+            <div className="os-lockscreen-clock" aria-live="polite">
+              <div className="os-lockscreen-time">{localTime}</div>
+              <div className="os-lockscreen-date">{lockscreenDate}</div>
+            </div>
+
+            <section className="os-weather-widget" aria-label="Weather in Garmisch-Partenkirchen">
+              <div className="os-weather-card">
+                <div className="os-weather-card-header">
+                  <div>
+                    <div className="os-weather-location">Garmisch-Partenkirchen</div>
+                    <div className="os-weather-temperature">{weatherSnapshot.temperature}°C</div>
+                  </div>
+                  <span className="os-weather-icon-shell" aria-hidden="true">
+                    <WeatherIcon className="os-weather-icon" size={26} />
+                  </span>
+                </div>
+
+                <div className="os-weather-card-footer">
+                  <span>{weatherPresentation.label}</span>
+                  <span>
+                    H:{weatherSnapshot.high}° L:{weatherSnapshot.low}°
+                  </span>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <section className="os-lockscreen-panel" aria-label={copy.osLayout.lockscreen.title}>
+            <div className="os-lockscreen-panel-body">
+              <div className="os-lockscreen-panel-copy">
+                <span className="eyebrow">pwloOS</span>
+                <h2>{copy.osLayout.lockscreen.title}</h2>
+                <p>{copy.osLayout.lockscreen.message}</p>
+              </div>
+
+              {isPrivacyInfoExpanded ? (
+                <p className="os-lockscreen-detail">{copy.osLayout.lockscreen.infoDetail}</p>
+              ) : null}
+
+              <div className="os-lockscreen-actions">
+                <button className="os-lockscreen-button os-lockscreen-button-primary" type="button" onClick={acceptPrivacyNotice}>
+                  {copy.osLayout.lockscreen.accept}
+                </button>
+                <button
+                  className="os-lockscreen-button os-lockscreen-button-secondary"
+                  type="button"
+                  onClick={() => setIsPrivacyInfoExpanded((current) => !current)}
+                  aria-expanded={isPrivacyInfoExpanded}
+                >
+                  {copy.osLayout.lockscreen.moreInfo}
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      ) : null}
+
+      <header className="os-topbar" aria-label={homeTitle} aria-hidden={isLockscreenVisible}>
         <div className="os-topbar-left">{localTime}</div>
         <div className="os-topbar-title">
-          <img
-            className="os-topbar-logo"
-            src="/logo.webp"
-            alt=""
-            width="18"
-            height="18"
-            decoding="async"
-            aria-hidden="true"
-          />
           <span>{navTitle}</span>
         </div>
         <div className="os-topbar-right" aria-hidden="true" title={copy.statusBar.online}>
-          <span className="os-status-dot" aria-hidden="true" />
+          <span className="os-signal-bars" aria-hidden="true">
+            <span className="os-signal-bar os-signal-bar-1" />
+            <span className="os-signal-bar os-signal-bar-2" />
+            <span className="os-signal-bar os-signal-bar-3" />
+            <span className="os-signal-bar os-signal-bar-4" />
+          </span>
         </div>
       </header>
 
-      <div className={`os-home-surface ${isHomeActive ? "" : "os-home-surface-hidden"}`} aria-hidden={!isHomeActive}>
+      <div
+        className={`os-home-surface ${isHomeActive ? "" : "os-home-surface-hidden"}`}
+        aria-hidden={!isHomeActive || isLockscreenVisible}
+      >
         <div className="os-home-layout">
-          {isTablet ? (
-            <aside className="os-sidebar ios-animate" aria-label="System Navigation">
-              <div className="os-sidebar-head">
-                <span className="eyebrow">{homeTitle}</span>
-                <h2>pwloOS</h2>
-              </div>
-
-              <div className="os-sidebar-list">
-                {icons.slice(0, 5).map((item) => {
-                  const Icon = item.icon;
-
-                  return (
-                    <button
-                      key={item.id}
-                      className="os-sidebar-link"
-                      type="button"
-                      onClick={() => openFromSidebar(item.id)}
-                    >
-                      <span className={`os-sidebar-link-icon ${item.tintClass}`} aria-hidden="true">
-                        <Icon size={18} />
-                      </span>
-                      <span>{item.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="os-sidebar-controls">
-                <button
-                  className={`secondary-button ${locale === "en" ? "locale-toggle-button-active" : ""}`}
-                  type="button"
-                  onClick={() => onChangeLocale("en")}
-                >
-                  EN
-                </button>
-                <button
-                  className={`secondary-button ${locale === "pl" ? "locale-toggle-button-active" : ""}`}
-                  type="button"
-                  onClick={() => onChangeLocale("pl")}
-                >
-                  PL
-                </button>
-                <button
-                  className={`secondary-button ${locale === "de" ? "locale-toggle-button-active" : ""}`}
-                  type="button"
-                  onClick={() => onChangeLocale("de")}
-                >
-                  DE
-                </button>
-                <button className="primary-button" type="button" onClick={onToggleTheme}>
-                  {isDark ? copy.themeLight : copy.themeDark}
-                </button>
-              </div>
-            </aside>
-          ) : null}
-
           <section className="os-home-grid" aria-label={homeTitle}>
+            <div className="os-home-widgets" aria-label="Home widgets">
+              <article className="os-home-widget-card os-home-clock-card" aria-label="Clock widget">
+                <div className="os-home-clock-time">{localTime}</div>
+                <div className="os-home-clock-date">{lockscreenDate}</div>
+              </article>
+
+              <article className="os-home-widget-card os-weather-card os-weather-card-home" aria-label="Weather in Garmisch-Partenkirchen">
+                <div className="os-weather-card-header">
+                  <div>
+                    <div className="os-weather-location">Garmisch-Partenkirchen</div>
+                    <div className="os-weather-temperature">{weatherSnapshot.temperature}°C</div>
+                  </div>
+                  <span className="os-weather-icon-shell" aria-hidden="true">
+                    <WeatherIcon className="os-weather-icon" size={26} />
+                  </span>
+                </div>
+
+                <div className="os-weather-card-footer">
+                  <span>{weatherPresentation.label}</span>
+                  <span>
+                    H:{weatherSnapshot.high}° L:{weatherSnapshot.low}°
+                  </span>
+                </div>
+              </article>
+            </div>
+
             {icons.map((item) => {
               const Icon = item.icon;
 
@@ -393,7 +603,7 @@ export function OsHomeLayout({
       </div>
 
       {!isHomeActive ? (
-        <div className={overlayClassName} aria-label={navTitle}>
+        <div className={overlayClassName} aria-label={navTitle} aria-hidden={isLockscreenVisible}>
           <section className={appShellClassName}>
             <header className="os-app-nav">
               <button className="os-back" type="button" onClick={closeApp}>

@@ -8,12 +8,20 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import {
+  Cloud,
+  CloudFog,
+  CloudLightning,
+  CloudRain,
+  CloudSnow,
+  CloudSun,
   FolderKanban,
   Gauge,
   ShieldCheck,
   Layers3,
   Mail,
+  SunMedium,
   UserRound,
+  Wifi,
   type LucideIcon,
 } from "lucide-react";
 
@@ -91,6 +99,79 @@ const autoMaximizeWindowIds = new Set<WindowId>(["projects"]);
 const isSupabaseConfigured = Boolean(
   import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY,
 );
+const garmischWeatherUrl =
+  "https://api.open-meteo.com/v1/forecast?latitude=47.4917&longitude=11.0955&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1";
+const desktopPrivacyConsentStorageKey = "pwlo-desktop-privacy-accepted-v1";
+
+type WeatherSnapshot = {
+  temperature: number;
+  high: number;
+  low: number;
+  weatherCode: number;
+};
+
+const defaultWeatherSnapshot: WeatherSnapshot = {
+  temperature: 14,
+  high: 18,
+  low: 9,
+  weatherCode: 2,
+};
+
+function getWeatherPresentation(weatherCode: number, locale: Locale): { label: string; icon: LucideIcon } {
+  if (weatherCode === 0) {
+    return {
+      label: locale === "pl" ? "Bezchmurnie" : locale === "de" ? "Klar" : "Clear",
+      icon: SunMedium,
+    };
+  }
+
+  if (weatherCode === 1 || weatherCode === 2) {
+    return {
+      label: locale === "pl" ? "Czesciowe zachmurzenie" : locale === "de" ? "Teilweise bewolkt" : "Partly Cloudy",
+      icon: CloudSun,
+    };
+  }
+
+  if (weatherCode === 3) {
+    return {
+      label: locale === "pl" ? "Pochmurno" : locale === "de" ? "Bewoelkt" : "Cloudy",
+      icon: Cloud,
+    };
+  }
+
+  if (weatherCode === 45 || weatherCode === 48) {
+    return {
+      label: locale === "pl" ? "Mgla" : locale === "de" ? "Nebel" : "Fog",
+      icon: CloudFog,
+    };
+  }
+
+  if ((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82)) {
+    return {
+      label: locale === "pl" ? "Deszcz" : locale === "de" ? "Regen" : "Rain",
+      icon: CloudRain,
+    };
+  }
+
+  if ((weatherCode >= 71 && weatherCode <= 77) || weatherCode === 85 || weatherCode === 86) {
+    return {
+      label: locale === "pl" ? "Snieg" : locale === "de" ? "Schnee" : "Snow",
+      icon: CloudSnow,
+    };
+  }
+
+  if (weatherCode >= 95) {
+    return {
+      label: locale === "pl" ? "Burza" : locale === "de" ? "Gewitter" : "Storm",
+      icon: CloudLightning,
+    };
+  }
+
+  return {
+    label: locale === "pl" ? "Zachmurzenie" : locale === "de" ? "Wolken" : "Cloudy",
+    icon: Cloud,
+  };
+}
 
 type DragState = {
   id: WindowId;
@@ -198,15 +279,32 @@ export default function Home() {
       minute: "2-digit",
     }).format(new Date()),
   );
+  const [weatherSnapshot, setWeatherSnapshot] = useState<WeatherSnapshot>(defaultWeatherSnapshot);
   const [isCompactLayout, setIsCompactLayout] = useState(() =>
     typeof window !== "undefined" ? window.innerWidth <= compactLayoutBreakpoint : false,
   );
+  const [desktopLockscreenState, setDesktopLockscreenState] = useState<"locked" | "unlocking" | "unlocked">(() => {
+    if (typeof window === "undefined") {
+      return "locked";
+    }
+
+    try {
+      return window.localStorage.getItem(desktopPrivacyConsentStorageKey) === "true" ? "unlocked" : "locked";
+    } catch {
+      return "locked";
+    }
+  });
+  const [hasAcceptedDesktopCookies, setHasAcceptedDesktopCookies] = useState(false);
+  const [hasAcceptedDesktopTerms, setHasAcceptedDesktopTerms] = useState(false);
+  const [isDesktopPrivacyInfoExpanded, setIsDesktopPrivacyInfoExpanded] = useState(false);
+  const portfolioShellRef = useRef<HTMLElement | null>(null);
   const desktopSurfaceRef = useRef<HTMLDivElement | null>(null);
   const iconDragStateRef = useRef<DragState | null>(null);
   const windowDragStateRef = useRef<WindowDragState | null>(null);
   const resizeStateRef = useRef<ResizeState | null>(null);
   const suppressClickRef = useRef<WindowId | null>(null);
   const autoMaximizedRef = useRef<Set<WindowId>>(new Set());
+  const desktopUnlockTimerRef = useRef<number | null>(null);
 
   const handleLocaleChange = useCallback(
     (nextLocale: Locale) => {
@@ -257,6 +355,17 @@ export default function Home() {
   }, [adminKey]);
 
   const copy = copyByLocale[locale];
+  const weatherPresentation = useMemo(
+    () => getWeatherPresentation(weatherSnapshot.weatherCode, locale),
+    [weatherSnapshot.weatherCode, locale],
+  );
+  const WeatherIcon = weatherPresentation.icon;
+  const desktopDate = new Intl.DateTimeFormat(locale, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  }).format(new Date());
+  const isDesktopLockscreenVisible = desktopLockscreenState !== "unlocked";
 
   useEffect(() => {
     const formatter = new Intl.DateTimeFormat(locale, {
@@ -282,6 +391,65 @@ export default function Home() {
       window.clearInterval(intervalId);
     };
   }, [locale]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const loadWeather = async () => {
+      try {
+        const response = await fetch(garmischWeatherUrl);
+
+        if (!response.ok) {
+          throw new Error("Weather request failed");
+        }
+
+        const data = (await response.json()) as {
+          current?: {
+            temperature_2m?: number;
+            weather_code?: number;
+          };
+          daily?: {
+            temperature_2m_max?: number[];
+            temperature_2m_min?: number[];
+          };
+        };
+
+        if (isCancelled) {
+          return;
+        }
+
+        setWeatherSnapshot({
+          temperature: Math.round(data.current?.temperature_2m ?? defaultWeatherSnapshot.temperature),
+          high: Math.round(data.daily?.temperature_2m_max?.[0] ?? defaultWeatherSnapshot.high),
+          low: Math.round(data.daily?.temperature_2m_min?.[0] ?? defaultWeatherSnapshot.low),
+          weatherCode: data.current?.weather_code ?? defaultWeatherSnapshot.weatherCode,
+        });
+      } catch {
+        if (!isCancelled) {
+          setWeatherSnapshot(defaultWeatherSnapshot);
+        }
+      }
+    };
+
+    void loadWeather();
+    const refreshId = window.setInterval(() => {
+      void loadWeather();
+    }, 30 * 60 * 1000);
+
+    return () => {
+      isCancelled = true;
+      window.clearInterval(refreshId);
+    };
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (desktopUnlockTimerRef.current) {
+        window.clearTimeout(desktopUnlockTimerRef.current);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     const updateLayoutMode = () => {
@@ -733,16 +901,141 @@ export default function Home() {
     );
   }
 
+  const acceptDesktopPrivacyNotice = () => {
+    if (!hasAcceptedDesktopCookies || !hasAcceptedDesktopTerms) {
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(desktopPrivacyConsentStorageKey, "true");
+    } catch {
+      // Ignore storage write errors and continue unlocking the workspace.
+    }
+
+    if (desktopUnlockTimerRef.current) {
+      window.clearTimeout(desktopUnlockTimerRef.current);
+    }
+
+    setDesktopLockscreenState("unlocking");
+    desktopUnlockTimerRef.current = window.setTimeout(() => {
+      setDesktopLockscreenState("unlocked");
+    }, 320);
+  };
+
   return (
-    <main className="portfolio-shell">
+    <main
+      ref={portfolioShellRef}
+      className={`portfolio-shell${isDesktopLockscreenVisible ? " portfolio-shell-locked" : ""}`}
+      onMouseMove={(event) => {
+        const viewportWidth = window.innerWidth || 1;
+        const viewportHeight = window.innerHeight || 1;
+
+        portfolioShellRef.current?.style.setProperty(
+          "--desktop-lockscreen-offset-x",
+          `${((event.clientX / viewportWidth) - 0.5) * 6}px`,
+        );
+        portfolioShellRef.current?.style.setProperty(
+          "--desktop-lockscreen-offset-y",
+          `${((event.clientY / viewportHeight) - 0.5) * 6}px`,
+        );
+      }}
+      onMouseLeave={() => {
+        portfolioShellRef.current?.style.setProperty("--desktop-lockscreen-offset-x", "0px");
+        portfolioShellRef.current?.style.setProperty("--desktop-lockscreen-offset-y", "0px");
+      }}
+    >
+      <div className="desktop-wallpaper" aria-hidden="true">
+        <div className="desktop-wallpaper-layer desktop-wallpaper-layer-base" />
+        <div className="desktop-wallpaper-layer desktop-wallpaper-layer-warm" />
+        <div className="desktop-wallpaper-layer desktop-wallpaper-layer-pink" />
+        <div className="desktop-wallpaper-photo" />
+        <div className="desktop-wallpaper-noise" />
+        <div className="desktop-wallpaper-content-tint" />
+      </div>
       <div className="shell-noise" aria-hidden="true" />
       <div className="shell-grid" aria-hidden="true" />
+
+      {isDesktopLockscreenVisible ? (
+        <section
+          className={`desktop-lockscreen${desktopLockscreenState === "unlocking" ? " desktop-lockscreen-unlocking" : ""}`}
+          aria-label={copy.osLayout.lockscreen.title}
+        >
+          <div className="desktop-lockscreen-clock" aria-live="polite">
+            <div className="desktop-lockscreen-time">{localTime}</div>
+            <div className="desktop-lockscreen-date">{desktopDate}</div>
+            <div className="desktop-lockscreen-welcome">{copy.osLayout.lockscreen.welcome}</div>
+          </div>
+
+          <section className="desktop-lockscreen-panel" aria-label={copy.osLayout.lockscreen.title}>
+            <div className="desktop-lockscreen-panel-body">
+              <div className="desktop-lockscreen-panel-copy">
+                <h2>{copy.osLayout.lockscreen.title}</h2>
+                <p>{copy.osLayout.lockscreen.message}</p>
+                {isDesktopPrivacyInfoExpanded ? (
+                  <p className="desktop-lockscreen-detail">{copy.osLayout.lockscreen.infoDetail}</p>
+                ) : null}
+              </div>
+
+              <div className="desktop-lockscreen-consent" aria-label={copy.osLayout.lockscreen.consentAriaLabel}>
+                <label className="desktop-lockscreen-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={hasAcceptedDesktopCookies}
+                    onChange={(event) => setHasAcceptedDesktopCookies(event.target.checked)}
+                  />
+                  <span>{copy.osLayout.lockscreen.cookiesConsent}</span>
+                </label>
+                <label className="desktop-lockscreen-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={hasAcceptedDesktopTerms}
+                    onChange={(event) => setHasAcceptedDesktopTerms(event.target.checked)}
+                  />
+                  <span>{copy.osLayout.lockscreen.termsConsent}</span>
+                </label>
+              </div>
+
+              <div className="desktop-lockscreen-actions">
+                <button
+                  className="desktop-lockscreen-button desktop-lockscreen-button-primary"
+                  type="button"
+                  onClick={acceptDesktopPrivacyNotice}
+                  disabled={!hasAcceptedDesktopCookies || !hasAcceptedDesktopTerms}
+                >
+                  {copy.osLayout.lockscreen.accept}
+                </button>
+                <button
+                  className="desktop-lockscreen-button desktop-lockscreen-button-secondary"
+                  type="button"
+                  onClick={() => setIsDesktopPrivacyInfoExpanded((current) => !current)}
+                >
+                  {copy.osLayout.lockscreen.moreInfo}
+                </button>
+              </div>
+            </div>
+          </section>
+        </section>
+      ) : null}
 
       <div className="system-status-bar" aria-label="System Status Bar">
         <span className="system-status-item">{copy.statusBar.localTime}: {localTime}</span>
         <span className="system-status-item">{copy.statusBar.os}</span>
-        <span className="system-status-item">{copy.statusBar.performance}</span>
-        <span className="system-status-item system-status-online">{copy.statusBar.online}</span>
+        <div className="system-status-weather" aria-label="Weather in Garmisch-Partenkirchen">
+          <span className="system-status-weather-icon" aria-hidden="true">
+            <WeatherIcon size={16} />
+          </span>
+          <span className="system-status-weather-copy">
+            <strong>{weatherSnapshot.temperature}°C</strong>
+            <span>Garmisch-Partenkirchen</span>
+          </span>
+        </div>
+        <span
+          className="system-status-item system-status-wifi"
+          aria-label={copy.statusBar.online}
+          title={copy.statusBar.online}
+        >
+          <Wifi size={16} aria-hidden="true" />
+        </span>
       </div>
 
       <section className="hero-section">
@@ -752,8 +1045,6 @@ export default function Home() {
           isDark={theme === "dark"}
           onChangeLocale={handleLocaleChange}
           onToggleTheme={toggleTheme}
-          onOpenProjects={() => openFromIconWithAutoMaximize("projects")}
-          onOpenContact={() => openFromIconWithAutoMaximize("contact")}
         />
       </section>
 

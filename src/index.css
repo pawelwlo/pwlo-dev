@@ -80,13 +80,145 @@ button {
 .portfolio-shell {
   position: relative;
   overflow: hidden;
+  min-height: 100vh;
   padding: 32px clamp(20px, 4vw, 48px) 24px;
+  isolation: isolate;
+  --desktop-lockscreen-offset-x: 0px;
+  --desktop-lockscreen-offset-y: 0px;
+}
+
+.portfolio-shell-locked {
+  overflow: hidden;
+}
+
+.portfolio-shell-locked .hero-section,
+.portfolio-shell-locked .desktop-section,
+.portfolio-shell-locked .site-footer,
+.portfolio-shell-locked .system-status-bar {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.portfolio-shell-locked .shell-noise,
+.portfolio-shell-locked .shell-grid {
+  opacity: 0;
+}
+
+.desktop-wallpaper {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #1f3f63 0%, #284a68 32%, #b16f5c 72%, #dfb59f 100%);
+  will-change: transform, filter;
+  animation:
+    desktop-wallpaper-fade-in 480ms ease-out both,
+    desktop-sonoma-hue 13s ease-in-out infinite alternate;
+}
+
+.desktop-wallpaper-photo,
+.desktop-wallpaper-layer,
+.desktop-wallpaper-noise,
+.desktop-wallpaper-content-tint {
+  position: absolute;
+  inset: -10%;
+  pointer-events: none;
+}
+
+.desktop-wallpaper-photo {
+  background:
+    linear-gradient(135deg, rgba(25, 57, 88, 0.38), rgba(181, 115, 88, 0.18) 58%, rgba(235, 191, 170, 0.08)),
+    url("/1729D9FB-8203-4A75-88A6-19E41EBA8995_1_201_a.jpeg") center center / cover no-repeat;
+  filter: blur(88px) saturate(0.58) brightness(0.54) contrast(1.06);
+  transform: scale(1.18);
+  opacity: 0.96;
+  mix-blend-mode: normal;
+}
+
+.portfolio-shell-locked .desktop-wallpaper-photo {
+  mix-blend-mode: normal;
+  background: url("/1729D9FB-8203-4A75-88A6-19E41EBA8995_1_201_a.jpeg") center center / cover no-repeat;
+  filter: none;
+  transform: scale(1.04);
+  opacity: 1;
+}
+
+.portfolio-shell-locked .desktop-wallpaper-layer-base {
+  opacity: 0.12;
+}
+
+.portfolio-shell-locked .desktop-wallpaper-layer-warm {
+  opacity: 0.12;
+}
+
+.portfolio-shell-locked .desktop-wallpaper-layer-pink {
+  opacity: 0.12;
+}
+
+.portfolio-shell-locked .desktop-wallpaper-content-tint {
+  background:
+    radial-gradient(circle at 50% 35%, rgba(0, 0, 0, 0.02), transparent 42%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.08));
+}
+
+.desktop-wallpaper-layer {
+  will-change: transform, opacity;
+}
+
+.desktop-wallpaper-layer-base {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(41, 93, 150, 0.58), transparent 30%),
+    radial-gradient(circle at 74% 58%, rgba(16, 60, 111, 0.54), transparent 34%),
+    linear-gradient(140deg, rgba(14, 49, 89, 0.94), rgba(22, 66, 108, 0.42) 42%, rgba(30, 60, 88, 0.12));
+  opacity: 0.56;
+  translate: calc(var(--desktop-lockscreen-offset-x) * 0.32) calc(var(--desktop-lockscreen-offset-y) * 0.22);
+  animation: desktop-sonoma-drift-base 17s ease-in-out infinite alternate;
+}
+
+.desktop-wallpaper-layer-warm {
+  background:
+    radial-gradient(circle at 72% 32%, rgba(255, 183, 110, 0.34), transparent 20%),
+    radial-gradient(circle at 62% 62%, rgba(232, 136, 93, 0.42), transparent 26%),
+    radial-gradient(circle at 86% 70%, rgba(255, 205, 157, 0.18), transparent 22%);
+  opacity: 0.52;
+  mix-blend-mode: screen;
+  filter: blur(18px) saturate(1.08);
+  translate: calc(var(--desktop-lockscreen-offset-x) * 0.48) calc(var(--desktop-lockscreen-offset-y) * 0.4);
+  animation:
+    desktop-wallpaper-bloom-in 220ms ease-out both,
+    desktop-sonoma-drift-warm 14s ease-in-out infinite alternate;
+}
+
+.desktop-wallpaper-layer-pink {
+  background:
+    radial-gradient(circle at 42% 22%, rgba(255, 208, 224, 0.22), transparent 18%),
+    radial-gradient(circle at 58% 16%, rgba(248, 178, 195, 0.24), transparent 16%),
+    radial-gradient(circle at 34% 48%, rgba(255, 224, 232, 0.12), transparent 22%);
+  opacity: 0.4;
+  mix-blend-mode: screen;
+  translate: calc(var(--desktop-lockscreen-offset-x) * 0.2) calc(var(--desktop-lockscreen-offset-y) * 0.54);
+  animation: desktop-sonoma-drift-pink 12s ease-in-out infinite alternate;
+}
+
+.desktop-wallpaper-noise {
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.9'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+}
+
+.desktop-wallpaper-content-tint {
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(8, 15, 26, 0.06), transparent 30%),
+    linear-gradient(180deg, rgba(4, 10, 18, 0.14), rgba(6, 10, 18, 0.22));
 }
 
 .shell-noise,
 .shell-grid {
   pointer-events: none;
   position: fixed;
+  z-index: 1;
   inset: 0;
 }
 
@@ -109,12 +241,194 @@ button {
 .desktop-section,
 .site-footer {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .hero-section {
   margin: 0 auto 28px;
   max-width: 1240px;
+}
+
+.desktop-lockscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 32;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14vh clamp(24px, 4vw, 48px) calc(36px + env(safe-area-inset-bottom));
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.desktop-lockscreen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.05), transparent 24%),
+    linear-gradient(180deg, rgba(3, 8, 16, 0.12), rgba(3, 8, 16, 0.3));
+  pointer-events: none;
+}
+
+.portfolio-shell-locked .desktop-lockscreen::before {
+  background:
+    radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.02), transparent 28%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.08));
+}
+
+.desktop-lockscreen-clock,
+.desktop-lockscreen-panel {
+  position: relative;
+  z-index: 1;
+}
+
+.desktop-lockscreen-clock {
+  margin-top: 6vh;
+  text-align: center;
+  animation: desktop-lockscreen-clock-in 360ms ease-out both;
+}
+
+.desktop-lockscreen-time {
+  font-size: clamp(6rem, 8vw, 7.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.07em;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.86);
+  text-shadow: 0 20px 48px rgba(5, 10, 20, 0.24);
+  font-variant-numeric: tabular-nums;
+}
+
+.desktop-lockscreen-date {
+  margin-top: 12px;
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  text-transform: capitalize;
+}
+
+.desktop-lockscreen-welcome {
+  margin-top: 38px;
+  font-size: clamp(1.7rem, 2.6vw, 2.35rem);
+  font-weight: 740;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+}
+
+.desktop-lockscreen-panel {
+  width: min(580px, calc(100vw - 48px));
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.14)),
+    rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(34px) saturate(1.18);
+  animation: desktop-lockscreen-panel-in 300ms ease-out both;
+}
+
+.desktop-lockscreen-panel-body {
+  display: grid;
+  gap: 22px;
+  padding: 26px 28px 28px;
+}
+
+.desktop-lockscreen-consent {
+  display: grid;
+  gap: 10px;
+}
+
+.desktop-lockscreen-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.desktop-lockscreen-checkbox input {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  accent-color: rgba(255, 255, 255, 0.9);
+}
+
+.desktop-lockscreen-panel-copy h2 {
+  margin: 0 0 10px;
+  font-size: 1.32rem;
+  letter-spacing: -0.03em;
+  color: rgba(255, 255, 255, 0.94);
+}
+
+.desktop-lockscreen-panel-copy p,
+.desktop-lockscreen-detail {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.desktop-lockscreen-detail {
+  margin-top: 12px;
+}
+
+.desktop-lockscreen-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.desktop-lockscreen-button {
+  min-width: 130px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 11px 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  box-shadow:
+    0 14px 28px rgba(5, 10, 18, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.desktop-lockscreen-button:hover {
+  transform: translateY(-1px);
+}
+
+.desktop-lockscreen-button:active {
+  transform: translateY(0) scale(0.985);
+}
+
+.desktop-lockscreen-button-primary {
+  background: rgba(255, 255, 255, 0.84);
+  color: #132236;
+}
+
+.desktop-lockscreen-button-secondary {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.desktop-lockscreen-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.desktop-lockscreen-unlocking {
+  animation: desktop-lockscreen-exit 320ms ease-in both;
+}
+
+.desktop-lockscreen-unlocking .desktop-lockscreen-panel {
+  animation: desktop-lockscreen-panel-out 190ms ease-in both;
 }
 
 .hero-window,
@@ -214,6 +528,7 @@ button {
 }
 
 .locale-toggle {
+  position: relative;
   display: inline-flex;
   align-items: center;
   border: 1px solid var(--border);
@@ -231,6 +546,66 @@ button {
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.04em;
+}
+
+.locale-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 36px;
+  padding: 0;
+  color: var(--text);
+}
+
+.locale-toggle-icon:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.locale-toggle-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 168px;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  backdrop-filter: blur(20px) saturate(1.2);
+  box-shadow: var(--shadow);
+  z-index: 20;
+}
+
+.locale-toggle-menu-button {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: transparent;
+  padding: 10px 12px;
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-align: left;
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.locale-toggle-menu-button:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.locale-toggle-menu-button-active {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  box-shadow: 0 10px 20px rgba(26, 115, 232, 0.18);
 }
 
 .locale-toggle-button-active {
@@ -278,7 +653,7 @@ button {
 
 .hero-copy h1 {
   max-width: 9ch;
-  margin-top: 18px;
+  margin-top: 0;
   font-size: clamp(2.9rem, 7vw, 5.4rem);
   letter-spacing: -0.06em;
 }
@@ -301,6 +676,16 @@ button {
   max-width: 44ch;
   margin: 16px 0 0;
   font-size: 1.04rem;
+}
+
+.hero-module-list {
+  margin-top: 24px;
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.6;
 }
 
 .hero-actions {
@@ -451,6 +836,8 @@ button {
 }
 
 .system-status-bar {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -476,17 +863,127 @@ button {
   font-weight: 700;
 }
 
-.system-status-online {
-  color: var(--success);
+.system-status-weather {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.48);
+  color: var(--text);
 }
 
-.system-status-online::before {
-  content: "";
-  width: 8px;
-  height: 8px;
+.system-status-weather-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
   border-radius: 999px;
-  background: currentColor;
-  box-shadow: 0 0 12px rgba(18, 183, 106, 0.35);
+  background: rgba(126, 154, 183, 0.16);
+  color: rgba(61, 82, 104, 0.92);
+}
+
+.system-status-weather-copy {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.system-status-weather-copy strong {
+  color: var(--text);
+  font-size: 0.92rem;
+  letter-spacing: -0.02em;
+}
+
+.system-status-weather-copy span {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-soft);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.system-status-wifi {
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.48);
+  color: rgba(86, 102, 121, 0.9);
+  flex: 0 0 auto;
+}
+
+:root[data-theme="dark"] .system-status-weather,
+:root[data-theme="dark"] .system-status-wifi {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+:root[data-theme="dark"] .system-status-weather-icon {
+  background: rgba(115, 143, 173, 0.18);
+  color: rgba(222, 231, 239, 0.9);
+}
+
+:root[data-theme="dark"] .system-status-wifi {
+  color: rgba(224, 232, 240, 0.84);
+}
+
+:root[data-theme="dark"] .desktop-wallpaper-photo {
+  filter: blur(88px) saturate(0.56) brightness(0.5) contrast(1.06);
+}
+
+:root[data-theme="dark"] .portfolio-shell-locked .desktop-wallpaper-photo {
+  background: url("/1729D9FB-8203-4A75-88A6-19E41EBA8995_1_201_a.jpeg") center center / cover no-repeat;
+  filter: none;
+  transform: scale(1.04);
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .desktop-wallpaper-content-tint {
+  background:
+    radial-gradient(circle at 50% 35%, rgba(8, 15, 26, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(3, 7, 14, 0.26), rgba(3, 7, 14, 0.34));
+}
+
+:root[data-theme="dark"] .portfolio-shell-locked .desktop-wallpaper-content-tint {
+  background:
+    radial-gradient(circle at 50% 35%, rgba(0, 0, 0, 0.02), transparent 34%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.1));
+}
+
+:root[data-theme="dark"] .desktop-lockscreen::before {
+  background:
+    radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.04), transparent 24%),
+    linear-gradient(180deg, rgba(2, 6, 12, 0.18), rgba(2, 6, 12, 0.36));
+}
+
+:root[data-theme="dark"] .portfolio-shell-locked .desktop-lockscreen::before {
+  background:
+    radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.02), transparent 28%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.08));
+}
+
+:root[data-theme="dark"] .desktop-lockscreen-panel {
+  border-color: rgba(255, 255, 255, 0.16);
+  background:
+    linear-gradient(180deg, rgba(30, 36, 48, 0.62), rgba(18, 23, 32, 0.48)),
+    rgba(16, 20, 28, 0.42);
+}
+
+:root[data-theme="dark"] .desktop-lockscreen-button-primary {
+  background: rgba(240, 244, 248, 0.88);
+}
+
+:root[data-theme="dark"] .desktop-lockscreen-button-secondary {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .desktop-section-header {
@@ -1707,13 +2204,13 @@ button {
 .os-shell {
   --os-padding-x: 18px;
   --os-icon-size: 72px;
-  --os-icon-radius: 22px;
+  --os-icon-radius: 20px;
   --os-card-radius: 16px;
-  --os-shadow: 0 18px 44px rgba(0, 0, 0, 0.06);
-  --os-icon-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 12px 24px rgba(15, 23, 42, 0.08);
-  --os-border: rgba(15, 23, 42, 0.08);
-  --os-surface: rgba(255, 255, 255, 0.9);
-  --os-surface-soft: rgba(255, 255, 255, 0.74);
+  --os-shadow: 0 24px 52px rgba(6, 10, 18, 0.16);
+  --os-icon-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 10px 22px rgba(10, 18, 30, 0.12);
+  --os-border: rgba(255, 255, 255, 0.14);
+  --os-surface: rgba(28, 34, 45, 0.68);
+  --os-surface-soft: rgba(24, 30, 41, 0.4);
   --os-dock-height: 92px;
   --os-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --os-ease-in: cubic-bezier(0.4, 0, 1, 1);
@@ -1731,30 +2228,301 @@ button {
 }
 
 :root[data-theme="dark"] .os-shell {
-  --os-border: rgba(255, 255, 255, 0.12);
-  --os-surface: rgba(18, 21, 30, 0.92);
-  --os-surface-soft: rgba(18, 21, 30, 0.68);
-  --os-shadow: 0 26px 60px rgba(0, 0, 0, 0.34);
-  --os-icon-shadow: 0 2px 4px rgba(0, 0, 0, 0.22), 0 18px 32px rgba(0, 0, 0, 0.28);
+  --os-border: rgba(255, 255, 255, 0.1);
+  --os-surface: rgba(18, 22, 30, 0.76);
+  --os-surface-soft: rgba(15, 20, 28, 0.42);
+  --os-shadow: 0 28px 64px rgba(0, 0, 0, 0.4);
+  --os-icon-shadow: 0 2px 4px rgba(0, 0, 0, 0.18), 0 14px 28px rgba(0, 0, 0, 0.24);
 }
 
 .os-wallpaper {
   position: fixed;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, #8aa2aa 0%, #b08f82 52%, #d1b3a9 100%);
+}
+
+.os-wallpaper::before,
+.os-wallpaper::after {
+  content: "";
+  position: absolute;
+  inset: -14%;
+  pointer-events: none;
+}
+
+.os-wallpaper::before {
   background:
-    radial-gradient(circle at 18% 12%, rgba(26, 115, 232, 0.16), transparent 38%),
-    radial-gradient(circle at 82% 0%, rgba(0, 198, 255, 0.12), transparent 40%),
-    radial-gradient(circle at 30% 90%, rgba(99, 102, 241, 0.1), transparent 46%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(244, 247, 252, 0.92));
+    linear-gradient(135deg, rgba(119, 154, 165, 0.42), rgba(186, 146, 127, 0.28) 50%, rgba(221, 183, 166, 0.2)),
+    url("/os-mobile-wallpaper.webp") center center / cover no-repeat;
+  filter: blur(80px) saturate(0.7) brightness(0.94);
+  transform: scale(1.16);
+}
+
+.os-wallpaper::after {
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(231, 238, 241, 0.08), rgba(214, 192, 181, 0.04) 52%, rgba(188, 149, 136, 0.08)),
+    radial-gradient(circle at 16% 18%, rgba(155, 186, 204, 0.18), transparent 32%),
+    radial-gradient(circle at 78% 24%, rgba(223, 184, 153, 0.14), transparent 28%),
+    radial-gradient(circle at 28% 84%, rgba(126, 149, 170, 0.16), transparent 36%),
+    radial-gradient(circle at 74% 86%, rgba(204, 162, 149, 0.14), transparent 36%);
+}
+
+.os-shell-locked {
+  overflow: hidden;
+}
+
+.os-lockscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  padding: calc(44px + env(safe-area-inset-top)) var(--os-padding-x) calc(20px + env(safe-area-inset-bottom));
+  color: #f8fafc;
+  overflow: hidden;
+}
+
+.os-lockscreen::before,
+.os-lockscreen::after {
+  content: "";
+  position: absolute;
+  inset: -24px;
+  pointer-events: none;
+}
+
+.os-lockscreen::before {
+  background:
+    linear-gradient(135deg, rgba(133, 166, 176, 0.24), rgba(196, 154, 136, 0.16) 48%, rgba(221, 183, 167, 0.1)),
+    radial-gradient(circle at 18% 16%, rgba(154, 188, 207, 0.22), transparent 36%),
+    radial-gradient(circle at 82% 18%, rgba(224, 184, 154, 0.14), transparent 30%),
+    radial-gradient(circle at 20% 84%, rgba(118, 145, 167, 0.2), transparent 40%),
+    radial-gradient(circle at 72% 84%, rgba(201, 157, 147, 0.12), transparent 40%),
+    url("/os-mobile-wallpaper.webp") center center / cover no-repeat;
+  filter: blur(84px) saturate(0.68) brightness(0.9);
+  transform: scale(1.12);
+}
+
+.os-lockscreen::after {
+  background:
+    linear-gradient(180deg, rgba(14, 22, 36, 0.12), rgba(24, 28, 36, 0.22)),
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.14), transparent 46%);
+}
+
+:root[data-theme="dark"] .os-lockscreen::after {
+  background:
+    linear-gradient(180deg, rgba(8, 14, 24, 0.16), rgba(12, 16, 24, 0.32)),
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.1), transparent 46%);
+}
+
+.os-lockscreen-header,
+.os-lockscreen-clock,
+.os-lockscreen-panel {
+  position: relative;
+  z-index: 1;
+}
+
+.os-lockscreen-header {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  max-width: 520px;
+  margin-inline: auto;
+}
+
+.os-lockscreen-clock {
+  width: 100%;
+  padding-top: 5dvh;
+  text-align: center;
+}
+
+.os-lockscreen-time {
+  font-size: clamp(4rem, 14vw, 4.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.06em;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 10px 34px rgba(10, 16, 28, 0.16);
+}
+
+.os-lockscreen-date {
+  margin-top: 10px;
+  font-size: clamp(1.05rem, 3.8vw, 1.25rem);
+  font-weight: 600;
+  opacity: 0.78;
+  text-transform: capitalize;
+}
+
+.os-weather-widget {
+  width: 100%;
+}
+
+.os-weather-card {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(22, 29, 39, 0.34);
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(28px) saturate(1.02);
+  padding: 16px 16px 14px;
+}
+
+.os-weather-card-header,
+.os-weather-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.os-weather-card-footer {
+  margin-top: 10px;
+  color: rgba(244, 247, 251, 0.78);
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+.os-weather-location {
+  color: rgba(244, 247, 251, 0.82);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.os-weather-temperature {
+  margin-top: 6px;
+  color: #fff;
+  font-size: clamp(2rem, 7vw, 2.45rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  font-weight: 400;
+}
+
+.os-weather-icon-shell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+}
+
+.os-weather-icon {
+  color: #d7dfeb;
+  filter: saturate(0.78);
+}
+
+.os-lockscreen-panel {
+  width: 100%;
+  max-width: 520px;
+  margin-inline: auto;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 28px 60px rgba(8, 15, 28, 0.2);
+  backdrop-filter: blur(26px) saturate(1.18);
+}
+
+.os-lockscreen-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px 20px 20px;
+}
+
+.os-lockscreen-panel-copy .eyebrow {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.os-lockscreen-panel-copy h2 {
+  margin: 8px 0 8px;
+  color: #fff;
+  font-size: 1.28rem;
+  letter-spacing: -0.03em;
+}
+
+.os-lockscreen-panel-copy p,
+.os-lockscreen-detail {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.os-lockscreen-detail {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  animation: ios-slide-up 220ms var(--os-ease-out) both;
+}
+
+.os-lockscreen-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.os-lockscreen-button {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 18px;
+  border: 0;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  transition:
+    transform 180ms var(--os-ease-out),
+    background-color 180ms var(--os-ease-out),
+    opacity 180ms var(--os-ease-out);
+}
+
+.os-lockscreen-button:active {
+  transform: scale(0.98);
+}
+
+.os-lockscreen-button-primary {
+  background: rgba(255, 255, 255, 0.94);
+  color: #0f172a;
+}
+
+.os-lockscreen-button-secondary {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.os-lockscreen-unlocking {
+  animation: ios-lockscreen-exit 320ms var(--os-ease-in) both;
+}
+
+.os-lockscreen-unlocking .os-lockscreen-panel {
+  animation: ios-lockscreen-panel-out 190ms var(--os-ease-in) both;
 }
 
 :root[data-theme="dark"] .os-wallpaper {
+  background: linear-gradient(135deg, #5d707b 0%, #8b776f 52%, #ab928b 100%);
+}
+
+:root[data-theme="dark"] .os-wallpaper::before {
+  filter: blur(84px) saturate(0.64) brightness(0.78);
+}
+
+:root[data-theme="dark"] .os-wallpaper::after {
   background:
-    radial-gradient(circle at 18% 12%, rgba(26, 115, 232, 0.18), transparent 42%),
-    radial-gradient(circle at 82% 0%, rgba(0, 198, 255, 0.14), transparent 44%),
-    radial-gradient(circle at 30% 90%, rgba(99, 102, 241, 0.12), transparent 50%),
-    linear-gradient(180deg, rgba(18, 21, 30, 0.94), rgba(12, 14, 20, 0.96));
+    linear-gradient(135deg, rgba(16, 24, 34, 0.28), rgba(33, 28, 31, 0.14) 52%, rgba(71, 56, 52, 0.12)),
+    radial-gradient(circle at 16% 18%, rgba(120, 148, 170, 0.18), transparent 32%),
+    radial-gradient(circle at 78% 24%, rgba(198, 158, 130, 0.12), transparent 28%),
+    radial-gradient(circle at 28% 84%, rgba(92, 114, 134, 0.18), transparent 36%),
+    radial-gradient(circle at 74% 86%, rgba(170, 130, 119, 0.12), transparent 36%);
 }
 
 .os-topbar,
@@ -1777,11 +2545,41 @@ button {
   min-height: 52px;
   margin: -4px 0 18px;
   padding: 10px 12px;
-  border: 1px solid var(--os-border);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 20px;
-  background: var(--os-surface-soft);
-  backdrop-filter: blur(18px);
+  background: rgba(20, 26, 35, 0.28);
+  backdrop-filter: blur(24px) saturate(1.08);
   box-shadow: var(--os-shadow);
+}
+
+:root[data-theme="dark"] .os-lockscreen-panel {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.28);
+}
+
+:root[data-theme="dark"] .os-weather-card {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(15, 20, 28, 0.34);
+}
+
+:root[data-theme="dark"] .os-home-widget-card {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(15, 20, 28, 0.34);
+}
+
+:root[data-theme="dark"] .os-weather-icon-shell {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme="dark"] .os-lockscreen-detail,
+:root[data-theme="dark"] .os-lockscreen-button-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:root[data-theme="dark"] .os-lockscreen-button-primary {
+  background: rgba(248, 250, 252, 0.92);
 }
 
 .os-topbar-left,
@@ -1792,11 +2590,12 @@ button {
   min-height: 30px;
   padding: 0 12px;
   border-radius: 999px;
-  border: 1px solid var(--os-border);
-  background: rgba(248, 250, 252, 0.92);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(20, 26, 35, 0.24);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(244, 247, 251, 0.82);
+  letter-spacing: -0.01em;
   justify-self: start;
   white-space: nowrap;
 }
@@ -1814,32 +2613,54 @@ button {
   padding: 0;
 }
 
-.os-status-dot {
-  width: 8px;
-  height: 8px;
+.os-signal-bars {
+  display: inline-flex;
+  align-items: end;
+  gap: 2px;
+  height: 12px;
+}
+
+.os-signal-bar {
+  width: 3px;
   border-radius: 999px;
-  background: #22c55e;
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+  background: rgba(244, 247, 251, 0.74);
+  box-shadow: 0 1px 6px rgba(6, 10, 18, 0.14);
+}
+
+.os-signal-bar-1 {
+  height: 4px;
+  opacity: 0.58;
+}
+
+.os-signal-bar-2 {
+  height: 6px;
+  opacity: 0.68;
+}
+
+.os-signal-bar-3 {
+  height: 9px;
+  opacity: 0.8;
+}
+
+.os-signal-bar-4 {
+  height: 12px;
+  opacity: 0.92;
+}
+
+:root[data-theme="dark"] .os-signal-bar {
+  background: rgba(255, 255, 255, 0.78);
 }
 
 .os-topbar-title {
-  font-size: 0.95rem;
-  font-weight: 800;
+  font-size: 0.92rem;
+  font-weight: 600;
   letter-spacing: -0.03em;
   text-align: center;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-}
-
-.os-topbar-logo {
-  width: 22px;
-  height: 22px;
-  border-radius: 7px;
-  object-fit: cover;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
-  flex: 0 0 auto;
+  color: rgba(247, 249, 252, 0.82);
 }
 
 .os-home-surface {
@@ -1858,16 +2679,19 @@ button {
   width: min(36vw, 180px);
   aspect-ratio: 1;
   transform: translateX(-50%);
-  background: url("/logo.webp") no-repeat center center / contain;
-  opacity: 0.18;
-  filter: drop-shadow(0 8px 24px rgba(15, 23, 42, 0.1)) contrast(1.06);
+  background:
+    radial-gradient(circle at 30% 28%, rgba(224, 192, 158, 0.18), transparent 34%),
+    radial-gradient(circle at 68% 36%, rgba(188, 145, 132, 0.14), transparent 30%),
+    radial-gradient(circle at 48% 72%, rgba(100, 125, 151, 0.18), transparent 42%);
+  opacity: 0.7;
+  filter: blur(34px);
   pointer-events: none;
   z-index: 0;
 }
 
 :root[data-theme="dark"] .os-home-surface::before {
-  opacity: 0.12;
-  filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.24)) contrast(1.02);
+  opacity: 0.46;
+  filter: blur(40px);
 }
 
 .os-home-surface-hidden {
@@ -1929,6 +2753,53 @@ button {
   padding-bottom: 18px;
 }
 
+.os-home-widgets {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.os-home-widget-card {
+  min-height: 132px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(20, 26, 35, 0.34);
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(28px) saturate(1.02);
+}
+
+.os-home-clock-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 18px 16px;
+}
+
+.os-home-clock-time {
+  color: #fff;
+  font-size: clamp(2.35rem, 8vw, 3.25rem);
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.os-home-clock-date {
+  margin-top: 10px;
+  color: rgba(244, 247, 251, 0.76);
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.os-weather-card-home {
+  min-height: 132px;
+}
+
 .os-app-icon {
   display: flex;
   flex-direction: column;
@@ -1973,7 +2844,7 @@ button {
   overflow: hidden;
   color: white;
   box-shadow: var(--os-icon-shadow);
-  border: 1px solid rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .os-app-glyph::before {
@@ -1981,9 +2852,9 @@ button {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.55), transparent 55%),
-    radial-gradient(circle at 80% 90%, rgba(255, 255, 255, 0.18), transparent 52%);
-  opacity: 0.72;
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.34), transparent 55%),
+    radial-gradient(circle at 80% 90%, rgba(255, 255, 255, 0.1), transparent 52%);
+  opacity: 0.58;
   pointer-events: none;
 }
 
@@ -1992,7 +2863,9 @@ button {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -10px 18px rgba(0, 0, 0, 0.08);
   pointer-events: none;
 }
 
@@ -2008,13 +2881,14 @@ button {
 .os-app-label {
   font-size: 0.86rem;
   line-height: 1.15;
-  font-weight: 700;
-  color: var(--text);
+  font-weight: 600;
+  color: rgba(247, 249, 252, 0.88);
   text-align: center;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-shadow: 0 1px 8px rgba(6, 10, 18, 0.28);
 }
 
 .os-dock {
@@ -2024,15 +2898,19 @@ button {
   bottom: calc(14px + env(safe-area-inset-bottom));
   height: var(--os-dock-height);
   border-radius: 24px;
-  border: 1px solid var(--os-border);
-  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(18, 24, 33, 0.34);
   box-shadow: var(--os-shadow);
-  backdrop-filter: blur(26px) saturate(1.2);
+  backdrop-filter: blur(34px) saturate(1.04);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 14px;
   padding: 10px 14px;
+  box-shadow:
+    0 24px 50px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -12px 18px rgba(0, 0, 0, 0.1);
 }
 
 .os-dock::before {
@@ -2040,16 +2918,16 @@ button {
   position: absolute;
   inset: 1px;
   border-radius: inherit;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.12));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
   pointer-events: none;
 }
 
 :root[data-theme="dark"] .os-dock {
-  background: rgba(18, 21, 30, 0.58);
+  background: rgba(14, 18, 25, 0.4);
 }
 
 :root[data-theme="dark"] .os-dock::before {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.015));
 }
 
 .os-dock-icon {
@@ -2057,8 +2935,8 @@ button {
   z-index: 1;
   border: 0;
   background: transparent;
-  width: 58px;
-  height: 58px;
+  width: 50px;
+  height: 50px;
   border-radius: 18px;
   display: grid;
   place-items: center;
@@ -2069,8 +2947,8 @@ button {
 }
 
 .os-dock-icon .os-app-glyph {
-  width: 58px;
-  height: 58px;
+  width: 50px;
+  height: 50px;
   border-radius: 18px;
 }
 
@@ -2444,35 +3322,35 @@ button {
 }
 
 .os-icon-tint-blue {
-  background: linear-gradient(180deg, #8ec5ff, #5ba8ff);
+  background: linear-gradient(180deg, #7fa3c5, #6d8fb3);
 }
 
 .os-icon-tint-indigo {
-  background: linear-gradient(180deg, #a7b8ff, #7f92ff);
+  background: linear-gradient(180deg, #8d9cc0, #798ab0);
 }
 
 .os-icon-tint-green {
-  background: linear-gradient(180deg, #8be5bd, #56c98e);
+  background: linear-gradient(180deg, #88b9a8, #719d90);
 }
 
 .os-icon-tint-pink {
-  background: linear-gradient(180deg, #ffb7d5, #ff8eb9);
+  background: linear-gradient(180deg, #cda0aa, #b98994);
 }
 
 .os-icon-tint-violet {
-  background: linear-gradient(180deg, #ceb6ff, #b18fff);
+  background: linear-gradient(180deg, #a79ac2, #9489b1);
 }
 
 .os-icon-tint-amber {
-  background: linear-gradient(180deg, #ffd59c, #ffb867);
+  background: linear-gradient(180deg, #ccb08a, #b99875);
 }
 
 .os-icon-tint-slate {
-  background: linear-gradient(180deg, #aeb9ca, #8e9aae);
+  background: linear-gradient(180deg, #98a5b4, #818f9f);
 }
 
 .os-icon-tint-gray {
-  background: linear-gradient(180deg, #cad1db, #a9b4c4);
+  background: linear-gradient(180deg, #abb4c0, #959eab);
 }
 
 .ios-animate {
@@ -2500,7 +3378,7 @@ button {
 
   .hero-window {
     position: relative;
-    min-height: clamp(360px, 47vh, 460px);
+    min-height: clamp(320px, 42vh, 400px);
     padding: 24px 28px 24px;
     animation: ios-slide-up 320ms ease-out both;
   }
@@ -2511,29 +3389,33 @@ button {
 
   .hero-grid {
     position: relative;
-    display: block;
-    min-height: calc(clamp(360px, 47vh, 460px) - 92px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(308px, 28vw, 360px);
+    align-items: start;
+    gap: 24px;
+    min-height: calc(clamp(320px, 42vh, 400px) - 92px);
     margin-top: 16px;
   }
 
   .hero-copy {
     display: flex;
     min-height: 100%;
-    max-width: min(620px, calc(100% - clamp(308px, 28vw, 360px) - 32px));
+    max-width: 620px;
     flex-direction: column;
     justify-content: center;
     padding: 12px 8px 12px 0;
   }
 
   .hero-copy h1 {
-    max-width: 8ch;
-    margin-top: 16px;
-    font-size: clamp(3rem, 5vw, 4.4rem);
+    max-width: 11ch;
+    margin-top: 0;
+    font-size: clamp(2.4rem, 3.7vw, 3.5rem);
   }
 
   .hero-copy p {
     max-width: 42ch;
     margin-top: 12px;
+    font-size: 0.98rem;
   }
 
   .hero-actions {
@@ -2541,10 +3423,10 @@ button {
   }
 
   .speed-panel {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: clamp(308px, 28vw, 360px);
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
     gap: 16px;
     padding: 18px;
     border-radius: 22px;
@@ -2564,6 +3446,7 @@ button {
   .score-card strong {
     font-size: 1.72rem;
   }
+
 
   .desktop-section {
     margin: 0 auto 20px;
@@ -2685,6 +3568,12 @@ button {
   .system-status-item {
     white-space: nowrap;
   }
+
+  .system-status-weather {
+    flex: 1 1 auto;
+    justify-content: center;
+    max-width: 420px;
+  }
 }
 
 @keyframes window-enter {
@@ -2694,6 +3583,104 @@ button {
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes desktop-wallpaper-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes desktop-wallpaper-bloom-in {
+  from {
+    opacity: 0.42;
+  }
+  to {
+    opacity: 0.52;
+  }
+}
+
+@keyframes desktop-sonoma-hue {
+  from {
+    filter: hue-rotate(0deg);
+  }
+  to {
+    filter: hue-rotate(2deg);
+  }
+}
+
+@keyframes desktop-sonoma-drift-base {
+  from {
+    transform: translate3d(-1.5%, 0, 0) scale(1.08);
+  }
+  to {
+    transform: translate3d(1.5%, 0, 0) scale(1.12);
+  }
+}
+
+@keyframes desktop-sonoma-drift-warm {
+  from {
+    transform: translate3d(-1%, -1.4%, 0) scale(1.02);
+  }
+  to {
+    transform: translate3d(1.4%, 1.2%, 0) scale(1.08);
+  }
+}
+
+@keyframes desktop-sonoma-drift-pink {
+  from {
+    transform: translate3d(0, -1.2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(0, 1.2%, 0) scale(1.04);
+  }
+}
+
+@keyframes desktop-lockscreen-clock-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes desktop-lockscreen-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes desktop-lockscreen-exit {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes desktop-lockscreen-panel-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
   }
 }
 
@@ -2745,6 +3732,28 @@ button {
   }
   to {
     opacity: 0;
+  }
+}
+
+@keyframes ios-lockscreen-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px) scale(1.01);
+  }
+}
+
+@keyframes ios-lockscreen-panel-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
   }
 }
 
@@ -2917,14 +3926,65 @@ button {
     border-radius: 22px;
   }
 
+  .os-lockscreen {
+    padding-top: calc(56px + env(safe-area-inset-top));
+    padding-bottom: calc(28px + env(safe-area-inset-bottom));
+  }
+
+  .os-lockscreen-header {
+    max-width: 640px;
+    gap: 20px;
+  }
+
+  .os-lockscreen-clock {
+    padding-top: 7dvh;
+  }
+
+  .os-lockscreen-panel {
+    max-width: 640px;
+  }
+
+  .os-weather-card {
+    padding: 18px 18px 16px;
+  }
+
+  .os-weather-temperature {
+    font-size: clamp(2.2rem, 5vw, 2.8rem);
+  }
+
+  .os-lockscreen-panel-body {
+    padding: 24px;
+  }
+
+  .os-lockscreen-actions {
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+    align-items: center;
+  }
+
+  .os-lockscreen-button-secondary {
+    min-width: 180px;
+  }
+
   .os-topbar-title {
     font-size: 1.05rem;
   }
 
   .os-home-layout {
-    grid-template-columns: 256px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     align-items: start;
     gap: 24px;
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  .os-home-widgets {
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+
+  .os-home-widget-card,
+  .os-weather-card-home {
+    min-height: 148px;
   }
 
   .os-home-surface::before {
@@ -2943,6 +4003,12 @@ button {
   .os-home-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 32px 24px;
+    align-items: start;
+    justify-items: center;
+  }
+
+  .os-app-icon {
+    max-width: 132px;
   }
 
   .os-dock {
@@ -2952,14 +4018,14 @@ button {
   }
 
   .os-dock-icon {
-    width: 74px;
-    height: 74px;
+    width: 64px;
+    height: 64px;
     border-radius: 20px;
   }
 
   .os-dock-icon .os-app-glyph {
-    width: 74px;
-    height: 74px;
+    width: 64px;
+    height: 64px;
     border-radius: 20px;
   }
 

@@ -28,6 +28,7 @@ export type Copy = {
   heroEyebrow: string;
   heroTitle: string;
   heroSubtitle: string;
+  heroModules: string[];
   viewProjects: string;
   contactMe: string;
   speedPanelLabel: string;
@@ -73,6 +74,17 @@ export type Copy = {
     tabletTitle: string;
     back: string;
     settings: string;
+    lockscreen: {
+      title: string;
+      message: string;
+      welcome: string;
+      consentAriaLabel: string;
+      cookiesConsent: string;
+      termsConsent: string;
+      accept: string;
+      moreInfo: string;
+      infoDetail: string;
+    };
     dock: {
       projects: string;
       contact: string;
@@ -496,11 +508,12 @@ export const copyByLocale: Record<Locale, Copy> = {
     localeLabel: "Language",
     themeLight: "Light mode",
     themeDark: "Dark mode",
-    heroEyebrow: "Minimal OS interface / performance-first delivery",
-    heroTitle: "I build ultra-fast, modern websites.",
-    heroSubtitle: "Performance-focused web development for businesses and creators.",
-    viewProjects: "View Projects",
-    contactMe: "Contact Me",
+    heroEyebrow: "Desktop workspace",
+    heroTitle: "pwloOS System Overview",
+    heroSubtitle: "System metrics, modules, and workspace access.",
+    heroModules: ["Projects", "Tech Stack", "Speed", "Leads", "Contact"],
+    viewProjects: "Open Projects",
+    contactMe: "Open Contact",
     speedPanelLabel: "Live speed panel",
     speedPanelTitle: "Precision tuned for Lighthouse and Core Web Vitals.",
     performance: "Performance",
@@ -544,6 +557,17 @@ export const copyByLocale: Record<Locale, Copy> = {
       tabletTitle: "pwloOS Tablet",
       back: "Back",
       settings: "Settings",
+      lockscreen: {
+        title: "pwloOS Privacy Notice",
+        message: "We use minimal cookies required for system functionality.",
+        welcome: "Welcome to pwloOS",
+        consentAriaLabel: "Privacy consents",
+        cookiesConsent: "I accept essential cookies required for system functionality.",
+        termsConsent: "I accept the terms of use.",
+        accept: "Accept",
+        moreInfo: "More info",
+        infoDetail: "This preference is stored locally on your device so the privacy notice does not reappear on every visit.",
+      },
       dock: {
         projects: "Projects",
         contact: "Contact",
@@ -669,11 +693,12 @@ export const copyByLocale: Record<Locale, Copy> = {
     localeLabel: "Jezyk",
     themeLight: "Tryb jasny",
     themeDark: "Tryb ciemny",
-    heroEyebrow: "Minimalny interfejs OS / realizacja z naciskiem na wydajnosc",
-    heroTitle: "Tworze ultraszybkie, nowoczesne strony internetowe.",
-    heroSubtitle: "Web development nastawiony na wydajnosc dla firm i tworcow.",
-    viewProjects: "Zobacz projekty",
-    contactMe: "Skontaktuj sie",
+    heroEyebrow: "Przestrzen robocza desktop",
+    heroTitle: "pwloOS System Overview",
+    heroSubtitle: "Metryki systemu, moduly i dostep do przestrzeni roboczej.",
+    heroModules: ["Projekty", "Tech Stack", "Speed", "Leady", "Kontakt"],
+    viewProjects: "Otworz projekty",
+    contactMe: "Otworz kontakt",
     speedPanelLabel: "Panel wydajnosci na zywo",
     speedPanelTitle: "Precyzyjnie dostrojone pod Lighthouse i Core Web Vitals.",
     performance: "Wydajnosc",
@@ -717,6 +742,17 @@ export const copyByLocale: Record<Locale, Copy> = {
       tabletTitle: "pwloOS Tablet",
       back: "Wstecz",
       settings: "Ustawienia",
+      lockscreen: {
+        title: "Powiadomienie prywatnosci pwloOS",
+        message: "Uzywamy minimalnych cookies wymaganych do dzialania systemu.",
+        welcome: "Witaj w pwloOS",
+        consentAriaLabel: "Zgody prywatnosci",
+        cookiesConsent: "Akceptuje minimalne cookies wymagane do dzialania systemu.",
+        termsConsent: "Akceptuje regulamin.",
+        accept: "Akceptuj",
+        moreInfo: "Wiecej informacji",
+        infoDetail: "Ta preferencja jest zapisywana lokalnie na Twoim urzadzeniu, aby powiadomienie nie pojawialo sie ponownie przy kazdej wizycie.",
+      },
       dock: {
         projects: "Projekty",
         contact: "Kontakt",
@@ -842,11 +878,12 @@ export const copyByLocale: Record<Locale, Copy> = {
     localeLabel: "Sprache",
     themeLight: "Heller Modus",
     themeDark: "Dunkler Modus",
-    heroEyebrow: "Minimales OS-Interface / performance-orientierte Umsetzung",
-    heroTitle: "Ich entwickle ultraschnelle, moderne Websites.",
-    heroSubtitle: "Performance-orientierte Webentwicklung fuer Unternehmen und Creator.",
-    viewProjects: "Projekte ansehen",
-    contactMe: "Kontakt aufnehmen",
+    heroEyebrow: "Desktop-Arbeitsbereich",
+    heroTitle: "pwloOS System Overview",
+    heroSubtitle: "Systemmetriken, Module und Workspace-Zugriff.",
+    heroModules: ["Projekte", "Tech Stack", "Speed", "Leads", "Kontakt"],
+    viewProjects: "Projekte oeffnen",
+    contactMe: "Kontakt oeffnen",
     speedPanelLabel: "Live-Speed-Panel",
     speedPanelTitle: "Praezise abgestimmt auf Lighthouse und Core Web Vitals.",
     performance: "Performance",
@@ -890,6 +927,17 @@ export const copyByLocale: Record<Locale, Copy> = {
       tabletTitle: "pwloOS Tablet",
       back: "Zurueck",
       settings: "Einstellungen",
+      lockscreen: {
+        title: "pwloOS Datenschutzhinweis",
+        message: "Wir verwenden nur minimale Cookies, die fuer die Systemfunktion erforderlich sind.",
+        welcome: "Willkommen bei pwloOS",
+        consentAriaLabel: "Datenschutz-Zustimmungen",
+        cookiesConsent: "Ich akzeptiere essenzielle Cookies, die fuer die Systemfunktion erforderlich sind.",
+        termsConsent: "Ich akzeptiere die Nutzungsbedingungen.",
+        accept: "Akzeptieren",
+        moreInfo: "Mehr Infos",
+        infoDetail: "Diese Einstellung wird lokal auf deinem Geraet gespeichert, damit der Hinweis nicht bei jedem Besuch erneut angezeigt wird.",
+      },
       dock: {
         projects: "Projekte",
         contact: "Kontakt",
