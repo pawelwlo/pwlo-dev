@@ -131,7 +131,7 @@ export function ContactWindow({
       <div className="contact-intro">
         <span className="eyebrow">{copy.contact.eyebrow}</span>
         <h3>{copy.contact.title}</h3>
-        <a className="contact-email" href="mailto:pawel@pwlo.dev">pawel@pwlo.dev</a>
+        <a className="contact-email" href="mailto:contact@pwlo.dev">contact@pwlo.dev</a>
 
         <div className="social-row">
           <a href="https://github.com/" target="_blank" rel="noreferrer" aria-label="GitHub">

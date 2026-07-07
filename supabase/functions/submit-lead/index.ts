@@ -114,6 +114,18 @@ async function sendLeadAlert(payload: ReturnType<typeof normalize>) {
   return { sent: true, error: null };
 }
 
+function getAlertFailureMessage(alertError: string | null) {
+  if (!alertError) {
+    return "Lead alert failed.";
+  }
+
+  if (alertError === "email_alert_not_configured") {
+    return "Lead saved, but email delivery is not configured. Set the RESEND_API_KEY secret in Supabase.";
+  }
+
+  return `Lead saved, but email delivery failed: ${alertError}`;
+}
+
 async function createLead(record: Record<string, unknown>) {
   const response = await fetch(`${supabaseUrl}/rest/v1/contact_submissions?select=id`, {
     method: "POST",
@@ -206,6 +218,13 @@ Deno.serve(async (request) => {
     alert_sent_at: alertResult.sent ? new Date().toISOString() : null,
     alert_error: alertResult.error,
   });
+
+  if (!alertResult.sent) {
+    return json({
+      error: getAlertFailureMessage(alertResult.error),
+      id: data.id,
+    }, 502);
+  }
 
   return json({ ok: true, id: data.id });
 });
