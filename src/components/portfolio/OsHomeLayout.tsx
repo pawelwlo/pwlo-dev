@@ -197,8 +197,30 @@ export function OsHomeLayout({
   });
   const [isPrivacyInfoExpanded, setIsPrivacyInfoExpanded] = useState(false);
   const [weatherSnapshot, setWeatherSnapshot] = useState<WeatherSnapshot>(defaultWeatherSnapshot);
+  const [isTablet, setIsTablet] = useState(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return false;
+    }
 
-  const isTablet = typeof window !== "undefined" ? window.innerWidth >= 768 : false;
+    return window.matchMedia("(min-width: 768px)").matches;
+  });
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    const updateTabletMode = () => {
+      setIsTablet(mediaQuery.matches);
+    };
+
+    updateTabletMode();
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", updateTabletMode);
+      return () => mediaQuery.removeEventListener("change", updateTabletMode);
+    }
+
+    mediaQuery.addListener(updateTabletMode);
+    return () => mediaQuery.removeListener(updateTabletMode);
+  }, []);
   const homeTitle = isTablet ? copy.osLayout.tabletTitle : copy.osLayout.mobileTitle;
   const isLockscreenVisible = lockscreenState !== "unlocked";
 

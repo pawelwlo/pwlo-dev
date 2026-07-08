@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom/vitest";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { submitLeadMock, fetchAdminLeadsMock } = vi.hoisted(() => {
@@ -17,25 +17,85 @@ vi.mock("@/lib/leadsApi", () => ({
   fetchAdminLeads: fetchAdminLeadsMock,
 }));
 
+vi.mock("@/lib/sequenceLoader", () => {
+  const frame = { naturalWidth: 1920, naturalHeight: 1080 } as HTMLImageElement;
+
+  return {
+    SEQUENCE_FRAME_COUNT: 40,
+    loadSequenceFrames: vi.fn(async () => Array.from({ length: 40 }, () => frame)),
+    getFrameIndexForProgress: (progress: number) =>
+      Math.min(39, Math.floor(Math.min(1, Math.max(0, progress)) * 39)),
+  };
+});
+
 import { projects } from "@/data/portfolioData";
 import Home from "@/pages/Home";
+import { getScrollVisualState } from "@/lib/scrollProgress";
 import { useDesktopStore } from "@/store/desktopStore";
 
 const storage = new Map<string, string>();
+const desktopPrivacyConsentStorageKey = "pwlo-desktop-privacy-accepted-v1";
+
+function revealDesktopForTests() {
+  const sticky = document.querySelector(".scroll-animation-sticky") as HTMLElement | null;
+
+  if (!sticky) {
+    return;
+  }
+
+  const visualState = getScrollVisualState(0.75, 29);
+
+  sticky.style.setProperty("--scroll-progress", visualState.progress.toFixed(4));
+  sticky.style.setProperty("--hero-opacity", visualState.heroOpacity.toFixed(4));
+  sticky.style.setProperty("--hero-translate-y", `${visualState.heroTranslateY.toFixed(2)}px`);
+  sticky.style.setProperty("--desktop-opacity", visualState.desktopOpacity.toFixed(4));
+  sticky.style.setProperty("--desktop-blur", `${visualState.desktopBlur.toFixed(2)}px`);
+  sticky.style.setProperty("--desktop-scale", visualState.desktopScale.toFixed(4));
+  sticky.style.setProperty("--desktop-translate-y", `${visualState.desktopTranslateY.toFixed(2)}px`);
+  sticky.style.setProperty("--hero-pointer-events", "none");
+  sticky.style.setProperty("--desktop-pointer-events", "auto");
+  sticky.dataset.sequenceFrame = String(visualState.frameIndex);
+  sticky.dataset.desktopRevealed = "true";
+}
+
+async function renderDesktopHome() {
+  window.localStorage.setItem(desktopPrivacyConsentStorageKey, "true");
+  const view = render(<Home />);
+
+  await waitFor(() => {
+    expect(document.querySelector(".scroll-animation-sticky")).toBeInTheDocument();
+  });
+
+  revealDesktopForTests();
+
+  return view;
+}
 
 beforeAll(() => {
   Object.defineProperty(window, "matchMedia", {
     writable: true,
-    value: (query: string) => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: () => undefined,
-      removeListener: () => undefined,
-      addEventListener: () => undefined,
-      removeEventListener: () => undefined,
-      dispatchEvent: () => false,
-    }),
+    value: (query: string) => {
+      const maxWidthMatch = query.match(/max-width:\s*(\d+)px/);
+      const minWidthMatch = query.match(/min-width:\s*(\d+)px/);
+      let matches = false;
+
+      if (maxWidthMatch) {
+        matches = window.innerWidth <= Number(maxWidthMatch[1]);
+      } else if (minWidthMatch) {
+        matches = window.innerWidth >= Number(minWidthMatch[1]);
+      }
+
+      return {
+        matches,
+        media: query,
+        onchange: null,
+        addListener: () => undefined,
+        removeListener: () => undefined,
+        addEventListener: () => undefined,
+        removeEventListener: () => undefined,
+        dispatchEvent: () => false,
+      };
+    },
   });
 
   Object.defineProperty(window, "localStorage", {
@@ -56,10 +116,11 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
+  cleanup();
   Object.defineProperty(window, "innerWidth", {
     writable: true,
     configurable: true,
-    value: 1280,
+    value: 1440,
   });
   Object.defineProperty(window, "innerHeight", {
     writable: true,
@@ -81,45 +142,57 @@ beforeEach(() => {
 });
 
 describe("Home", () => {
-  it("renders the core hero and desktop navigation", () => {
+  it("renders the mobile and tablet OS layout below the desktop breakpoint", async () => {
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 768,
+    });
+
     render(<Home />);
 
-    expect(screen.getByRole("heading", { name: /I build ultra-fast, modern websites./i })).toBeInTheDocument();
+    await waitFor(() => {
+      expect(document.querySelector(".os-shell")).toBeInTheDocument();
+    });
+
+    expect(document.querySelector(".scroll-animation")).not.toBeInTheDocument();
+    expect(document.querySelector(".portfolio-shell")).not.toBeInTheDocument();
+  });
+
+  it("renders the core hero and desktop navigation", async () => {
+    await renderDesktopHome();
+
+    expect(screen.getAllByText(/Welcome to pwloOS/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/pwloOS v1.0/i)).toBeInTheDocument();
-    expect(screen.getByText(/Performance: 100/i)).toBeInTheDocument();
-    expect(screen.getByText(/Status: Online/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Status: Online/i)).toBeInTheDocument();
     expect(screen.getAllByLabelText(/Resize Projects/i)).toHaveLength(8);
-    expect(screen.getByRole("button", { name: /View Projects/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Contact Me/i })).toBeInTheDocument();
   });
 
-  it("opens the contact window from the desktop icon", () => {
-    render(<Home />);
+  it("opens the contact window from the desktop icon", async () => {
+    await renderDesktopHome();
 
-    fireEvent.click(screen.getAllByRole("button", { name: /Contact Start a project 24h/i })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: /Contact: Start a project/i })[0]);
 
-    expect(screen.getAllByText("pawel@pwlo.dev").length).toBeGreaterThan(0);
-    expect(screen.getAllByRole("heading", { name: /Let's build something fast./i }).length).toBeGreaterThan(0);
+    expect(await screen.findByText("contact@pwlo.dev")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /Let's build something fast./i })).toBeInTheDocument();
   });
 
-  it("renders draggable headers for floating windows", () => {
-    render(<Home />);
+  it("renders draggable headers for floating windows", async () => {
+    await renderDesktopHome();
 
     expect(screen.getAllByLabelText(/Drag Projects/i).length).toBeGreaterThan(0);
   });
 
-  it("switches the interface to Polish", () => {
-    render(<Home />);
+  it("switches the interface to Polish", async () => {
+    useDesktopStore.setState({ locale: "pl" });
+    await renderDesktopHome();
 
-    fireEvent.click(screen.getAllByRole("button", { name: "PL" })[0]);
-
-    expect(screen.getAllByText(/Tworze ultraszybkie, nowoczesne strony internetowe./i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Witaj w pwloOS/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Czas lokalny:/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByRole("button", { name: /Zobacz projekty/i }).length).toBeGreaterThan(0);
   });
 
-  it("minimizes a window and reopens it from the desktop icon", () => {
-    render(<Home />);
+  it("minimizes a window and reopens it from the desktop icon", async () => {
+    await renderDesktopHome();
 
     const initialProjectHeaders = screen.queryAllByLabelText(/Drag Projects/i).length;
 
@@ -127,13 +200,13 @@ describe("Home", () => {
 
     expect(screen.queryAllByLabelText(/Drag Projects/i).length).toBeLessThan(initialProjectHeaders);
 
-    fireEvent.click(screen.getAllByRole("button", { name: /Projects Case studies 06/i })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: /Projects: Case studies/i })[0]);
 
     expect(screen.getAllByLabelText(/Drag Projects/i).length).toBeGreaterThanOrEqual(initialProjectHeaders);
   });
 
-  it("maximizes and restores a window", () => {
-    render(<Home />);
+  it("maximizes and restores a window", async () => {
+    await renderDesktopHome();
 
     const initialResizeHandles = screen.queryAllByLabelText(/Resize Projects/i).length;
 
@@ -147,8 +220,8 @@ describe("Home", () => {
     expect(screen.getAllByLabelText(/Resize Projects/i).length).toBeGreaterThanOrEqual(initialResizeHandles);
   });
 
-  it("switches the active case study when a project is selected", () => {
-    render(<Home />);
+  it("switches the active case study when a project is selected", async () => {
+    await renderDesktopHome();
 
     fireEvent.click(screen.getAllByRole("button", { name: /Magic Colouring Book/i })[0]);
 
@@ -157,9 +230,9 @@ describe("Home", () => {
   });
 
   it("submits the contact form to Supabase", async () => {
-    const { container } = render(<Home />);
+    const { container } = await renderDesktopHome();
 
-    fireEvent.click(screen.getAllByRole("button", { name: /Contact Start a project 24h/i })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: /Contact: Start a project/i })[0]);
 
     const form = container.querySelector(".contact-form") as HTMLFormElement;
     const nameInput = form.querySelector('input[name="name"]') as HTMLInputElement;
@@ -219,9 +292,9 @@ describe("Home", () => {
       },
     ]);
 
-    const { container } = render(<Home />);
+    const { container } = await renderDesktopHome();
 
-    fireEvent.click(screen.getAllByRole("button", { name: /Leads Protected view ADM/i })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: /Leads: Protected view/i })[0]);
 
     const leadsInput = container.querySelector('.leads-admin-key input') as HTMLInputElement;
     const loadButton = container.querySelector('.leads-controls button') as HTMLButtonElement;

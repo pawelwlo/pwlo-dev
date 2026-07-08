@@ -16,9 +16,11 @@ import {
   CloudSun,
   FolderKanban,
   Gauge,
-  ShieldCheck,
+  Languages,
   Layers3,
   Mail,
+  MoonStar,
+  ShieldCheck,
   SunMedium,
   UserRound,
   Wifi,
@@ -27,7 +29,9 @@ import {
 
 import { DesktopIcon } from "@/components/os/DesktopIcon";
 import { WindowFrame, type ResizeDirection } from "@/components/os/WindowFrame";
-import { HeroWindow } from "@/components/portfolio/HeroWindow";
+import { Desktop } from "@/components/Desktop";
+import { Hero } from "@/components/Hero";
+import { ScrollAnimation, type ScrollAnimationHandle } from "@/components/ScrollAnimation";
 import { LeadsWindow } from "@/components/portfolio/LeadsWindow";
 import { OsHomeLayout } from "@/components/portfolio/OsHomeLayout";
 import { ProjectsWindow } from "@/components/portfolio/ProjectsWindow";
@@ -38,7 +42,7 @@ import {
   TechStackWindow,
 } from "@/components/portfolio/UtilityWindows";
 import { desktopIcons, type WindowId } from "@/data/portfolioData";
-import { copyByLocale, type Locale } from "@/i18n/translations";
+import { copyByLocale, localeOptions, type Locale } from "@/i18n/translations";
 import { getLocalePath } from "@/lib/localeRouting";
 import { fetchAdminLeads, submitLead, type LeadRecord } from "@/lib/leadsApi";
 import { useDesktopStore } from "@/store/desktopStore";
@@ -50,15 +54,6 @@ const iconMap: Record<WindowId, LucideIcon> = {
   contact: Mail,
   speed: Gauge,
   leads: ShieldCheck,
-};
-
-const initialPositions: Record<WindowId, { x: number; y: number }> = {
-  projects: { x: 20, y: 24 },
-  about: { x: 20, y: 116 },
-  tech: { x: 20, y: 208 },
-  contact: { x: 20, y: 300 },
-  speed: { x: 20, y: 392 },
-  leads: { x: 20, y: 484 },
 };
 
 type WindowRect = {
@@ -94,7 +89,19 @@ const initialWindowStates: Record<WindowId, WindowState> = {
   leads: { minimized: false, maximized: false, previousRect: null },
 };
 
-const compactLayoutBreakpoint = 1100;
+const compactLayoutBreakpoint = 1280;
+
+function getIsCompactLayout() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  if (typeof window.matchMedia === "function") {
+    return window.matchMedia(`(max-width: ${compactLayoutBreakpoint}px)`).matches;
+  }
+
+  return window.innerWidth <= compactLayoutBreakpoint;
+}
 const autoMaximizeWindowIds = new Set<WindowId>(["projects"]);
 const isSupabaseConfigured = Boolean(
   import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY,
@@ -172,14 +179,6 @@ function getWeatherPresentation(weatherCode: number, locale: Locale): { label: s
     icon: Cloud,
   };
 }
-
-type DragState = {
-  id: WindowId;
-  startX: number;
-  startY: number;
-  originX: number;
-  originY: number;
-};
 
 type WindowDragState = {
   id: WindowId;
@@ -263,7 +262,6 @@ export default function Home() {
     focusWindow,
     selectProject,
   } = useDesktopStore();
-  const [iconPositions, setIconPositions] = useState(initialPositions);
   const [windowRects, setWindowRects] = useState(initialWindowRects);
   const [windowStates, setWindowStates] = useState(initialWindowStates);
   const [pointerGlow, setPointerGlow] = useState({ x: 0, y: 0 });
@@ -280,9 +278,7 @@ export default function Home() {
     }).format(new Date()),
   );
   const [weatherSnapshot, setWeatherSnapshot] = useState<WeatherSnapshot>(defaultWeatherSnapshot);
-  const [isCompactLayout, setIsCompactLayout] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth <= compactLayoutBreakpoint : false,
-  );
+  const [isCompactLayout, setIsCompactLayout] = useState(getIsCompactLayout);
   const [desktopLockscreenState, setDesktopLockscreenState] = useState<"locked" | "unlocking" | "unlocked">(() => {
     if (typeof window === "undefined") {
       return "locked";
@@ -297,12 +293,13 @@ export default function Home() {
   const [hasAcceptedDesktopCookies, setHasAcceptedDesktopCookies] = useState(false);
   const [hasAcceptedDesktopTerms, setHasAcceptedDesktopTerms] = useState(false);
   const [isDesktopPrivacyInfoExpanded, setIsDesktopPrivacyInfoExpanded] = useState(false);
+  const [isLocaleMenuOpen, setIsLocaleMenuOpen] = useState(false);
   const portfolioShellRef = useRef<HTMLElement | null>(null);
+  const scrollAnimationRef = useRef<ScrollAnimationHandle | null>(null);
+  const localeMenuRef = useRef<HTMLDivElement | null>(null);
   const desktopSurfaceRef = useRef<HTMLDivElement | null>(null);
-  const iconDragStateRef = useRef<DragState | null>(null);
   const windowDragStateRef = useRef<WindowDragState | null>(null);
   const resizeStateRef = useRef<ResizeState | null>(null);
-  const suppressClickRef = useRef<WindowId | null>(null);
   const autoMaximizedRef = useRef<Set<WindowId>>(new Set());
   const desktopUnlockTimerRef = useRef<number | null>(null);
 
@@ -320,6 +317,32 @@ export default function Home() {
     },
     [locale, setLocale],
   );
+
+  useEffect(() => {
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!isLocaleMenuOpen) {
+        return;
+      }
+
+      if (event.target instanceof Node && localeMenuRef.current && !localeMenuRef.current.contains(event.target)) {
+        setIsLocaleMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsLocaleMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isLocaleMenuOpen]);
 
   useEffect(() => {
     const savedTheme = window.localStorage.getItem("pwlo-theme");
@@ -452,16 +475,20 @@ export default function Home() {
   );
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia(`(max-width: ${compactLayoutBreakpoint}px)`);
     const updateLayoutMode = () => {
-      setIsCompactLayout(window.innerWidth <= compactLayoutBreakpoint);
+      setIsCompactLayout(mediaQuery.matches);
     };
 
     updateLayoutMode();
-    window.addEventListener("resize", updateLayoutMode);
 
-    return () => {
-      window.removeEventListener("resize", updateLayoutMode);
-    };
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", updateLayoutMode);
+      return () => mediaQuery.removeEventListener("change", updateLayoutMode);
+    }
+
+    mediaQuery.addListener(updateLayoutMode);
+    return () => mediaQuery.removeListener(updateLayoutMode);
   }, []);
 
   useEffect(() => {
@@ -514,32 +541,11 @@ export default function Home() {
         return;
       }
 
-      const dragState = iconDragStateRef.current;
-
-      if (!dragState) {
-        return;
-      }
-
-      const nextX = Math.max(12, dragState.originX + event.clientX - dragState.startX);
-      const nextY = Math.max(12, dragState.originY + event.clientY - dragState.startY);
-
-      if (Math.abs(event.clientX - dragState.startX) > 5 || Math.abs(event.clientY - dragState.startY) > 5) {
-        suppressClickRef.current = dragState.id;
-      }
-
-      setIconPositions((current) => ({
-        ...current,
-        [dragState.id]: { x: nextX, y: nextY },
-      }));
     };
 
     const handlePointerUp = () => {
       resizeStateRef.current = null;
       windowDragStateRef.current = null;
-      iconDragStateRef.current = null;
-      window.setTimeout(() => {
-        suppressClickRef.current = null;
-      }, 0);
     };
 
     window.addEventListener("pointermove", handlePointerMove);
@@ -552,10 +558,6 @@ export default function Home() {
   }, []);
 
   const openFromIcon = useCallback((windowId: WindowId) => {
-    if (suppressClickRef.current === windowId) {
-      return;
-    }
-
     setWindowStates((current) => ({
       ...current,
       [windowId]: {
@@ -876,6 +878,47 @@ export default function Home() {
     [adminKey, contactStatus?.message, contactStatus?.tone, copy, handleContactSubmit, handleRefreshLeads, isLoadingLeads, isSubmittingInquiry, leads, leadsError, locale, openFromIconWithAutoMaximize, selectProject, selectedProjectId],
   );
 
+  const acceptDesktopPrivacyNotice = () => {
+    if (!hasAcceptedDesktopCookies || !hasAcceptedDesktopTerms) {
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(desktopPrivacyConsentStorageKey, "true");
+    } catch {
+      // Ignore storage write errors and continue unlocking the workspace.
+    }
+
+    if (desktopUnlockTimerRef.current) {
+      window.clearTimeout(desktopUnlockTimerRef.current);
+    }
+
+    setDesktopLockscreenState("unlocking");
+    desktopUnlockTimerRef.current = window.setTimeout(() => {
+      setDesktopLockscreenState("unlocked");
+    }, 320);
+  };
+
+  useEffect(() => {
+    if (isCompactLayout || desktopLockscreenState !== "unlocked") {
+      return;
+    }
+
+    const revealDesktop = () => {
+      scrollAnimationRef.current?.revealDesktop();
+    };
+
+    const frameId = window.requestAnimationFrame(revealDesktop);
+    const timeoutId = window.setTimeout(revealDesktop, 120);
+    const fallbackId = window.setTimeout(revealDesktop, 900);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.clearTimeout(timeoutId);
+      window.clearTimeout(fallbackId);
+    };
+  }, [desktopLockscreenState, isCompactLayout]);
+
   if (isCompactLayout) {
     return (
       <OsHomeLayout
@@ -900,27 +943,6 @@ export default function Home() {
       />
     );
   }
-
-  const acceptDesktopPrivacyNotice = () => {
-    if (!hasAcceptedDesktopCookies || !hasAcceptedDesktopTerms) {
-      return;
-    }
-
-    try {
-      window.localStorage.setItem(desktopPrivacyConsentStorageKey, "true");
-    } catch {
-      // Ignore storage write errors and continue unlocking the workspace.
-    }
-
-    if (desktopUnlockTimerRef.current) {
-      window.clearTimeout(desktopUnlockTimerRef.current);
-    }
-
-    setDesktopLockscreenState("unlocking");
-    desktopUnlockTimerRef.current = window.setTimeout(() => {
-      setDesktopLockscreenState("unlocked");
-    }, 320);
-  };
 
   return (
     <main
@@ -1017,124 +1039,162 @@ export default function Home() {
         </section>
       ) : null}
 
-      <div className="system-status-bar" aria-label="System Status Bar">
-        <span className="system-status-item">{copy.statusBar.localTime}: {localTime}</span>
-        <span className="system-status-item">{copy.statusBar.os}</span>
-        <div className="system-status-weather" aria-label="Weather in Garmisch-Partenkirchen">
-          <span className="system-status-weather-icon" aria-hidden="true">
-            <WeatherIcon size={16} />
-          </span>
-          <span className="system-status-weather-copy">
-            <strong>{weatherSnapshot.temperature}°C</strong>
-            <span>Garmisch-Partenkirchen</span>
-          </span>
+      <div className="system-menu-bar" aria-label="macOS style menu bar">
+        <div className="system-menu-bar-section system-menu-bar-left">
+          <span className="system-status-item system-status-app">{copy.statusBar.os}</span>
         </div>
-        <span
-          className="system-status-item system-status-wifi"
-          aria-label={copy.statusBar.online}
-          title={copy.statusBar.online}
-        >
-          <Wifi size={16} aria-hidden="true" />
-        </span>
+        <div className="system-menu-bar-section system-menu-bar-right">
+          <div className="system-menu-bar-controls">
+            <div
+              ref={localeMenuRef}
+              className={`system-menu-bar-locale${isLocaleMenuOpen ? " system-menu-bar-locale-open" : ""}`}
+            >
+              <button
+                className="system-status-item system-status-control"
+                type="button"
+                onClick={() => setIsLocaleMenuOpen((current) => !current)}
+                aria-expanded={isLocaleMenuOpen}
+                aria-controls="system-menu-bar-locale-menu"
+                aria-label={copy.localeLabel}
+                title={copy.localeLabel}
+              >
+                <Languages size={16} aria-hidden="true" />
+              </button>
+              {isLocaleMenuOpen ? (
+                <div
+                  className="system-menu-bar-locale-menu"
+                  role="menu"
+                  id="system-menu-bar-locale-menu"
+                  aria-label={copy.localeLabel}
+                >
+                  {localeOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      className={`system-menu-bar-locale-menu-button${locale === option.value ? " system-menu-bar-locale-menu-button-active" : ""}`}
+                      type="button"
+                      onClick={() => {
+                        setIsLocaleMenuOpen(false);
+                        handleLocaleChange(option.value);
+                      }}
+                      role="menuitemradio"
+                      aria-checked={locale === option.value}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+            <button
+              className="system-status-item system-status-control"
+              type="button"
+              onClick={toggleTheme}
+              aria-label={theme === "dark" ? copy.themeLight : copy.themeDark}
+              title={theme === "dark" ? copy.themeLight : copy.themeDark}
+            >
+              {theme === "dark" ? <SunMedium size={16} aria-hidden="true" /> : <MoonStar size={16} aria-hidden="true" />}
+            </button>
+          </div>
+          <div className="system-status-weather" aria-label="Weather in Garmisch-Partenkirchen">
+            <span className="system-status-weather-icon" aria-hidden="true">
+              <WeatherIcon size={16} />
+            </span>
+            <span className="system-status-weather-copy">
+              <strong>{weatherSnapshot.temperature}°C</strong>
+              <span>Garmisch-Partenkirchen</span>
+            </span>
+          </div>
+          <span
+            className="system-status-item system-status-wifi"
+            aria-label={copy.statusBar.online}
+            title={copy.statusBar.online}
+          >
+            <Wifi size={16} aria-hidden="true" />
+          </span>
+          <span className="system-status-item system-status-time">{copy.statusBar.localTime}: {localTime}</span>
+        </div>
       </div>
 
-      <section className="hero-section">
-        <HeroWindow
-          locale={locale}
-          copy={copy}
-          isDark={theme === "dark"}
-          onChangeLocale={handleLocaleChange}
-          onToggleTheme={toggleTheme}
-        />
-      </section>
-
-      <section className="desktop-section">
-        <div
-          className="desktop-surface"
-          ref={desktopSurfaceRef}
-          onMouseMove={(event) => {
-            const bounds = event.currentTarget.getBoundingClientRect();
-            setPointerGlow({
-              x: ((event.clientX - bounds.left) / bounds.width - 0.5) * 20,
-              y: ((event.clientY - bounds.top) / bounds.height - 0.5) * 20,
-            });
-          }}
-        >
-          <div
-            className="desktop-parallax"
-            aria-hidden="true"
-            style={{
-              transform: `translate3d(${pointerGlow.x}px, ${pointerGlow.y}px, 0)`,
+      <ScrollAnimation
+        ref={scrollAnimationRef}
+        workspaceUnlocked={desktopLockscreenState === "unlocked"}
+        hero={<Hero time={localTime} date={desktopDate} welcome={copy.osLayout.lockscreen.welcome} />}
+        desktop={
+          <Desktop
+            surfaceRef={desktopSurfaceRef}
+            onSurfaceMouseMove={(event) => {
+              const bounds = event.currentTarget.getBoundingClientRect();
+              setPointerGlow({
+                x: ((event.clientX - bounds.left) / bounds.width - 0.5) * 20,
+                y: ((event.clientY - bounds.top) / bounds.height - 0.5) * 20,
+              });
             }}
-          />
+          >
+            <div
+              className="desktop-parallax"
+              aria-hidden="true"
+              style={{
+                transform: `translate3d(${pointerGlow.x}px, ${pointerGlow.y}px, 0)`,
+              }}
+            />
 
-          <div className="desktop-icons-layer">
-            {desktopIcons.map((item) => {
-              const Icon = iconMap[item.id];
-              const position = iconPositions[item.id];
-              const iconCopy = copy.desktopIcons[item.id];
+            <div className="windows-layer">
+              {openWindows
+                .filter((windowId) => !windowStates[windowId].minimized)
+                .map((windowId, index) => (
+                  <WindowFrame
+                    key={windowId}
+                    title={copy.windowTitles[windowId]}
+                    locale={locale}
+                    controlsCopy={copy.windowControls}
+                    className="floating-window"
+                    isActive={activeWindow === windowId}
+                    isMaximized={windowStates[windowId].maximized}
+                    onFocus={() => focusWindow(windowId)}
+                    onDragStart={(event) => startWindowDrag(windowId, event)}
+                    onMinimize={() => minimizeWindow(windowId)}
+                    onToggleMaximize={() => toggleMaximizeWindow(windowId)}
+                    onClose={() => closeWindowWithState(windowId)}
+                    onResizeStart={(direction, event) => startResize(windowId, direction, event)}
+                    style={{
+                      zIndex: index + 10,
+                      ...(isCompactLayout
+                        ? {}
+                        : {
+                            left: `${windowRects[windowId].x}px`,
+                            top: `${windowRects[windowId].y}px`,
+                            width: `${windowRects[windowId].width}px`,
+                            height: `${windowRects[windowId].height}px`,
+                          }),
+                    }}
+                  >
+                    {windowContent[windowId]}
+                  </WindowFrame>
+                ))}
+            </div>
 
-              return (
-                <DesktopIcon
-                  key={item.id}
-                  icon={Icon}
-                  label={iconCopy.label}
-                  subtitle={iconCopy.subtitle}
-                  stat={item.stat}
-                  x={position.x}
-                  y={position.y}
-                  isActive={activeWindow === item.id}
-                  onPointerDown={(event) => {
-                    iconDragStateRef.current = {
-                      id: item.id,
-                      startX: event.clientX,
-                      startY: event.clientY,
-                      originX: position.x,
-                      originY: position.y,
-                    };
-                  }}
-                  onOpen={() => openFromIconWithAutoMaximize(item.id)}
-                />
-              );
-            })}
-          </div>
+            <div className="desktop-dock" aria-label="macOS style dock">
+              {desktopIcons.map((item) => {
+                const Icon = iconMap[item.id];
+                const iconCopy = copy.desktopIcons[item.id];
 
-          <div className="windows-layer">
-            {openWindows
-              .filter((windowId) => !windowStates[windowId].minimized)
-              .map((windowId, index) => (
-              <WindowFrame
-                key={windowId}
-                title={copy.windowTitles[windowId]}
-                locale={locale}
-                controlsCopy={copy.windowControls}
-                className="floating-window"
-                isActive={activeWindow === windowId}
-                isMaximized={windowStates[windowId].maximized}
-                onFocus={() => focusWindow(windowId)}
-                onDragStart={(event) => startWindowDrag(windowId, event)}
-                onMinimize={() => minimizeWindow(windowId)}
-                onToggleMaximize={() => toggleMaximizeWindow(windowId)}
-                onClose={() => closeWindowWithState(windowId)}
-                onResizeStart={(direction, event) => startResize(windowId, direction, event)}
-                style={{
-                  zIndex: index + 10,
-                  ...(isCompactLayout
-                    ? {}
-                    : {
-                        left: `${windowRects[windowId].x}px`,
-                        top: `${windowRects[windowId].y}px`,
-                        width: `${windowRects[windowId].width}px`,
-                        height: `${windowRects[windowId].height}px`,
-                      }),
-                }}
-              >
-                {windowContent[windowId]}
-              </WindowFrame>
-            ))}
-          </div>
-        </div>
-      </section>
+                return (
+                  <DesktopIcon
+                    key={item.id}
+                    variant="dock"
+                    icon={Icon}
+                    label={iconCopy.label}
+                    subtitle={iconCopy.subtitle}
+                    stat={item.stat}
+                    isActive={activeWindow === item.id}
+                    onOpen={() => openFromIconWithAutoMaximize(item.id)}
+                  />
+                );
+              })}
+            </div>
+          </Desktop>
+        }
+      />
 
       <footer className="site-footer">
         <span>© 2026 Pawel Wlodarczyk</span>

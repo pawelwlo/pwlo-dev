@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 
 import Home from "@/pages/Home";
+import "@/styles/scrollAnimation.css";
 
 const Analytics = lazy(async () => {
   const module = await import("@vercel/analytics/react");
