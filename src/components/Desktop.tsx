@@ -2,6 +2,7 @@ import type { CSSProperties, MouseEvent, ReactNode, RefObject } from "react";
 
 type DesktopProps = {
   children: ReactNode;
+  dock?: ReactNode;
   className?: string;
   style?: CSSProperties;
   surfaceRef?: RefObject<HTMLDivElement | null>;
@@ -10,6 +11,7 @@ type DesktopProps = {
 
 export function Desktop({
   children,
+  dock,
   className = "",
   style,
   surfaceRef,
@@ -24,6 +26,8 @@ export function Desktop({
       >
         {children}
       </div>
+      {dock}
     </div>
   );
 }
+

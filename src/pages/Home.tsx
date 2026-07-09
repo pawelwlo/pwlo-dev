@@ -1272,6 +1272,27 @@ export default function Home() {
                 y: ((event.clientY - bounds.top) / bounds.height - 0.5) * 20,
               });
             }}
+            dock={
+              <div className="desktop-dock" aria-label="macOS style dock">
+                {desktopIcons.map((item) => {
+                  const Icon = iconMap[item.id];
+                  const iconCopy = copy.desktopIcons[item.id];
+
+                  return (
+                    <DesktopIcon
+                      key={item.id}
+                      variant="dock"
+                      icon={Icon}
+                      label={iconCopy.label}
+                      subtitle={iconCopy.subtitle}
+                      stat={item.stat}
+                      isActive={activeWindow === item.id}
+                      onOpen={() => openFromIconWithAutoMaximize(item.id)}
+                    />
+                  );
+                })}
+              </div>
+            }
           >
             <div
               className="desktop-parallax"
@@ -1314,26 +1335,6 @@ export default function Home() {
                     {windowContent[windowId]}
                   </WindowFrame>
                 ))}
-            </div>
-
-            <div className="desktop-dock" aria-label="macOS style dock">
-              {desktopIcons.map((item) => {
-                const Icon = iconMap[item.id];
-                const iconCopy = copy.desktopIcons[item.id];
-
-                return (
-                  <DesktopIcon
-                    key={item.id}
-                    variant="dock"
-                    icon={Icon}
-                    label={iconCopy.label}
-                    subtitle={iconCopy.subtitle}
-                    stat={item.stat}
-                    isActive={activeWindow === item.id}
-                    onOpen={() => openFromIconWithAutoMaximize(item.id)}
-                  />
-                );
-              })}
             </div>
           </Desktop>
         }
