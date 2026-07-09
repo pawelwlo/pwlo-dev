@@ -228,19 +228,19 @@
 .desktop-transition-surface {
   width: 100%;
   min-height: calc(
-    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px)
+    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px) - 96px
   );
   height: calc(
-    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px)
+    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px) - 96px
   );
 }
 
 .scroll-animation-desktop .desktop-transition-surface {
   min-height: calc(
-    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px)
+    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px) - 96px
   );
   height: calc(
-    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px)
+    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px) - 96px
   );
 }
 
