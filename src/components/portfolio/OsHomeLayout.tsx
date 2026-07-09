@@ -547,24 +547,9 @@ export function OsHomeLayout({
 
       <header className="os-topbar mobile-status-bar" aria-label={homeTitle} aria-hidden={isLockscreenVisible}>
         <div className="os-topbar-left">{localTime}</div>
-        {isHomeActive ? (
-          <div className="os-topbar-search">
-            <Search className="os-topbar-search-icon" size={13} aria-hidden="true" />
-            <input
-              id="os-search-input"
-              className="os-topbar-search-input"
-              type="search"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              aria-label="Search apps"
-            />
-          </div>
-        ) : (
-          <div className="os-topbar-title">
-            <span>{navTitle}</span>
-          </div>
-        )}
+        <div className="os-topbar-title">
+          <span>{navTitle}</span>
+        </div>
         <div className="os-topbar-right" aria-hidden="true" title={copy.statusBar.online}>
           <span className="os-signal-bars" aria-hidden="true">
             <span className="os-signal-bar os-signal-bar-1" />
@@ -605,6 +590,19 @@ export function OsHomeLayout({
                   </span>
                 </div>
               </article>
+            </div>
+ 
+            <div className="os-home-search-bar" aria-label="Search apps">
+              <Search className="os-home-search-bar-icon" size={16} aria-hidden="true" />
+              <input
+                id="os-home-search-input"
+                className="os-home-search-bar-input"
+                type="search"
+                placeholder="Search apps"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Search apps"
+              />
             </div>
 
             {icons

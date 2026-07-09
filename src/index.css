@@ -833,10 +833,12 @@ button {
 }
 
 @keyframes hero-continue-bounce {
+
   0%,
   100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(4px);
   }
@@ -1192,6 +1194,7 @@ button {
     opacity: 0;
     transform: translateX(-50%) translateY(-6px) scale(0.97);
   }
+
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0) scale(1);
@@ -2094,7 +2097,7 @@ button {
   padding-left: 18px;
 }
 
-.bullet-list li + li {
+.bullet-list li+li {
   margin-top: 8px;
 }
 
@@ -2566,8 +2569,8 @@ button {
   justify-content: center;
 }
 
-.compact-shell section + .compact-section,
-.compact-shell .compact-profile-card + .compact-section {
+.compact-shell section+.compact-section,
+.compact-shell .compact-profile-card+.compact-section {
   margin-top: 32px;
 }
 
@@ -3279,68 +3282,68 @@ button {
   color: rgba(247, 249, 252, 0.82);
 }
 
-.os-topbar-search {
+.os-home-search-bar {
+  grid-column: 1 / -1;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  min-width: 0;
-  width: 100%;
-  padding: 0 12px;
-  min-height: 30px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(20, 26, 35, 0.32);
-  backdrop-filter: blur(8px);
+  gap: 10px;
+  padding: 0 16px;
+  height: 48px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(20, 26, 35, 0.28);
+  backdrop-filter: blur(24px) saturate(1.08);
+  box-shadow: var(--os-shadow);
   transition:
     border-color 180ms ease,
     background 180ms ease,
     box-shadow 180ms ease;
 }
 
-.os-topbar-search:focus-within {
-  border-color: rgba(255, 255, 255, 0.32);
-  background: rgba(20, 26, 35, 0.48);
+.os-home-search-bar:focus-within {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(20, 26, 35, 0.38);
   box-shadow: 0 0 0 3px rgba(120, 160, 255, 0.15);
 }
 
-:root[data-theme="dark"] .os-topbar-search {
-  background: rgba(255, 255, 255, 0.06);
+:root[data-theme="dark"] .os-home-search-bar {
+  background: rgba(15, 20, 28, 0.34);
   border-color: rgba(255, 255, 255, 0.12);
 }
 
-:root[data-theme="dark"] .os-topbar-search:focus-within {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.28);
+:root[data-theme="dark"] .os-home-search-bar:focus-within {
+  background: rgba(15, 20, 28, 0.44);
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
-.os-topbar-search-icon {
+.os-home-search-bar-icon {
   flex-shrink: 0;
-  color: rgba(244, 247, 251, 0.52);
+  color: rgba(244, 247, 251, 0.48);
 }
 
-.os-topbar-search-input {
+.os-home-search-bar-input {
   flex: 1;
   min-width: 0;
   background: transparent;
   border: none;
   outline: none;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 500;
   letter-spacing: -0.01em;
-  color: rgba(244, 247, 251, 0.88);
+  color: rgba(244, 247, 251, 0.9);
   caret-color: rgba(120, 160, 255, 0.9);
 }
 
-.os-topbar-search-input::placeholder {
-  color: rgba(244, 247, 251, 0.4);
+.os-home-search-bar-input::placeholder {
+  color: rgba(244, 247, 251, 0.38);
 }
 
-.os-topbar-search-input::-webkit-search-cancel-button {
+.os-home-search-bar-input::-webkit-search-cancel-button {
   -webkit-appearance: none;
   appearance: none;
-  width: 14px;
-  height: 14px;
-  background: rgba(244, 247, 251, 0.3);
+  width: 16px;
+  height: 16px;
+  background: rgba(244, 247, 251, 0.24);
   border-radius: 50%;
   cursor: pointer;
 }
@@ -3551,7 +3554,7 @@ button {
   pointer-events: none;
 }
 
-.os-app-glyph > svg {
+.os-app-glyph>svg {
   position: relative;
   z-index: 1;
 }
@@ -3935,7 +3938,7 @@ button {
   background: rgba(255, 255, 255, 0.04);
 }
 
-.os-app-window > * {
+.os-app-window>* {
   width: 100%;
 }
 
@@ -4201,6 +4204,7 @@ button {
     opacity: 0;
     transform: scale(0.98);
   }
+
   to {
     opacity: 1;
   }
@@ -4211,6 +4215,7 @@ button {
     opacity: 0;
     transform: scale(1.02);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -4221,6 +4226,7 @@ button {
   from {
     opacity: 0.42;
   }
+
   to {
     opacity: 0.52;
   }
@@ -4230,6 +4236,7 @@ button {
   from {
     filter: hue-rotate(0deg);
   }
+
   to {
     filter: hue-rotate(2deg);
   }
@@ -4239,6 +4246,7 @@ button {
   from {
     transform: translate3d(-1.5%, 0, 0) scale(1.08);
   }
+
   to {
     transform: translate3d(1.5%, 0, 0) scale(1.12);
   }
@@ -4248,6 +4256,7 @@ button {
   from {
     transform: translate3d(-1%, -1.4%, 0) scale(1.02);
   }
+
   to {
     transform: translate3d(1.4%, 1.2%, 0) scale(1.08);
   }
@@ -4257,6 +4266,7 @@ button {
   from {
     transform: translate3d(0, -1.2%, 0) scale(1);
   }
+
   to {
     transform: translate3d(0, 1.2%, 0) scale(1.04);
   }
@@ -4267,6 +4277,7 @@ button {
     opacity: 0;
     transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -4278,6 +4289,7 @@ button {
     opacity: 0;
     transform: translateY(18px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -4288,6 +4300,7 @@ button {
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -4298,6 +4311,7 @@ button {
     opacity: 1;
     transform: translateY(0);
   }
+
   to {
     opacity: 0;
     transform: translateY(10px);
@@ -4309,6 +4323,7 @@ button {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -4320,6 +4335,7 @@ button {
     opacity: 0;
     transform: translateY(12px) scale(0.985);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -4331,6 +4347,7 @@ button {
     opacity: 1;
     transform: translateY(0);
   }
+
   to {
     opacity: 0;
     transform: translateY(12px);
@@ -4341,6 +4358,7 @@ button {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -4350,6 +4368,7 @@ button {
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -4360,6 +4379,7 @@ button {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+
   to {
     opacity: 0;
     transform: translateY(-12px) scale(1.01);
@@ -4371,6 +4391,7 @@ button {
     opacity: 1;
     transform: translateY(0);
   }
+
   to {
     opacity: 0;
     transform: translateY(-8px);
@@ -4378,6 +4399,7 @@ button {
 }
 
 @media (max-width: 1180px) {
+
   .hero-grid,
   .contact-layout,
   .about-layout,
