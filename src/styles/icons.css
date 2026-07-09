@@ -1,0 +1,148 @@
+/* iOS-style glossy pastel app icons */
+.mobile-icon {
+  --ios-icon-gradient: linear-gradient(145deg, #c8ccd2 0%, #f1f3f5 100%);
+  --ios-icon-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  --ios-icon-gloss: linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.15));
+
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: var(--ios-icon-gradient);
+  box-shadow: var(--ios-icon-shadow);
+  transform: translateZ(0);
+  transition:
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mobile-icon--app {
+  width: var(--ios-icon-size-app);
+  height: var(--ios-icon-size-app);
+  border-radius: var(--ios-icon-radius);
+}
+
+.mobile-icon--dock {
+  width: var(--ios-icon-size-dock);
+  height: var(--ios-icon-size-dock);
+  border-radius: var(--ios-icon-radius-dock);
+}
+
+.mobile-icon__gloss {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 28% 18%, rgba(255, 255, 255, 0.42), transparent 48%),
+    var(--ios-icon-gloss);
+  pointer-events: none;
+}
+
+.mobile-icon__gloss::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+
+.mobile-icon__glyph {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  opacity: 0.9;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.12));
+}
+
+.mobile-icon--blue {
+  --ios-icon-gradient: linear-gradient(145deg, #4da3ff 0%, #a8d4ff 100%);
+}
+
+.mobile-icon--purple {
+  --ios-icon-gradient: linear-gradient(145deg, #a07cff 0%, #d7c8ff 100%);
+}
+
+.mobile-icon--green {
+  --ios-icon-gradient: linear-gradient(145deg, #5edc9a 0%, #b9f2d0 100%);
+}
+
+.mobile-icon--orange {
+  --ios-icon-gradient: linear-gradient(145deg, #ffb36b 0%, #ffe0c2 100%);
+}
+
+.mobile-icon--pink {
+  --ios-icon-gradient: linear-gradient(145deg, #ff7fbf 0%, #ffd0e8 100%);
+}
+
+.mobile-icon--gray {
+  --ios-icon-gradient: linear-gradient(145deg, #c8ccd2 0%, #f1f3f5 100%);
+}
+
+.mobile-icon--violet {
+  --ios-icon-gradient: linear-gradient(145deg, #9b8cff 0%, #d4ccff 100%);
+}
+
+.mobile-icon--slate {
+  --ios-icon-gradient: linear-gradient(145deg, #a8b4c4 0%, #e4e9f0 100%);
+}
+
+.mobile-app-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  cursor: pointer;
+}
+
+.mobile-app-icon:focus-visible {
+  outline: 2px solid rgba(77, 163, 255, 0.55);
+  outline-offset: 6px;
+  border-radius: 20px;
+}
+
+.mobile-app-icon:active .mobile-icon {
+  transform: scale(0.92);
+}
+
+.mobile-app-icon__label,
+.os-shell .mobile-app-icon .os-app-label {
+  font-family: var(--ios-status-font);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
+}
+
+/* Legacy glyph bridge — hide when mobile icon is present */
+.mobile-app-icon .os-app-glyph,
+.mobile-dock__item .os-app-glyph {
+  display: none;
+}
+
+.mobile-dock__item .mobile-icon {
+  box-shadow:
+    0 5px 14px rgba(0, 0, 0, 0.14),
+    inset 0 1px 2px rgba(255, 255, 255, 0.38);
+}
+
+.mobile-dock__item:active .mobile-icon {
+  transform: scale(0.9);
+}
+
+:root[data-theme="dark"] .mobile-icon {
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.28),
+    inset 0 1px 2px rgba(255, 255, 255, 0.22);
+}
+
+:root[data-theme="dark"] .mobile-icon--gray,
+:root[data-theme="dark"] .mobile-icon--slate {
+  --ios-icon-gradient: linear-gradient(145deg, #8e97a3 0%, #c2c9d2 100%);
+}

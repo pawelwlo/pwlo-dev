@@ -1,0 +1,162 @@
+/* iOS 17/18 mobile design tokens */
+.os-shell {
+  --ios-space-1: 16px;
+  --ios-space-2: 24px;
+  --ios-space-3: 32px;
+  --ios-icon-size-app: 62px;
+  --ios-icon-size-dock: 44px;
+  --ios-icon-radius: 24px;
+  --ios-icon-radius-dock: 22px;
+  --ios-dock-radius: 30px;
+  --ios-dock-height: 84px;
+  --ios-dock-gap: 14px;
+  --ios-status-font:
+    "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+  --ios-status-opacity: 0.85;
+  --ios-status-weight: 300;
+  --ios-depth-shadow: 0 14px 36px rgba(0, 0, 0, 0.14);
+  --ios-glass-border: rgba(255, 255, 255, 0.35);
+  --ios-glass-surface: rgba(255, 255, 255, 0.25);
+  --ios-glass-blur: blur(30px) saturate(1.35);
+  --ios-inner-highlight: inset 0 1px 2px rgba(255, 255, 255, 0.4);
+
+  --os-icon-size: var(--ios-icon-size-app);
+  --os-icon-radius: var(--ios-icon-radius);
+  --os-dock-height: var(--ios-dock-height);
+  --os-padding-x: var(--ios-space-1);
+  --os-icon-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  --os-shadow: var(--ios-depth-shadow);
+}
+
+.os-shell[data-os-mode="home"] {
+  padding-bottom: calc(var(--ios-dock-height) + var(--ios-space-2) + env(safe-area-inset-bottom));
+}
+
+/* Status bar — thin SF Pro, reduced brightness */
+.os-shell .os-topbar.mobile-status-bar {
+  min-height: 48px;
+  margin: 0 0 var(--ios-space-1);
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(24px) saturate(1.2);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.1),
+    var(--ios-inner-highlight);
+}
+
+.os-shell .mobile-status-bar .os-topbar-left,
+.os-shell .mobile-status-bar .os-topbar-right {
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.1);
+  font-family: var(--ios-status-font);
+  font-size: 0.78rem;
+  font-weight: var(--ios-status-weight);
+  color: rgba(255, 255, 255, var(--ios-status-opacity));
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.os-shell .mobile-status-bar .os-topbar-title {
+  font-family: var(--ios-status-font);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: -0.02em;
+}
+
+.os-shell .mobile-status-bar .os-signal-bar {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* Home grid spacing rhythm */
+.os-shell .os-home-layout {
+  gap: var(--ios-space-2);
+}
+
+.os-shell .os-home-grid {
+  gap: var(--ios-space-2) var(--ios-space-1);
+  padding-top: var(--ios-space-1);
+}
+
+.os-shell .os-home-widgets {
+  gap: var(--ios-space-1);
+  margin-bottom: var(--ios-space-1);
+}
+
+.os-shell .os-home-widget-card {
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow:
+    var(--ios-depth-shadow),
+    var(--ios-inner-highlight);
+  backdrop-filter: blur(28px) saturate(1.25);
+}
+
+.os-shell .os-home-surface::before {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 42%);
+}
+
+/* Lockscreen depth */
+.os-shell .os-lockscreen-panel {
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow:
+    0 20px 44px rgba(0, 0, 0, 0.16),
+    var(--ios-inner-highlight);
+  backdrop-filter: blur(30px) saturate(1.2);
+}
+
+.os-shell .os-weather-card {
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.12),
+    var(--ios-inner-highlight);
+}
+
+:root[data-theme="dark"] .os-shell {
+  --ios-glass-surface: rgba(18, 22, 30, 0.42);
+  --ios-glass-border: rgba(255, 255, 255, 0.14);
+}
+
+:root[data-theme="dark"] .os-shell .os-topbar.mobile-status-bar,
+:root[data-theme="dark"] .os-shell .os-home-widget-card,
+:root[data-theme="dark"] .os-shell .os-weather-card {
+  background: rgba(18, 22, 30, 0.34);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+@media (min-width: 768px) {
+  .os-shell {
+    --ios-icon-size-app: 78px;
+    --ios-icon-size-dock: 50px;
+    --ios-dock-height: 96px;
+    --os-padding-x: var(--ios-space-2);
+  }
+
+  .os-shell .os-home-grid {
+    gap: var(--ios-space-3) var(--ios-space-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .os-shell .mobile-background__photo {
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .os-shell .mobile-background__photo {
+    filter: blur(24px) saturate(0.55) brightness(0.78);
+  }
+
+  .os-shell .mobile-dock,
+  .os-shell .os-topbar.mobile-status-bar,
+  .os-shell .os-home-widget-card {
+    backdrop-filter: none;
+  }
+}

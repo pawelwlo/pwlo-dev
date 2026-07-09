@@ -14,6 +14,7 @@ import {
   Globe,
   Layers3,
   Mail,
+  Search,
   Settings,
   ShieldCheck,
   Sparkles,
@@ -25,6 +26,9 @@ import { useEffect, useMemo, useRef, useState, type ComponentType, type FormEven
 
 import { LeadsWindow } from "@/components/portfolio/LeadsWindow";
 import { AboutWindow, ContactWindow, TechStackWindow } from "@/components/portfolio/UtilityWindows";
+import { MobileAppIcon } from "@/components/MobileIcons";
+import { MobileBackground } from "@/components/MobileBackground";
+import { MobileDock } from "@/components/MobileDock";
 import { projects } from "@/data/portfolioData";
 import { getProjectTranslation, type Copy, type Locale } from "@/i18n/translations";
 
@@ -182,6 +186,7 @@ export function OsHomeLayout({
   const [activeApp, setActiveApp] = useState<OsAppId>("home");
   const [appTransitionState, setAppTransitionState] = useState<"idle" | "opening" | "closing">("idle");
   const [projectView, setProjectView] = useState<"grid" | "detail">("grid");
+  const [searchQuery, setSearchQuery] = useState("");
   const transitionTimerRef = useRef<number | null>(null);
   const unlockTimerRef = useRef<number | null>(null);
   const [lockscreenState, setLockscreenState] = useState<"locked" | "unlocking" | "unlocked">(() => {
@@ -396,6 +401,7 @@ export function OsHomeLayout({
     setActiveApp(appId);
     setProjectView("grid");
     setAppTransitionState("opening");
+    setSearchQuery("");
     scrollToTop();
 
     transitionTimerRef.current = window.setTimeout(() => {
@@ -474,7 +480,7 @@ export function OsHomeLayout({
       className={`os-shell ${isLockscreenVisible ? "os-shell-locked" : ""}`}
       data-os-mode={activeApp === "home" ? "home" : "app"}
     >
-      <div className="os-wallpaper" aria-hidden="true" />
+      <MobileBackground />
 
       {isLockscreenVisible ? (
         <div
@@ -539,11 +545,26 @@ export function OsHomeLayout({
         </div>
       ) : null}
 
-      <header className="os-topbar" aria-label={homeTitle} aria-hidden={isLockscreenVisible}>
+      <header className="os-topbar mobile-status-bar" aria-label={homeTitle} aria-hidden={isLockscreenVisible}>
         <div className="os-topbar-left">{localTime}</div>
-        <div className="os-topbar-title">
-          <span>{navTitle}</span>
-        </div>
+        {isHomeActive ? (
+          <div className="os-topbar-search">
+            <Search className="os-topbar-search-icon" size={13} aria-hidden="true" />
+            <input
+              id="os-search-input"
+              className="os-topbar-search-input"
+              type="search"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              aria-label="Search apps"
+            />
+          </div>
+        ) : (
+          <div className="os-topbar-title">
+            <span>{navTitle}</span>
+          </div>
+        )}
         <div className="os-topbar-right" aria-hidden="true" title={copy.statusBar.online}>
           <span className="os-signal-bars" aria-hidden="true">
             <span className="os-signal-bar os-signal-bar-1" />
@@ -586,41 +607,29 @@ export function OsHomeLayout({
               </article>
             </div>
 
-            {icons.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <button key={item.id} className="os-app-icon" type="button" onClick={() => openApp(item.id)}>
-                  <span className={`os-app-glyph ${item.tintClass}`} aria-hidden="true">
-                    <Icon size={isTablet ? 36 : 30} />
-                  </span>
-                  <span className="os-app-label">{item.label}</span>
-                </button>
-              );
-            })}
+            {icons
+              .filter((item) =>
+                searchQuery.trim() === "" ||
+                item.label.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map((item) => (
+                <MobileAppIcon
+                  key={item.id}
+                  icon={item.icon}
+                  tintClass={item.tintClass}
+                  label={item.label}
+                  onClick={() => openApp(item.id)}
+                />
+              ))}
           </section>
         </div>
 
         {isHomeActive ? (
-          <nav className="os-dock" aria-label="Dock">
-            {dockIcons.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <button
-                  key={item.id}
-                  className="os-dock-icon"
-                  type="button"
-                  onClick={() => openApp(item.id)}
-                  aria-label={getDockLabel(item.id)}
-                >
-                  <span className={`os-app-glyph ${item.tintClass}`} aria-hidden="true">
-                    <Icon size={isTablet ? 24 : 22} />
-                  </span>
-                </button>
-              );
-            })}
-          </nav>
+          <MobileDock
+            items={dockIcons}
+            onItemClick={(id) => openApp(id as Exclude<OsAppId, "home">)}
+            getLabel={getDockLabel}
+          />
         ) : null}
       </div>
 

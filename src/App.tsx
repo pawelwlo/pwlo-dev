@@ -1,6 +1,9 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 
 import Home from "@/pages/Home";
+import "@/styles/background.css";
+import "@/styles/icons.css";
+import "@/styles/mobile.css";
 import "@/styles/scrollAnimation.css";
 
 const Analytics = lazy(async () => {

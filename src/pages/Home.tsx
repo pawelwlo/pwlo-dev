@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
   type FormEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import {
@@ -20,6 +21,7 @@ import {
   Layers3,
   Mail,
   MoonStar,
+  Search,
   ShieldCheck,
   SunMedium,
   UserRound,
@@ -294,9 +296,14 @@ export default function Home() {
   const [hasAcceptedDesktopTerms, setHasAcceptedDesktopTerms] = useState(false);
   const [isDesktopPrivacyInfoExpanded, setIsDesktopPrivacyInfoExpanded] = useState(false);
   const [isLocaleMenuOpen, setIsLocaleMenuOpen] = useState(false);
+  const [desktopSearch, setDesktopSearch] = useState("");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchHighlightIndex, setSearchHighlightIndex] = useState(0);
   const portfolioShellRef = useRef<HTMLElement | null>(null);
   const scrollAnimationRef = useRef<ScrollAnimationHandle | null>(null);
   const localeMenuRef = useRef<HTMLDivElement | null>(null);
+  const searchContainerRef = useRef<HTMLDivElement | null>(null);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const desktopSurfaceRef = useRef<HTMLDivElement | null>(null);
   const windowDragStateRef = useRef<WindowDragState | null>(null);
   const resizeStateRef = useRef<ResizeState | null>(null);
@@ -320,8 +327,13 @@ export default function Home() {
 
   useEffect(() => {
     const handlePointerDown = (event: PointerEvent) => {
-      if (!isLocaleMenuOpen) {
+      if (!isLocaleMenuOpen && !isSearchFocused) {
         return;
+      }
+
+      if (isSearchFocused && searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setIsSearchFocused(false);
+        setDesktopSearch("");
       }
 
       if (event.target instanceof Node && localeMenuRef.current && !localeMenuRef.current.contains(event.target)) {
@@ -332,6 +344,9 @@ export default function Home() {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsLocaleMenuOpen(false);
+        setIsSearchFocused(false);
+        setDesktopSearch("");
+        searchInputRef.current?.blur();
       }
     };
 
@@ -342,7 +357,7 @@ export default function Home() {
       window.removeEventListener("pointerdown", handlePointerDown);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isLocaleMenuOpen]);
+  }, [isLocaleMenuOpen, isSearchFocused]);
 
   useEffect(() => {
     const savedTheme = window.localStorage.getItem("pwlo-theme");
@@ -567,6 +582,56 @@ export default function Home() {
     }));
     openWindow(windowId);
   }, [openWindow]);
+
+  const searchWindowMatches = useMemo(() => {
+    if (!desktopSearch.trim()) return [];
+    const q = desktopSearch.toLowerCase();
+    return desktopIcons.filter(
+      (icon) =>
+        icon.label.toLowerCase().includes(q) ||
+        icon.subtitle.toLowerCase().includes(q),
+    );
+  }, [desktopSearch]);
+
+  const handleSearchOpenWindow = useCallback(
+    (windowId: WindowId) => {
+      openFromIcon(windowId);
+      setDesktopSearch("");
+      setIsSearchFocused(false);
+      searchInputRef.current?.blur();
+    },
+    [openFromIcon],
+  );
+
+  const handleSearchSubmit = useCallback(() => {
+    const highlighted = searchWindowMatches[searchHighlightIndex];
+    if (highlighted) {
+      handleSearchOpenWindow(highlighted.id);
+      return;
+    }
+    if (desktopSearch.trim()) {
+      window.find(desktopSearch, false, false, true, false, false, false);
+    }
+  }, [searchWindowMatches, searchHighlightIndex, desktopSearch, handleSearchOpenWindow]);
+
+  const handleSearchKeyDown = useCallback(
+    (event: ReactKeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handleSearchSubmit();
+      } else if (event.key === "ArrowDown") {
+        event.preventDefault();
+        setSearchHighlightIndex((i) =>
+          Math.min(i + 1, searchWindowMatches.length - 1),
+        );
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        setSearchHighlightIndex((i) => Math.max(i - 1, 0));
+      }
+    },
+    [handleSearchSubmit, searchWindowMatches.length],
+  );
+
 
   const maybeAutoMaximizeWindow = useCallback(
     (windowId: WindowId) => {
@@ -1043,6 +1108,84 @@ export default function Home() {
         <div className="system-menu-bar-section system-menu-bar-left">
           <span className="system-status-item system-status-app">{copy.statusBar.os}</span>
         </div>
+        <div className="system-menu-bar-section system-menu-bar-center">
+          <div
+            ref={searchContainerRef}
+            className={`system-menu-bar-search-wrap${isSearchFocused ? " system-menu-bar-search-wrap-open" : ""}`}
+          >
+            <div className={`system-menu-bar-search${isSearchFocused ? " system-menu-bar-search-focused" : ""}`}>
+              <Search className="system-menu-bar-search-icon" size={12} aria-hidden="true" />
+              <input
+                ref={searchInputRef}
+                id="desktop-search-input"
+                className="system-menu-bar-search-input"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+                autoComplete="off"
+                value={desktopSearch}
+                onChange={(e) => {
+                  setDesktopSearch(e.target.value);
+                  setSearchHighlightIndex(0);
+                }}
+                onFocus={() => setIsSearchFocused(true)}
+                onKeyDown={handleSearchKeyDown}
+              />
+            </div>
+            {isSearchFocused && desktopSearch.trim() && (
+              <div className="search-results-dropdown" role="listbox" aria-label="Search results">
+                {searchWindowMatches.length > 0 ? (
+                  <>
+                    <div className="search-results-section-label">Open window</div>
+                    {searchWindowMatches.map((match, index) => {
+                      const Icon = iconMap[match.id];
+                      return (
+                        <button
+                          key={match.id}
+                          className={`search-result-item${index === searchHighlightIndex ? " search-result-item-active" : ""}`}
+                          type="button"
+                          role="option"
+                          aria-selected={index === searchHighlightIndex}
+                          onPointerDown={(e) => {
+                            e.preventDefault();
+                            handleSearchOpenWindow(match.id);
+                          }}
+                        >
+                          <span className="search-result-icon">
+                            <Icon size={14} aria-hidden="true" />
+                          </span>
+                          <span className="search-result-label">{match.label}</span>
+                          <span className="search-result-sub">{match.subtitle}</span>
+                        </button>
+                      );
+                    })}
+                    <div className="search-results-hint">↵ to open · ↑↓ to navigate</div>
+                  </>
+                ) : (
+                  <>
+                    <div className="search-results-section-label">Find on page</div>
+                    <button
+                      className="search-result-item search-result-item-active"
+                      type="button"
+                      onPointerDown={(e) => {
+                        e.preventDefault();
+                        handleSearchSubmit();
+                      }}
+                    >
+                      <span className="search-result-icon">
+                        <Search size={14} aria-hidden="true" />
+                      </span>
+                      <span className="search-result-label">"{desktopSearch}"</span>
+                      <span className="search-result-sub">Find on page</span>
+                    </button>
+                    <div className="search-results-hint">↵ to find</div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="system-menu-bar-section system-menu-bar-right">
           <div className="system-menu-bar-controls">
             <div

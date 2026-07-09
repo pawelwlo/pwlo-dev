@@ -1,0 +1,171 @@
+/* iOS wallpaper — blurred photo, pastel bloom, gloss */
+.mobile-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  contain: strict;
+  background: linear-gradient(135deg, #3d6f9b 0%, #c98f72 52%, #e8b4c8 100%);
+  transform: translateZ(0);
+}
+
+.mobile-background__photo,
+.mobile-background__gradient,
+.mobile-background__bloom,
+.mobile-background__gloss,
+.mobile-background__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mobile-background__photo {
+  inset: -18%;
+  background-image: var(--mobile-wallpaper-image);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: blur(var(--mobile-wallpaper-blur, 100px)) saturate(0.4) brightness(0.75);
+  transform: scale(1.14);
+  will-change: transform;
+}
+
+.mobile-background__gradient {
+  background: var(--mobile-wallpaper-diagonal);
+  mix-blend-mode: soft-light;
+  opacity: 0.9;
+}
+
+.mobile-background__bloom {
+  background: var(--mobile-wallpaper-bloom);
+  mix-blend-mode: screen;
+}
+
+.mobile-background__gloss {
+  background: var(--mobile-wallpaper-gloss);
+}
+
+.mobile-background__vignette {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12), transparent 42%),
+    radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.22), transparent 48%),
+    linear-gradient(180deg, rgba(8, 16, 28, 0.08), rgba(8, 16, 28, 0.18));
+}
+
+.mobile-background--lockscreen .mobile-background__vignette {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.16), transparent 40%),
+    linear-gradient(180deg, rgba(8, 16, 28, 0.1), rgba(8, 16, 28, 0.24));
+}
+
+/* Override legacy wallpaper pseudo layers */
+.os-shell .mobile-background.os-wallpaper::before,
+.os-shell .mobile-background.os-wallpaper::after {
+  content: none;
+  display: none;
+}
+
+.os-shell .os-lockscreen::before {
+  background:
+    linear-gradient(135deg, rgba(77, 163, 255, 0.22), rgba(255, 179, 107, 0.16) 48%, rgba(255, 127, 191, 0.14)),
+    radial-gradient(circle at 40% 30%, rgba(255, 200, 150, 0.22), transparent 58%),
+    var(--mobile-wallpaper-image, url("/os-mobile-wallpaper.webp")) center center / cover no-repeat;
+  filter: blur(100px) saturate(0.4) brightness(0.72);
+}
+
+.os-shell .os-lockscreen::after {
+  background:
+    var(--mobile-wallpaper-gloss, linear-gradient(to bottom, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))),
+    linear-gradient(180deg, rgba(14, 22, 36, 0.1), rgba(24, 28, 36, 0.2));
+}
+
+:root[data-theme="dark"] .mobile-background__photo {
+  filter: blur(100px) saturate(0.34) brightness(0.58);
+}
+
+:root[data-theme="dark"] .mobile-background__vignette {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.34), transparent 50%),
+    linear-gradient(180deg, rgba(4, 8, 16, 0.18), rgba(4, 8, 16, 0.36));
+}
+
+/* Frosted glass dock */
+.mobile-dock {
+  position: fixed;
+  left: var(--os-padding-x);
+  right: var(--os-padding-x);
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ios-dock-gap);
+  min-height: var(--ios-dock-height);
+  padding: 12px 16px;
+  border: 1px solid var(--ios-glass-border);
+  border-radius: var(--ios-dock-radius);
+  background: var(--ios-glass-surface);
+  backdrop-filter: var(--ios-glass-blur);
+  box-shadow:
+    0 20px 44px rgba(0, 0, 0, 0.16),
+    var(--ios-inner-highlight);
+  transform: translateZ(0);
+}
+
+.mobile-dock__glass {
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04));
+  pointer-events: none;
+}
+
+.mobile-dock__item {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: calc(var(--ios-icon-size-dock) + 4px);
+  height: calc(var(--ios-icon-size-dock) + 4px);
+  border: 0;
+  border-radius: calc(var(--ios-icon-radius-dock) + 2px);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mobile-dock__item:hover {
+  transform: translateY(-2px);
+}
+
+.mobile-dock__item:active {
+  transform: translateY(0) scale(0.96);
+}
+
+/* Suppress legacy dock chrome when mobile dock is active */
+.os-shell .mobile-dock.os-dock::before {
+  content: none;
+  display: none;
+}
+
+:root[data-theme="dark"] .mobile-dock {
+  background: rgba(18, 22, 30, 0.48);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.34),
+    inset 0 1px 2px rgba(255, 255, 255, 0.16);
+}
+
+:root[data-theme="dark"] .mobile-dock__glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+}
+
+@media (min-width: 768px) {
+  .mobile-dock {
+    gap: 16px;
+    padding: 14px 18px;
+    border-radius: 32px;
+  }
+}
