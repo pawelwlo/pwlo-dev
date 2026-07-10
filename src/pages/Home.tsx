@@ -68,12 +68,12 @@ type WindowRect = {
 };
 
 const initialWindowRects: Record<WindowId, WindowRect> = {
-  projects: { x: 272, y: 24, width: 648, height: 352, minWidth: 560, minHeight: 320 },
-  about: { x: 940, y: 24, width: 280, height: 168, minWidth: 280, minHeight: 168 },
-  tech: { x: 940, y: 208, width: 280, height: 168, minWidth: 280, minHeight: 168 },
-  contact: { x: 272, y: 396, width: 468, height: 170, minWidth: 400, minHeight: 170 },
-  speed: { x: 756, y: 396, width: 464, height: 170, minWidth: 320, minHeight: 170 },
-  leads: { x: 320, y: 88, width: 780, height: 440, minWidth: 520, minHeight: 360 },
+  projects: { x: 100, y: 40, width: 840, height: 600, minWidth: 640, minHeight: 480 },
+  about: { x: 600, y: 80, width: 480, height: 420, minWidth: 400, minHeight: 360 },
+  tech: { x: 160, y: 120, width: 520, height: 440, minWidth: 420, minHeight: 380 },
+  contact: { x: 220, y: 160, width: 560, height: 540, minWidth: 460, minHeight: 480 },
+  speed: { x: 640, y: 200, width: 580, height: 460, minWidth: 460, minHeight: 380 },
+  leads: { x: 280, y: 240, width: 780, height: 540, minWidth: 560, minHeight: 460 },
 };
 
 type WindowState = {
@@ -580,6 +580,40 @@ export default function Home() {
         minimized: false,
       },
     }));
+
+    setWindowRects((current) => {
+      const rect = current[windowId];
+      if (!rect) return current;
+
+      const maxW = window.innerWidth;
+      const maxH = window.innerHeight;
+      const padding = 20;
+      const topBarHeight = 26;
+      const dockHeight = 70;
+
+      let { x, y, width, height } = rect;
+
+      if (width > maxW - padding * 2) width = Math.max(rect.minWidth, maxW - padding * 2);
+      if (height > maxH - topBarHeight - dockHeight - padding * 2) {
+        height = Math.max(rect.minHeight, maxH - topBarHeight - dockHeight - padding * 2);
+      }
+
+      if (x + width > maxW - padding) x = maxW - width - padding;
+      if (x < padding) x = padding;
+
+      if (y + height > maxH - dockHeight - padding) y = maxH - height - dockHeight - padding;
+      if (y < topBarHeight + padding) y = topBarHeight + padding;
+
+      if (x === rect.x && y === rect.y && width === rect.width && height === rect.height) {
+        return current;
+      }
+
+      return {
+        ...current,
+        [windowId]: { ...rect, x, y, width, height },
+      };
+    });
+
     openWindow(windowId);
   }, [openWindow]);
 

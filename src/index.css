@@ -134,8 +134,9 @@ button {
     url("/1729D9FB-8203-4A75-88A6-19E41EBA8995_1_201_a.jpeg") center center / cover no-repeat;
   filter: blur(88px) saturate(0.58) brightness(0.54) contrast(1.06);
   transform: scale(1.18);
-  opacity: 0.96;
+  opacity: 0;
   mix-blend-mode: normal;
+  transition: opacity 1.4s ease, filter 1.4s ease, transform 1.4s ease;
 }
 
 .portfolio-shell-locked .desktop-wallpaper-photo {
@@ -1614,9 +1615,21 @@ button {
     filter 180ms ease;
 }
 
-.desktop-icon:hover,
-.desktop-icon-active {
+.desktop-icon:hover {
   transform: translateY(-6px);
+}
+
+.desktop-dock-item.desktop-icon-active::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text-soft);
+  opacity: 0.8;
 }
 
 .desktop-icon-glyph {
@@ -1639,8 +1652,7 @@ button {
     background 180ms ease;
 }
 
-.desktop-icon:hover .desktop-icon-glyph,
-.desktop-icon-active .desktop-icon-glyph {
+.desktop-icon:hover .desktop-icon-glyph {
   transform: scale(1.06);
   box-shadow:
     0 20px 32px rgba(19, 32, 55, 0.18),
@@ -2213,6 +2225,7 @@ button {
   border-radius: 16px;
   padding: 12px 14px;
   outline: none;
+  border: 1px solid var(--border);
 }
 
 .contact-form input:focus,
