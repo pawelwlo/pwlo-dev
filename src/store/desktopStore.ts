@@ -52,7 +52,7 @@ const initialTheme: ThemeMode = (() => {
 export const useDesktopStore = create<DesktopStore>((set) => ({
   locale: initialLocale,
   theme: initialTheme,
-  openWindows: ["projects"],
+  openWindows: ["about", "projects", "contact"],
   activeWindow: "projects",
   selectedProjectId: projects[0].id,
   setLocale: (locale) => set({ locale }),
