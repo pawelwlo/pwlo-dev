@@ -80,7 +80,6 @@ export function AboutWindow({ copy }: CopyProps) {
 
       <div className="about-copy">
         <div style={{ marginBottom: "24px" }}>
-          <span className="eyebrow" style={{ display: "block", marginBottom: "8px" }}>{copy.about.eyebrow}</span>
           <h3 style={{ marginBottom: "16px" }}>{copy.about.title}</h3>
           
           <div className="about-details">
@@ -106,7 +105,6 @@ export function TechStackWindow({ copy }: CopyProps) {
   return (
     <div className="tech-stack-layout">
       <div style={{ marginBottom: "24px" }}>
-        <span className="eyebrow" style={{ display: "block", marginBottom: "8px" }}>{copy.techStack.eyebrow}</span>
         <h3>{copy.techStack.title}</h3>
       </div>
       <div className="stack-grid">
@@ -272,7 +270,6 @@ export function SpeedWindow({ locale, copy }: CopyProps) {
   return (
     <div className="speed-layout">
       <div className="speed-copy-block" style={{ marginBottom: "24px" }}>
-        <span className="eyebrow" style={{ display: "block", marginBottom: "8px" }}>{copy.speed.eyebrow}</span>
         <h3>{copy.speed.title}</h3>
       </div>
       
@@ -317,7 +314,6 @@ export function ContactWindow({
   return (
     <div className="contact-layout">
       <div className="contact-intro">
-        <span className="eyebrow">{copy.contact.eyebrow}</span>
         <h3>{copy.contact.title}</h3>
         <a className="contact-email" href="mailto:contact@pwlo.dev">contact@pwlo.dev</a>
 

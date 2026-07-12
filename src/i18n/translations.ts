@@ -618,7 +618,7 @@ export const copyByLocale: Record<Locale, Copy> = {
     },
     windowTitles: {
       projects: "Projects",
-      about: "About Pawel",
+      about: "About me",
       tech: "Tech Stack",
       contact: "Contact",
       speed: "SEO & Speed",
@@ -856,7 +856,7 @@ export const copyByLocale: Record<Locale, Copy> = {
     },
     windowTitles: {
       projects: "Projekty",
-      about: "O Pawle",
+      about: "O mnie",
       tech: "Stack technologiczny",
       contact: "Kontakt",
       speed: "SEO i szybkosc",
@@ -1069,7 +1069,7 @@ export const copyByLocale: Record<Locale, Copy> = {
     },
     windowTitles: {
       projects: "Projekte",
-      about: "Ueber Pawel",
+      about: "Ueber mich",
       tech: "Tech Stack",
       contact: "Kontakt",
       speed: "SEO & Speed",

@@ -57,7 +57,6 @@ export function LeadsWindow({
   return (
     <div className="leads-layout">
       <div className="leads-intro">
-        <span className="eyebrow">{copy.eyebrow}</span>
         <h3>{copy.title}</h3>
         <p>{copy.description}</p>
       </div>

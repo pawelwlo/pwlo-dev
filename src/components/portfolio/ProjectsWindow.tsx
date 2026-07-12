@@ -7,7 +7,6 @@ import { getProjectTranslation, type Locale } from "@/i18n/translations";
 type ProjectsWindowProps = {
   locale: Locale;
   copy: {
-    eyebrow: string;
     title: string;
     openProjectAction: string;
   };
@@ -22,7 +21,6 @@ export function ProjectsWindow({
   return (
     <div className="projects-layout">
       <div className="projects-intro" style={{ marginBottom: "24px", padding: "0 8px" }}>
-        <span className="eyebrow" style={{ display: "block", marginBottom: "8px" }}>{copy.eyebrow}</span>
         <h3>{copy.title}</h3>
       </div>
       <div className="project-grid">
