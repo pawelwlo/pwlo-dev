@@ -46,6 +46,7 @@ import {
 import { desktopIcons, type WindowId } from "@/data/portfolioData";
 import { copyByLocale, localeOptions, type Locale } from "@/i18n/translations";
 import { getLocalePath } from "@/lib/localeRouting";
+import { persistLocalePreference } from "@/lib/geoLocale";
 import { cn } from "@/lib/utils";
 import { fetchAdminLeads, submitLead, type LeadRecord } from "@/lib/leadsApi";
 import { useDesktopStore } from "@/store/desktopStore";
@@ -389,7 +390,7 @@ export default function Home() {
         // ignore
       }
 
-      window.localStorage.setItem("pwlo-locale", nextLocale);
+      persistLocalePreference(nextLocale);
       setLocale(nextLocale);
       window.location.assign(nextPath);
     },
@@ -454,7 +455,7 @@ export default function Home() {
   }, [setTheme]);
 
   useEffect(() => {
-    window.localStorage.setItem("pwlo-locale", locale);
+    persistLocalePreference(locale);
     document.documentElement.lang = locale;
   }, [locale]);
 

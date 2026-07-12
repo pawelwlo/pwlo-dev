@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 
 import Home from "@/pages/Home";
+import { redirectToGeoLocaleIfNeeded } from "@/lib/geoLocale";
 import "@/styles/background.css";
 import "@/styles/icons.css";
 import "@/styles/mobile.css";
@@ -14,6 +15,10 @@ const Analytics = lazy(async () => {
 
 export default function App() {
   const [shouldLoadAnalytics, setShouldLoadAnalytics] = useState(false);
+
+  useEffect(() => {
+    void redirectToGeoLocaleIfNeeded();
+  }, []);
 
   useEffect(() => {
     const requestIdle = window.requestIdleCallback?.bind(window);

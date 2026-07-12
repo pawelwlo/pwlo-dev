@@ -1,4 +1,4 @@
-import { ArrowRight, Github, Linkedin, Mail, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Github, Mail, CheckCircle2 } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { submitLead } from "@/lib/leadsApi";
 import { isSupabaseConfigured } from "@/lib/supabase";
@@ -326,11 +326,8 @@ export function ContactWindow({
         </p>
 
         <div className="social-row">
-          <a href="https://github.com/" target="_blank" rel="noreferrer" aria-label="GitHub">
+          <a href="https://github.com/pawelwlo" target="_blank" rel="noreferrer" aria-label="GitHub">
             <Github size={18} />
-          </a>
-          <a href="https://linkedin.com/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
-            <Linkedin size={18} />
           </a>
           <a href="mailto:pawel@pwlo.dev" aria-label="Email">
             <Mail size={18} />
