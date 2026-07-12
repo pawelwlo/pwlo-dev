@@ -134,7 +134,7 @@ beforeEach(() => {
   fetchAdminLeadsMock.mockResolvedValue([]);
   useDesktopStore.setState({
     locale: "en",
-    theme: "light",
+    theme: "dark",
     openWindows: ["projects"],
     activeWindow: "projects",
     selectedProjectId: projects[0].id,

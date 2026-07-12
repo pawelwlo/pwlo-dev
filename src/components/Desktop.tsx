@@ -18,9 +18,9 @@ export function Desktop({
   onSurfaceMouseMove,
 }: DesktopProps) {
   return (
-    <div className={`desktop-transition-shell ${className}`.trim()} style={style}>
+    <div className={`desktop-transition-shell desktop-transition-shell--bare ${className}`.trim()} style={style}>
       <div
-        className="desktop-surface desktop-transition-surface"
+        className="desktop-workspace desktop-transition-workspace"
         ref={surfaceRef}
         onMouseMove={onSurfaceMouseMove}
       >
@@ -30,4 +30,3 @@ export function Desktop({
     </div>
   );
 }
-

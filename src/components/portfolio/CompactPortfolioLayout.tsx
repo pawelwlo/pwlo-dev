@@ -2,25 +2,21 @@ import {
   ArrowRight,
   ArrowUpRight,
   Menu,
-  MoonStar,
-  SunMedium,
   X,
 } from "lucide-react";
 import { useMemo, useState, type FormEvent } from "react";
 
-import { ContactWindow } from "@/components/portfolio/UtilityWindows";
+import { ContactWindow, SpeedTestForm } from "@/components/portfolio/UtilityWindows";
 import { projects } from "@/data/portfolioData";
 import { getProjectTranslation, localeOptions, type Copy, type Locale } from "@/i18n/translations";
 
 type CompactPortfolioLayoutProps = {
   locale: Locale;
   copy: Copy;
-  isDark: boolean;
   localTime: string;
   selectedProjectId: string;
   onSelectProject: (projectId: string) => void;
   onChangeLocale: (locale: Locale) => void;
-  onToggleTheme: () => void;
   onSubmitContact: (event: FormEvent<HTMLFormElement>) => void;
   isSubmittingInquiry: boolean;
   contactStatusMessage: string | null;
@@ -44,12 +40,10 @@ function scrollToSection(sectionId: string) {
 export function CompactPortfolioLayout({
   locale,
   copy,
-  isDark,
   localTime,
   selectedProjectId,
   onSelectProject,
   onChangeLocale,
-  onToggleTheme,
   onSubmitContact,
   isSubmittingInquiry,
   contactStatusMessage,
@@ -134,11 +128,6 @@ export function CompactPortfolioLayout({
                     </button>
                   ))}
                 </div>
-
-                <button className="theme-toggle" type="button" onClick={onToggleTheme}>
-                  {isDark ? <SunMedium size={16} /> : <MoonStar size={16} />}
-                  <span>{isDark ? copy.themeLight : copy.themeDark}</span>
-                </button>
               </div>
             </div>
           </div>
@@ -180,11 +169,6 @@ export function CompactPortfolioLayout({
                     </button>
                   ))}
                 </div>
-
-                <button className="theme-toggle compact-theme-toggle" type="button" onClick={onToggleTheme}>
-                  {isDark ? <SunMedium size={16} /> : <MoonStar size={16} />}
-                  <span>{isDark ? copy.themeLight : copy.themeDark}</span>
-                </button>
               </div>
             </div>
           </>
@@ -224,9 +208,9 @@ export function CompactPortfolioLayout({
         <span className="eyebrow">{copy.windowTitles.about}</span>
         <p className="compact-profile-bio">{copy.about.bio}</p>
         <div className="compact-skill-pills">
-          {copy.about.skills.map((skill) => (
-            <span key={skill} className="tech-pill">
-              {skill}
+          {copy.techStack.columns[0].items.map((item) => (
+            <span key={item.name} className="tech-pill">
+              {item.name}
             </span>
           ))}
         </div>
@@ -360,7 +344,7 @@ export function CompactPortfolioLayout({
               <h3>{column.title}</h3>
               <ul className="bullet-list">
                 {column.items.map((item) => (
-                  <li key={item}>{item}</li>
+                  <li key={item.name}>{item.name}</li>
                 ))}
               </ul>
             </article>
@@ -389,11 +373,12 @@ export function CompactPortfolioLayout({
 
           <article className="compact-seo-card ios-card ios-animate">
             <h3>{copy.speed.eyebrow}</h3>
-            <ul className="bullet-list">
+            <ul className="bullet-list" style={{ marginBottom: "16px" }}>
               {copy.speed.items.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
+            <SpeedTestForm locale={locale} copy={copy} />
           </article>
         </div>
       </section>

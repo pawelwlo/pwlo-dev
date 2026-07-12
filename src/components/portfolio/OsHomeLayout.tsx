@@ -1,6 +1,7 @@
 import {
   AppWindow,
   ArrowLeft,
+  ArrowRight,
   ArrowUpRight,
   ChevronRight,
   Cloud,
@@ -25,12 +26,12 @@ import {
 import { useEffect, useMemo, useRef, useState, type ComponentType, type FormEvent } from "react";
 
 import { LeadsWindow } from "@/components/portfolio/LeadsWindow";
-import { AboutWindow, ContactWindow, TechStackWindow } from "@/components/portfolio/UtilityWindows";
+import { AboutWindow, ContactWindow, SpeedTestForm, TechStackWindow } from "@/components/portfolio/UtilityWindows";
 import { MobileAppIcon } from "@/components/MobileIcons";
 import { MobileBackground } from "@/components/MobileBackground";
 import { MobileDock } from "@/components/MobileDock";
 import { projects } from "@/data/portfolioData";
-import { getProjectTranslation, type Copy, type Locale } from "@/i18n/translations";
+import { getProjectTranslation, localeOptions, type Copy, type Locale } from "@/i18n/translations";
 
 type OsAppId =
   | "home"
@@ -74,8 +75,6 @@ type OsHomeLayoutProps = {
     submission_duration_ms: number | null;
   }>;
   onChangeLocale: (locale: Locale) => void;
-  onToggleTheme: () => void;
-  isDark: boolean;
 };
 
 type OsIconConfig = {
@@ -163,6 +162,54 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+function BootScreen({ message, onComplete }: { message: string; onComplete: () => void }) {
+  const [progress, setProgress] = useState(0);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  useEffect(() => {
+    const startTime = Date.now();
+    const duration = 2000;
+    let animationFrameId: number;
+    let timeoutId: number;
+
+    const tick = () => {
+      const elapsed = Date.now() - startTime;
+      const nextProgress = Math.min(100, Math.floor((elapsed / duration) * 100));
+      setProgress(nextProgress);
+
+      if (nextProgress < 100) {
+        animationFrameId = requestAnimationFrame(tick);
+      } else {
+        timeoutId = window.setTimeout(() => {
+          onCompleteRef.current();
+        }, 300);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  return (
+    <div className="os-boot-screen">
+      <div className="boot-content">
+        <div className="boot-logo">
+          <img src="/logo.png" alt="Boot Logo" width={100} height={100} style={{ objectFit: "contain", opacity: 0.9 }} />
+        </div>
+        <div className="boot-text">{message}</div>
+        <div className="boot-percentage">{progress}%</div>
+      </div>
+    </div>
+  );
+}
+
 export function OsHomeLayout({
   locale,
   copy,
@@ -180,24 +227,38 @@ export function OsHomeLayout({
   leadsError,
   leads,
   onChangeLocale,
-  onToggleTheme,
-  isDark,
 }: OsHomeLayoutProps) {
   const [activeApp, setActiveApp] = useState<OsAppId>("home");
   const [appTransitionState, setAppTransitionState] = useState<"idle" | "opening" | "closing">("idle");
   const [projectView, setProjectView] = useState<"grid" | "detail">("grid");
+  const [openSourceView, setOpenSourceView] = useState<"list" | "detail">("list");
+  const [selectedOpenSource, setSelectedOpenSource] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const transitionTimerRef = useRef<number | null>(null);
   const unlockTimerRef = useRef<number | null>(null);
-  const [lockscreenState, setLockscreenState] = useState<"locked" | "unlocking" | "unlocked">(() => {
+  const [lockscreenState, setLockscreenState] = useState<"locked" | "unlocking" | "booting" | "unlocked">(() => {
     if (typeof window === "undefined") {
       return "locked";
     }
 
     try {
+      if (window.sessionStorage.getItem("pwlo-trigger-boot") === "true") {
+        return "booting";
+      }
       return window.localStorage.getItem(privacyConsentStorageKey) === "true" ? "unlocked" : "locked";
     } catch {
       return "locked";
+    }
+  });
+  const [bootMessage, setBootMessage] = useState<string>(() => {
+    if (typeof window === "undefined") {
+      return copy.bootMessages.system;
+    }
+
+    try {
+      return window.sessionStorage.getItem("pwlo-trigger-boot-msg") || copy.bootMessages.system;
+    } catch {
+      return copy.bootMessages.system;
     }
   });
   const [isPrivacyInfoExpanded, setIsPrivacyInfoExpanded] = useState(false);
@@ -297,18 +358,18 @@ export function OsHomeLayout({
 
   const dockIcons: OsIconConfig[] = isTablet
     ? [
-        icons.find((item) => item.id === "projects")!,
-        icons.find((item) => item.id === "openSource")!,
-        icons.find((item) => item.id === "seo")!,
-        icons.find((item) => item.id === "contact")!,
-        icons.find((item) => item.id === "tech")!,
-      ]
+      icons.find((item) => item.id === "projects")!,
+      icons.find((item) => item.id === "openSource")!,
+      icons.find((item) => item.id === "seo")!,
+      icons.find((item) => item.id === "contact")!,
+      icons.find((item) => item.id === "tech")!,
+    ]
     : [
-        icons.find((item) => item.id === "projects")!,
-        icons.find((item) => item.id === "seo")!,
-        icons.find((item) => item.id === "contact")!,
-        icons.find((item) => item.id === "openSource")!,
-      ];
+      icons.find((item) => item.id === "projects")!,
+      icons.find((item) => item.id === "seo")!,
+      icons.find((item) => item.id === "contact")!,
+      icons.find((item) => item.id === "openSource")!,
+    ];
 
   const openSourceCards = useMemo(
     () =>
@@ -322,7 +383,7 @@ export function OsHomeLayout({
 
         return {
           ...column,
-          description: column.items.slice(0, 2).join(" • "),
+          description: column.items.slice(0, 2).map(item => item.name).join(" • "),
           icon: iconConfig.icon,
           tintClass: iconConfig.tintClass,
         };
@@ -438,7 +499,7 @@ export function OsHomeLayout({
     setIsPrivacyInfoExpanded(false);
     setLockscreenState("unlocking");
     unlockTimerRef.current = window.setTimeout(() => {
-      setLockscreenState("unlocked");
+      setLockscreenState("booting");
     }, 380);
   };
 
@@ -446,15 +507,15 @@ export function OsHomeLayout({
     appTransitionState === "closing"
       ? "os-app-shell os-app-shell-closing"
       : appTransitionState === "opening"
-      ? "os-app-shell os-app-shell-opening"
-      : "os-app-shell";
+        ? "os-app-shell os-app-shell-opening"
+        : "os-app-shell";
 
   const overlayClassName =
     appTransitionState === "closing"
       ? "os-app-overlay os-app-overlay-closing"
       : appTransitionState === "opening"
-      ? "os-app-overlay os-app-overlay-opening"
-      : "os-app-overlay";
+        ? "os-app-overlay os-app-overlay-opening"
+        : "os-app-overlay";
 
   const getDockLabel = (itemId: OsIconConfig["id"]) => {
     if (itemId === "projects") {
@@ -482,7 +543,11 @@ export function OsHomeLayout({
     >
       <MobileBackground />
 
-      {isLockscreenVisible ? (
+      {lockscreenState === "booting" && (
+        <BootScreen message={bootMessage} onComplete={() => setLockscreenState("unlocked")} />
+      )}
+
+      {isLockscreenVisible && lockscreenState !== "booting" ? (
         <div
           className={`os-lockscreen ${lockscreenState === "unlocking" ? "os-lockscreen-unlocking" : ""}`}
           aria-label={copy.osLayout.lockscreen.title}
@@ -591,7 +656,7 @@ export function OsHomeLayout({
                 </div>
               </article>
             </div>
- 
+
             <div className="os-home-search-bar" aria-label="Search apps">
               <Search className="os-home-search-bar-icon" size={16} aria-hidden="true" />
               <input
@@ -621,15 +686,16 @@ export function OsHomeLayout({
               ))}
           </section>
         </div>
-
-        {isHomeActive ? (
-          <MobileDock
-            items={dockIcons}
-            onItemClick={(id) => openApp(id as Exclude<OsAppId, "home">)}
-            getLabel={getDockLabel}
-          />
-        ) : null}
       </div>
+
+      {isHomeActive ? (
+        <MobileDock
+          items={dockIcons}
+          activeAppId={activeApp}
+          onItemClick={(id) => openApp(id as Exclude<OsAppId, "home">)}
+          getLabel={getDockLabel}
+        />
+      ) : null}
 
       {!isHomeActive ? (
         <div className={overlayClassName} aria-label={navTitle} aria-hidden={isLockscreenVisible}>
@@ -647,14 +713,14 @@ export function OsHomeLayout({
               {activeApp === "projects" ? (
                 <div className="os-projects">
                   {projectView === "grid" ? (
-                    <div className="os-card-grid">
+                    <div className="os-app-style-grid">
                       {projects.map((project) => {
                         const projectCopy = getProjectTranslation(locale, project.id);
 
                         return (
                           <button
                             key={project.id}
-                            className="os-card os-project-card"
+                            className="os-app-style-item"
                             type="button"
                             onClick={() => {
                               onSelectProject(project.id);
@@ -662,28 +728,22 @@ export function OsHomeLayout({
                               scrollToTop();
                             }}
                           >
-                            <div className="os-project-thumb" aria-hidden="true">
+                            <div className="os-app-style-icon" aria-hidden="true">
                               <img
-                                className="os-project-thumb-image"
+                                className="os-app-style-icon-img"
                                 src={project.screenshotSrc}
                                 alt=""
                                 loading="lazy"
                                 decoding="async"
                               />
                             </div>
-                            <div className="os-card-body">
-                              <div className="os-card-heading">
-                                <h3>{projectCopy.title}</h3>
-                                <span className="performance-pill">{projectCopy.performanceBadge}</span>
-                              </div>
-                              <p>{projectCopy.description}</p>
-                              <div className="os-tag-row">
-                                {project.tech.slice(0, 3).map((tag) => (
-                                  <span key={tag} className="os-tag">
-                                    {tag}
-                                  </span>
-                                ))}
-                              </div>
+                            <div className="os-app-style-title">{projectCopy.title}</div>
+                            <div className="os-app-style-pills">
+                              {project.tech.slice(0, 2).map((tag) => (
+                                <span key={tag} className="os-app-style-pill">
+                                  {tag}
+                                </span>
+                              ))}
                             </div>
                           </button>
                         );
@@ -740,124 +800,165 @@ export function OsHomeLayout({
                 </div>
               ) : null}
 
-            {activeApp === "openSource" ? (
-              <div className="os-card-grid">
-                {openSourceCards.map((column) => {
-                  const Icon = column.icon;
+              {activeApp === "openSource" ? (
+                <div className="os-projects">
+                  {openSourceView === "list" ? (
+                    <div className="os-stack-list">
+                      {openSourceCards.map((column) => (
+                        <button
+                          key={column.title}
+                          className="os-stack-card"
+                          type="button"
+                          onClick={() => {
+                            setSelectedOpenSource(column);
+                            setOpenSourceView("detail");
+                            scrollToTop();
+                          }}
+                        >
+                          <h3 className="os-stack-title">{column.title}</h3>
+                          <div className="os-stack-tools">
+                            {column.items.map((item: any) => (
+                              <p key={item.name} className="os-stack-tool">
+                                {item.name}
+                              </p>
+                            ))}
+                          </div>
+                          <div className="os-stack-caption">Tools I use for {column.title.toLowerCase()}</div>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="os-project-detail">
+                      <button className="os-inline-back" type="button" onClick={() => setOpenSourceView("list")}>
+                        <ArrowLeft size={16} />
+                        <span>{copy.osLayout.apps.openSource}</span>
+                      </button>
 
-                  return (
-                    <article key={column.title} className="os-card os-tool-card">
-                      <div className="os-card-heading">
-                        <div className="os-tool-heading">
-                          <span className={`os-tool-icon ${column.tintClass}`} aria-hidden="true">
-                            <Icon size={18} />
-                          </span>
+                      <article className="os-card os-project-detail-card">
+                        <div className="os-project-detail-head">
                           <div>
-                            <h3>{column.title}</h3>
-                            <p>{column.description}</p>
+                            <span className="eyebrow">Tech Stack</span>
+                            <h2>{selectedOpenSource?.title}</h2>
                           </div>
                         </div>
-                        <ChevronRight size={16} />
-                      </div>
-                      <ul className="bullet-list">
-                        {column.items.map((item) => (
-                          <li key={item}>{item}</li>
+
+                        <div className="os-project-detail-content">
+                          <div className="stack-card">
+                            {selectedOpenSource?.items.map((item: any) => (
+                              <div key={item.name} className="os-stack-detail-tool">
+                                <div className="os-stack-detail-tool-name">{item.name}</div>
+                                <div className="os-stack-detail-tool-purpose">{item.purpose}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="os-project-actions">
+                          <button
+                            className="primary-button button-link"
+                            type="button"
+                            onClick={() => {
+                              setActiveApp("projects");
+                            }}
+                          >
+                            View projects using this
+                            <ArrowRight size={16} />
+                          </button>
+                        </div>
+                      </article>
+                    </div>
+                  )}
+                </div>
+              ) : null}
+
+              {activeApp === "seo" ? (
+                <div className="os-seo">
+                  <article className="os-card os-seo-card">
+                    <span className="eyebrow">{copy.speedPanelLabel}</span>
+                    <h2>{copy.speedPanelTitle}</h2>
+                    <div className="os-metric-row">
+                      <span className="metric-badge">{copy.loadsUnderSecond}</span>
+                      <span className="metric-badge">{copy.coreWebVitals}</span>
+                    </div>
+                  </article>
+
+                  <article className="os-card os-seo-card">
+                    <h3>{copy.speed.title}</h3>
+                    <p>{copy.speed.description}</p>
+                    <ul className="bullet-list" style={{ marginBottom: "16px" }}>
+                      {copy.speed.items.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                    <SpeedTestForm locale={locale} copy={copy} />
+                  </article>
+                </div>
+              ) : null}
+
+              {activeApp === "contact" ? (
+                <div className="os-contact">
+                  <ContactWindow
+                    copy={copy}
+                    onSubmit={onSubmitContact}
+                    isSubmitting={isSubmittingInquiry}
+                    statusMessage={contactStatusMessage}
+                    statusTone={contactStatusTone}
+                  />
+                </div>
+              ) : null}
+
+              {activeApp === "tech" ? (
+                <div className="os-app-window">
+                  <TechStackWindow copy={copy} locale={locale} />
+                </div>
+              ) : null}
+
+              {activeApp === "about" ? (
+                <div className="os-app-window">
+                  <AboutWindow copy={copy} locale={locale} />
+                </div>
+              ) : null}
+
+              {activeApp === "leads" ? (
+                <div className="os-app-window">
+                  <LeadsWindow
+                    copy={copy.leads}
+                    adminKey={adminKey}
+                    onAdminKeyChange={onAdminKeyChange}
+                    onRefresh={onRefreshLeads}
+                    isLoading={isLoadingLeads}
+                    errorMessage={leadsError}
+                    leads={leads}
+                  />
+                </div>
+              ) : null}
+
+              {activeApp === "settings" ? (
+                <div className="os-settings">
+                  <article className="os-card os-settings-card">
+                    <div className="os-settings-section">
+                      <h4>{copy.localeLabel}</h4>
+                      <div className="os-segmented-control">
+                        {localeOptions.map((opt) => (
+                          <button
+                            key={opt.value}
+                            className={`os-segment ${locale === opt.value ? "active" : ""}`}
+                            type="button"
+                            onClick={() => {
+                              if (opt.value === locale) return;
+                              const msg = opt.value === "en" ? copy.bootMessages.langEn : opt.value === "pl" ? copy.bootMessages.langPl : copy.bootMessages.langDe;
+                              setBootMessage(msg);
+                              setLockscreenState("booting");
+                              onChangeLocale(opt.value);
+                            }}
+                          >
+                            {opt.label}
+                          </button>
                         ))}
-                      </ul>
-                    </article>
-                  );
-                })}
-              </div>
-            ) : null}
-
-            {activeApp === "seo" ? (
-              <div className="os-seo">
-                <article className="os-card os-seo-card">
-                  <span className="eyebrow">{copy.speedPanelLabel}</span>
-                  <h2>{copy.speedPanelTitle}</h2>
-                  <div className="os-metric-row">
-                    <span className="metric-badge">{copy.loadsUnderSecond}</span>
-                    <span className="metric-badge">{copy.coreWebVitals}</span>
-                  </div>
-                </article>
-
-                <article className="os-card os-seo-card">
-                  <h3>{copy.speed.title}</h3>
-                  <p>{copy.speed.description}</p>
-                  <ul className="bullet-list">
-                    {copy.speed.items.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </article>
-              </div>
-            ) : null}
-
-            {activeApp === "contact" ? (
-              <div className="os-contact">
-                <ContactWindow
-                  copy={copy}
-                  onSubmit={onSubmitContact}
-                  isSubmitting={isSubmittingInquiry}
-                  statusMessage={contactStatusMessage}
-                  statusTone={contactStatusTone}
-                />
-              </div>
-            ) : null}
-
-            {activeApp === "tech" ? (
-              <div className="os-app-window">
-                <TechStackWindow copy={copy} locale={locale} />
-              </div>
-            ) : null}
-
-            {activeApp === "about" ? (
-              <div className="os-app-window">
-                <AboutWindow copy={copy} locale={locale} />
-              </div>
-            ) : null}
-
-            {activeApp === "leads" ? (
-              <div className="os-app-window">
-                <LeadsWindow
-                  copy={copy.leads}
-                  adminKey={adminKey}
-                  onAdminKeyChange={onAdminKeyChange}
-                  onRefresh={onRefreshLeads}
-                  isLoading={isLoadingLeads}
-                  errorMessage={leadsError}
-                  leads={leads}
-                />
-              </div>
-            ) : null}
-
-            {activeApp === "settings" ? (
-              <div className="os-settings">
-                <article className="os-card os-settings-card">
-                  <div className="os-settings-row">
-                    <span>{copy.localeLabel}</span>
-                    <button className="secondary-button" type="button" onClick={() => onChangeLocale("en")}>
-                      EN
-                    </button>
-                    <button className="secondary-button" type="button" onClick={() => onChangeLocale("pl")}>
-                      PL
-                    </button>
-                    <button className="secondary-button" type="button" onClick={() => onChangeLocale("de")}>
-                      DE
-                    </button>
-                  </div>
-                </article>
-
-                <article className="os-card os-settings-card">
-                  <div className="os-settings-row">
-                    <span>{copy.osLayout.settings}</span>
-                    <button className="primary-button" type="button" onClick={onToggleTheme}>
-                      {isDark ? copy.themeLight : copy.themeDark}
-                    </button>
-                  </div>
-                </article>
-              </div>
-            ) : null}
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              ) : null}
             </div>
           </section>
         </div>

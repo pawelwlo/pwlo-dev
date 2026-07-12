@@ -105,6 +105,9 @@ export type Copy = {
   windowTitles: Record<WindowId, string>;
   desktopIcons: Record<WindowId, { label: string; subtitle: string }>;
   projects: {
+    eyebrow: string;
+    title: string;
+    openProjectAction: string;
     openCaseStudy: string;
     caseStudy: string;
     before: string;
@@ -115,12 +118,19 @@ export type Copy = {
     clientTestimonial: string;
   };
   about: {
+    eyebrow: string;
+    title: string;
+    name: string;
+    role: string;
+    location: string;
     photoPlaceholder: string;
-    bio: string;
-    skills: string[];
+    bio: string[];
+    resumeAction: string;
   };
   techStack: {
-    columns: Array<{ title: string; items: string[] }>;
+    eyebrow: string;
+    title: string;
+    columns: Array<{ title: string; items: Array<{ name: string; purpose: string; projectsCount?: number }> }>;
   };
   speed: {
     eyebrow: string;
@@ -129,6 +139,18 @@ export type Copy = {
     items: string[];
     cta: string;
     ctaSubject: string;
+    scoreLabel: string;
+    scoreValue: string;
+    domain: string;
+    domainPlaceholder: string;
+    email: string;
+    emailPlaceholder: string;
+    message: string;
+    messagePlaceholder: string;
+    sendRequest: string;
+    sendingRequest: string;
+    submitSuccess: string;
+    submitError: string;
   };
   contact: {
     eyebrow: string;
@@ -159,6 +181,7 @@ export type Copy = {
     adminKeyLabel: string;
     adminKeyPlaceholder: string;
     loadLeads: string;
+    loadLeadsAction: string;
     loading: string;
     empty: string;
     unauthorized: string;
@@ -179,6 +202,14 @@ export type Copy = {
     restore: string;
     close: (title: string) => string;
     resize: (title: string) => string;
+  };
+  bootMessages: {
+    system: string;
+    themeDark: string;
+    themeLight: string;
+    langEn: string;
+    langPl: string;
+    langDe: string;
   };
 };
 
@@ -560,7 +591,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       lockscreen: {
         title: "pwloOS Privacy Notice",
         message: "We use minimal cookies required for system functionality.",
-        welcome: "Welcome to pwloOS",
+        welcome: "Welcome to pwloOS\n\nA modern web developer workspace\n\nDesigned by\nPawel Wlodarczyk",
         consentAriaLabel: "Privacy consents",
         cookiesConsent: "I accept essential cookies required for system functionality.",
         termsConsent: "I accept the terms of use.",
@@ -590,7 +621,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       about: "About Pawel",
       tech: "Tech Stack",
       contact: "Contact",
-      speed: "Speed Optimization",
+      speed: "SEO & Speed",
       leads: "Leads",
     },
     desktopIcons: {
@@ -598,10 +629,13 @@ export const copyByLocale: Record<Locale, Copy> = {
       about: { label: "About Me", subtitle: "Profile" },
       tech: { label: "Tech Stack", subtitle: "Toolkit" },
       contact: { label: "Contact", subtitle: "Start a project" },
-      speed: { label: "Speed Optimization", subtitle: "Audit lab" },
+      speed: { label: "SEO & Speed", subtitle: "Audit lab" },
       leads: { label: "Leads", subtitle: "Protected view" },
     },
     projects: {
+      eyebrow: "PROJECTS",
+      title: "Your latest builds, shipped fast.",
+      openProjectAction: "Open project",
       openCaseStudy: "Open Case Study",
       caseStudy: "Case study",
       before: "Before",
@@ -612,35 +646,76 @@ export const copyByLocale: Record<Locale, Copy> = {
       clientTestimonial: "Client testimonial",
     },
     about: {
+      eyebrow: "ABOUT ME",
+      title: "I build fast, modern web experiences.",
+      name: "Pawel Wlodarczyk",
+      role: "Web developer · UI/UX · Performance-focused",
+      location: "Germany · Available for freelance",
       photoPlaceholder: "Photo placeholder",
-      bio: "I'm Pawel Wlodarczyk, a freelance web developer focused on fast, modern, scalable websites. I work with clients in Germany, Poland, Indonesia, and worldwide.",
-      skills: [
-        "Frontend (React, Next.js, Tailwind)",
-        "Backend (Node.js, Express, Supabase)",
-        "Performance optimization",
-        "SEO & Core Web Vitals",
-        "UI/UX prototyping",
+      bio: [
+        "I specialize in building scalable, performance-driven web applications.",
+        "My workflow prioritizes clean architecture and minimal dependencies to ship fast.",
+        "I prefer working with React, Next.js, Node.js, and Supabase for robust solutions."
       ],
+      resumeAction: "View resume",
     },
     techStack: {
+      eyebrow: "TECH STACK",
+      title: "Tools I use to build fast.",
       columns: [
-        { title: "Frontend", items: ["React", "Next.js", "Tailwind", "TypeScript"] },
-        { title: "Backend", items: ["Node.js", "Express", "Supabase", "PostgreSQL"] },
-        { title: "Tools", items: ["Git", "Vercel", "Docker", "Figma"] },
-        { title: "Specialties", items: ["Speed optimization", "Clean architecture", "Accessibility"] },
+        { title: "Frontend", items: [
+          { name: "React", purpose: "UI component library", projectsCount: 12 },
+          { name: "Next.js", purpose: "React framework for production", projectsCount: 8 },
+          { name: "Tailwind CSS", purpose: "Utility-first styling", projectsCount: 15 },
+          { name: "TypeScript", purpose: "Static typing for JS", projectsCount: 18 }
+        ]},
+        { title: "Backend", items: [
+          { name: "Node.js", purpose: "JavaScript runtime", projectsCount: 14 },
+          { name: "Express", purpose: "Web framework for Node.js", projectsCount: 10 },
+          { name: "Supabase", purpose: "Open source Firebase alternative", projectsCount: 6 },
+          { name: "PostgreSQL", purpose: "Relational database", projectsCount: 12 }
+        ]},
+        { title: "UI/UX", items: [
+          { name: "Figma", purpose: "Design and prototyping", projectsCount: 20 },
+          { name: "Framer Motion", purpose: "Animation library", projectsCount: 5 }
+        ]},
+        { title: "Deployment", items: [
+          { name: "Vercel", purpose: "Frontend hosting", projectsCount: 15 },
+          { name: "Docker", purpose: "Containerization", projectsCount: 8 }
+        ]},
+        { title: "Performance", items: [
+          { name: "Lighthouse", purpose: "Performance auditing", projectsCount: 20 },
+          { name: "Web Vitals", purpose: "Core metrics tracking", projectsCount: 18 }
+        ]},
+        { title: "Analytics", items: [
+          { name: "Plausible", purpose: "Privacy-friendly analytics", projectsCount: 4 },
+          { name: "PostHog", purpose: "Product analytics", projectsCount: 2 }
+        ]}
       ],
     },
     speed: {
-      eyebrow: "Performance philosophy",
-      title: "Speed is a feature.",
+      eyebrow: "SEO & SPEED",
+      title: "Performance matters.",
       description: "Fast sites convert better, rank better, and feel more trustworthy. Every layer is designed for clarity, low overhead, and measurable outcomes.",
       items: ["Image compression", "Lazy loading", "Code splitting", "CDN delivery", "Lighthouse audits", "SEO structure"],
-      cta: "Request a free speed audit",
-      ctaSubject: "Free speed audit",
+      cta: "Ask for Audit",
+      ctaSubject: "Speed audit",
+      scoreLabel: "Lighthouse Score",
+      scoreValue: "100",
+      domain: "Domain",
+      domainPlaceholder: "yoursite.com",
+      email: "Email",
+      emailPlaceholder: "you@example.com",
+      message: "Message",
+      messagePlaceholder: "Optional message or specific concerns",
+      sendRequest: "Send request",
+      sendingRequest: "Sending...",
+      submitSuccess: "Request sent successfully. I'll be in touch soon.",
+      submitError: "Something went wrong. Please try again.",
     },
     contact: {
       eyebrow: "Contact",
-      title: "Let's build something fast.",
+      title: "Let’s build something fast.",
       name: "Name",
       namePlaceholder: "Your name",
       email: "Email",
@@ -661,12 +736,13 @@ export const copyByLocale: Record<Locale, Copy> = {
       },
     },
     leads: {
-      eyebrow: "Protected leads",
+      eyebrow: "PROTECTED LEADS",
       title: "Latest inquiries",
-      description: "Load recent contact submissions with an admin key. This window stays private behind an Edge Function check.",
+      description: "Load recent contact submissions with an admin key.\nThis window stays private behind an Edge Function check.",
       adminKeyLabel: "Admin key",
-      adminKeyPlaceholder: "Enter admin key",
+      adminKeyPlaceholder: "Enter your admin key",
       loadLeads: "Load leads",
+      loadLeadsAction: "Load leads",
       loading: "Loading...",
       empty: "No submissions yet.",
       unauthorized: "Admin key is invalid.",
@@ -687,6 +763,14 @@ export const copyByLocale: Record<Locale, Copy> = {
       restore: "Restore window",
       close: (title) => `Close ${title}`,
       resize: (title) => `Resize ${title}`,
+    },
+    bootMessages: {
+      system: "loading pwloOS",
+      themeDark: "loading dark mode",
+      themeLight: "loading light mode",
+      langEn: "loading english version",
+      langPl: "loading polish version",
+      langDe: "loading german version",
     },
   },
   pl: {
@@ -745,7 +829,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       lockscreen: {
         title: "Powiadomienie prywatnosci pwloOS",
         message: "Uzywamy minimalnych cookies wymaganych do dzialania systemu.",
-        welcome: "Witaj w pwloOS",
+        welcome: "Witaj w pwloOS\n\nNowoczesne środowisko pracy programisty webowego\n\nZaprojektowane przez\nPawel Wlodarczyk",
         consentAriaLabel: "Zgody prywatnosci",
         cookiesConsent: "Akceptuje minimalne cookies wymagane do dzialania systemu.",
         termsConsent: "Akceptuje regulamin.",
@@ -775,7 +859,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       about: "O Pawle",
       tech: "Stack technologiczny",
       contact: "Kontakt",
-      speed: "Optymalizacja szybkosci",
+      speed: "SEO i szybkosc",
       leads: "Leady",
     },
     desktopIcons: {
@@ -783,10 +867,13 @@ export const copyByLocale: Record<Locale, Copy> = {
       about: { label: "O mnie", subtitle: "Profil" },
       tech: { label: "Tech stack", subtitle: "Narzedia" },
       contact: { label: "Kontakt", subtitle: "Rozpocznij projekt" },
-      speed: { label: "Optymalizacja", subtitle: "Lab audytu" },
+      speed: { label: "SEO i szybkosc", subtitle: "Lab audytu" },
       leads: { label: "Leady", subtitle: "Widok chroniony" },
     },
     projects: {
+      eyebrow: "Case studies",
+      title: "Wybrane projekty",
+      openProjectAction: "Otworz projekt",
       openCaseStudy: "Otworz case study",
       caseStudy: "Case study",
       before: "Przed",
@@ -797,22 +884,26 @@ export const copyByLocale: Record<Locale, Copy> = {
       clientTestimonial: "Opinia klienta",
     },
     about: {
+      eyebrow: "Profil",
+      title: "O mnie.",
+      name: "Pawel Wlodarczyk",
+      role: "Freelance Web Developer",
+      location: "Garmisch-Partenkirchen, DE",
       photoPlaceholder: "Miejsce na zdjecie",
-      bio: "Jestem Pawel Wlodarczyk, freelance web developerem skupionym na szybkich, nowoczesnych i skalowalnych stronach. Wspolpracuje z klientami z Niemiec, Polski, Indonezji i z calego swiata.",
-      skills: [
-        "Frontend (React, Next.js, Tailwind)",
-        "Backend (Node.js, Express, Supabase)",
-        "Optymalizacja wydajnosci",
-        "SEO i Core Web Vitals",
-        "Prototypowanie UI/UX",
+      bio: [
+        "Jestem Pawel Wlodarczyk, freelance web developerem skupionym na szybkich, nowoczesnych i skalowalnych stronach.",
+        "Wspolpracuje z klientami z Niemiec, Polski, Indonezji i z calego swiata."
       ],
+      resumeAction: "Pobierz CV",
     },
     techStack: {
+      eyebrow: "Narzedia",
+      title: "Tech stack",
       columns: [
-        { title: "Frontend", items: ["React", "Next.js", "Tailwind", "TypeScript"] },
-        { title: "Backend", items: ["Node.js", "Express", "Supabase", "PostgreSQL"] },
-        { title: "Narzedia", items: ["Git", "Vercel", "Docker", "Figma"] },
-        { title: "Specjalizacje", items: ["Optymalizacja szybkosci", "Czysta architektura", "Dostepnosc"] },
+        { title: "Frontend", items: [{ name: "React", purpose: "UI" }, { name: "Next.js", purpose: "Framework" }, { name: "Tailwind", purpose: "CSS" }, { name: "TypeScript", purpose: "Jezyk" }] },
+        { title: "Backend", items: [{ name: "Node.js", purpose: "Runtime" }, { name: "Express", purpose: "Serwer" }, { name: "Supabase", purpose: "Baza danych" }, { name: "PostgreSQL", purpose: "SQL" }] },
+        { title: "Narzedia", items: [{ name: "Git", purpose: "Wersjonowanie" }, { name: "Vercel", purpose: "Hosting" }, { name: "Docker", purpose: "Kontenery" }, { name: "Figma", purpose: "Design" }] },
+        { title: "Specjalizacje", items: [{ name: "Optymalizacja", purpose: "Szybkosc" }, { name: "Czysta arch.", purpose: "Kod" }, { name: "Dostepnosc", purpose: "UX" }] },
       ],
     },
     speed: {
@@ -821,7 +912,19 @@ export const copyByLocale: Record<Locale, Copy> = {
       description: "Szybkie strony lepiej konwertuja, lepiej sie pozycjonuja i budza wieksze zaufanie. Kazda warstwa jest projektowana pod klarownosc, niski narzut i mierzalne wyniki.",
       items: ["Kompresja obrazow", "Lazy loading", "Code splitting", "Dostarczanie przez CDN", "Audyty Lighthouse", "Struktura SEO"],
       cta: "Popros o bezplatny audyt szybkosci",
-      ctaSubject: "Bezplatny audyt szybkosci",
+      ctaSubject: "Audyt szybkosci",
+      scoreLabel: "Wynik",
+      scoreValue: "100",
+      domain: "Domena",
+      domainPlaceholder: "twojastrona.pl",
+      email: "Email",
+      emailPlaceholder: "twoj@email.com",
+      message: "Wiadomosc",
+      messagePlaceholder: "Opcjonalna wiadomosc lub konkretne uwagi",
+      sendRequest: "Wyslij prosbe",
+      sendingRequest: "Wysylanie...",
+      submitSuccess: "Prosba zostala wyslana. Wkrotce sie odezwe.",
+      submitError: "Cos poszlo nie tak. Sprobuj ponownie.",
     },
     contact: {
       eyebrow: "Kontakt",
@@ -852,6 +955,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       adminKeyLabel: "Klucz administratora",
       adminKeyPlaceholder: "Wpisz klucz administratora",
       loadLeads: "Wczytaj leady",
+      loadLeadsAction: "Zaladuj",
       loading: "Wczytywanie...",
       empty: "Brak zgloszen.",
       unauthorized: "Klucz administratora jest nieprawidlowy.",
@@ -872,6 +976,14 @@ export const copyByLocale: Record<Locale, Copy> = {
       restore: "Przywroc okno",
       close: (title) => `Zamknij ${title}`,
       resize: (title) => `Zmien rozmiar ${title}`,
+    },
+    bootMessages: {
+      system: "ładowanie pwloOS",
+      themeDark: "ładowanie trybu ciemnego",
+      themeLight: "ładowanie trybu jasnego",
+      langEn: "ładowanie wersji angielskiej",
+      langPl: "ładowanie wersji polskiej",
+      langDe: "ładowanie wersji niemieckiej",
     },
   },
   de: {
@@ -930,7 +1042,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       lockscreen: {
         title: "pwloOS Datenschutzhinweis",
         message: "Wir verwenden nur minimale Cookies, die fuer die Systemfunktion erforderlich sind.",
-        welcome: "Willkommen bei pwloOS",
+        welcome: "Willkommen bei pwloOS\n\nEin moderner Web-Entwickler-Arbeitsplatz\n\nEntworfen von\nPawel Wlodarczyk",
         consentAriaLabel: "Datenschutz-Zustimmungen",
         cookiesConsent: "Ich akzeptiere essenzielle Cookies, die fuer die Systemfunktion erforderlich sind.",
         termsConsent: "Ich akzeptiere die Nutzungsbedingungen.",
@@ -960,7 +1072,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       about: "Ueber Pawel",
       tech: "Tech Stack",
       contact: "Kontakt",
-      speed: "Speed-Optimierung",
+      speed: "SEO & Speed",
       leads: "Leads",
     },
     desktopIcons: {
@@ -968,10 +1080,13 @@ export const copyByLocale: Record<Locale, Copy> = {
       about: { label: "Ueber mich", subtitle: "Profil" },
       tech: { label: "Tech Stack", subtitle: "Toolkit" },
       contact: { label: "Kontakt", subtitle: "Projekt starten" },
-      speed: { label: "Optimierung", subtitle: "Audit-Lab" },
+      speed: { label: "SEO & Speed", subtitle: "Audit-Lab" },
       leads: { label: "Leads", subtitle: "Geschuetzte Ansicht" },
     },
     projects: {
+      eyebrow: "Case Studies",
+      title: "Ausgewaehlte Projekte",
+      openProjectAction: "Projekt oeffnen",
       openCaseStudy: "Case Study oeffnen",
       caseStudy: "Case Study",
       before: "Vorher",
@@ -982,22 +1097,26 @@ export const copyByLocale: Record<Locale, Copy> = {
       clientTestimonial: "Kundenstimme",
     },
     about: {
+      eyebrow: "Profil",
+      title: "Ueber mich.",
+      name: "Pawel Wlodarczyk",
+      role: "Freelance Web Developer",
+      location: "Garmisch-Partenkirchen, DE",
       photoPlaceholder: "Platzhalter fuer Foto",
-      bio: "Ich bin Pawel Wlodarczyk, freiberuflicher Webentwickler mit Fokus auf schnelle, moderne und skalierbare Websites. Ich arbeite mit Kunden aus Deutschland, Polen, Indonesien und weltweit.",
-      skills: [
-        "Frontend (React, Next.js, Tailwind)",
-        "Backend (Node.js, Express, Supabase)",
-        "Performance-Optimierung",
-        "SEO und Core Web Vitals",
-        "UI/UX-Prototyping",
+      bio: [
+        "Ich bin Pawel Wlodarczyk, freiberuflicher Webentwickler mit Fokus auf schnelle, moderne und skalierbare Websites.",
+        "Ich arbeite mit Kunden aus Deutschland, Polen, Indonesien und weltweit."
       ],
+      resumeAction: "Lebenslauf herunterladen",
     },
     techStack: {
+      eyebrow: "Tools",
+      title: "Tech Stack",
       columns: [
-        { title: "Frontend", items: ["React", "Next.js", "Tailwind", "TypeScript"] },
-        { title: "Backend", items: ["Node.js", "Express", "Supabase", "PostgreSQL"] },
-        { title: "Tools", items: ["Git", "Vercel", "Docker", "Figma"] },
-        { title: "Spezialisierungen", items: ["Speed-Optimierung", "Saubere Architektur", "Barrierefreiheit"] },
+        { title: "Frontend", items: [{ name: "React", purpose: "UI Library" }, { name: "Next.js", purpose: "Framework" }, { name: "Tailwind", purpose: "Styling" }, { name: "TypeScript", purpose: "Sprache" }] },
+        { title: "Backend", items: [{ name: "Node.js", purpose: "Runtime" }, { name: "Express", purpose: "Server" }, { name: "Supabase", purpose: "Datenbank" }, { name: "PostgreSQL", purpose: "SQL" }] },
+        { title: "Tools", items: [{ name: "Git", purpose: "Versionierung" }, { name: "Vercel", purpose: "Hosting" }, { name: "Docker", purpose: "Container" }, { name: "Figma", purpose: "Design" }] },
+        { title: "Spezialisierungen", items: [{ name: "Speed-Optimierung", purpose: "Ladezeiten" }, { name: "Saubere Architektur", purpose: "Code" }, { name: "Barrierefreiheit", purpose: "UX" }] },
       ],
     },
     speed: {
@@ -1006,7 +1125,19 @@ export const copyByLocale: Record<Locale, Copy> = {
       description: "Schnelle Websites konvertieren besser, ranken besser und wirken vertrauenswuerdiger. Jede Ebene ist auf Klarheit, geringe Last und messbare Ergebnisse ausgelegt.",
       items: ["Bildkomprimierung", "Lazy Loading", "Code Splitting", "CDN-Auslieferung", "Lighthouse-Audits", "SEO-Struktur"],
       cta: "Kostenlosen Speed-Audit anfragen",
-      ctaSubject: "Kostenloser Speed-Audit",
+      ctaSubject: "Speed-Audit",
+      scoreLabel: "Score",
+      scoreValue: "100",
+      domain: "Domain",
+      domainPlaceholder: "ihreseite.de",
+      email: "E-Mail",
+      emailPlaceholder: "sie@beispiel.de",
+      message: "Nachricht",
+      messagePlaceholder: "Optionale Nachricht oder konkrete Hinweise",
+      sendRequest: "Anfrage senden",
+      sendingRequest: "Wird gesendet...",
+      submitSuccess: "Anfrage erfolgreich gesendet. Ich melde mich bald.",
+      submitError: "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
     },
     contact: {
       eyebrow: "Kontakt",
@@ -1037,6 +1168,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       adminKeyLabel: "Admin-Schluessel",
       adminKeyPlaceholder: "Admin-Schluessel eingeben",
       loadLeads: "Leads laden",
+      loadLeadsAction: "Laden",
       loading: "Laedt...",
       empty: "Noch keine Anfragen.",
       unauthorized: "Der Admin-Schluessel ist ungueltig.",
@@ -1051,12 +1183,20 @@ export const copyByLocale: Record<Locale, Copy> = {
       message: "Nachricht",
     },
     windowControls: {
-      drag: (title) => `${title} verschieben`,
+      drag: (title) => `${title} bewegen`,
       minimize: "Fenster minimieren",
       maximize: "Fenster maximieren",
       restore: "Fenster wiederherstellen",
       close: (title) => `${title} schliessen`,
-      resize: (title) => `${title} in der Groesse aendern`,
+      resize: (title) => `Groesse von ${title} aendern`,
+    },
+    bootMessages: {
+      system: "pwloOS wird geladen",
+      themeDark: "dunkler modus wird geladen",
+      themeLight: "heller modus wird geladen",
+      langEn: "englische version wird geladen",
+      langPl: "polnische version wird geladen",
+      langDe: "deutsche version wird geladen",
     },
   },
 };

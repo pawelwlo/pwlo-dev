@@ -1,4 +1,4 @@
-import { ArrowUpRight, Code2, Rocket, SearchCheck, TimerReset } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { KeyboardEvent } from "react";
 
 import { projects } from "@/data/portfolioData";
@@ -7,32 +7,24 @@ import { getProjectTranslation, type Locale } from "@/i18n/translations";
 type ProjectsWindowProps = {
   locale: Locale;
   copy: {
-    caseStudy: string;
-    openCaseStudy: string;
-    before: string;
-    after: string;
-    seoImprovements: string;
-    deploymentStack: string;
-    codeSnippet: string;
-    clientTestimonial: string;
-    seo: string;
+    eyebrow: string;
+    title: string;
+    openProjectAction: string;
   };
-  selectedProjectId: string;
   onSelectProject: (projectId: string) => void;
 };
 
 export function ProjectsWindow({
   locale,
   copy,
-  selectedProjectId,
   onSelectProject,
 }: ProjectsWindowProps) {
-  const selectedProject =
-    projects.find((project) => project.id === selectedProjectId) ?? projects[0];
-  const selectedProjectCopy = getProjectTranslation(locale, selectedProject.id);
-
   return (
     <div className="projects-layout">
+      <div className="projects-intro" style={{ marginBottom: "24px", padding: "0 8px" }}>
+        <span className="eyebrow" style={{ display: "block", marginBottom: "8px" }}>{copy.eyebrow}</span>
+        <h3>{copy.title}</h3>
+      </div>
       <div className="project-grid">
         {projects.map((project) => {
           const projectCopy = getProjectTranslation(locale, project.id);
@@ -80,21 +72,13 @@ export function ProjectsWindow({
             <div className="project-content">
               <div className="project-heading">
                 <div>
-                  <h3>{projectCopy.title}</h3>
-                  <p>{projectCopy.description}</p>
+                  <h3 style={{ marginBottom: "4px" }}>{projectCopy.title}</h3>
+                  <div style={{ fontSize: "0.85rem", color: "var(--success)", fontWeight: 500, marginBottom: "8px" }}>
+                    {projectCopy.screenshotDetails.join(" · ")}
+                  </div>
+                  <p style={{ fontWeight: 300, fontSize: "0.95rem" }}>{projectCopy.description}</p>
                 </div>
               </div>
-
-              <a
-                className="project-domain-link"
-                href={project.previewUrl}
-                target="_blank"
-                rel="noreferrer"
-                onClick={(event) => event.stopPropagation()}
-              >
-                {project.domain}
-                <ArrowUpRight size={14} />
-              </a>
 
               <div className="tech-pill-row">
                 {project.tech.map((item) => (
@@ -104,88 +88,22 @@ export function ProjectsWindow({
                 ))}
               </div>
 
+              <a
+                className="project-domain-link"
+                style={{ display: "inline-flex", fontWeight: 500, letterSpacing: "0.03em" }}
+                href={project.previewUrl}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(event) => event.stopPropagation()}
+              >
+                {copy.openProjectAction}
+                <ArrowRight size={16} style={{ marginLeft: "4px" }} />
+              </a>
+
             </div>
           </article>
         )})}
       </div>
-
-      <section className="case-study-panel">
-        <div className="case-study-header">
-          <div>
-            <span className="eyebrow">{copy.caseStudy}</span>
-            <h3>{selectedProjectCopy.title}</h3>
-          </div>
-        </div>
-
-        <a
-          className="project-domain-link case-study-link"
-          href={selectedProject.previewUrl}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {selectedProject.domain}
-          <ArrowUpRight size={14} />
-        </a>
-
-        <div className="case-study-stats">
-          <article className="case-stat">
-            <TimerReset size={16} />
-            <div>
-              <span>{copy.before}</span>
-              <strong>{selectedProjectCopy.caseStudy.before}</strong>
-            </div>
-          </article>
-          <article className="case-stat">
-            <Rocket size={16} />
-            <div>
-              <span>{copy.after}</span>
-              <strong>{selectedProjectCopy.caseStudy.after}</strong>
-            </div>
-          </article>
-          <article className="case-stat">
-            <SearchCheck size={16} />
-            <div>
-              <span>{copy.seo}</span>
-              <strong>{selectedProjectCopy.caseStudy.seo[0]}</strong>
-            </div>
-          </article>
-        </div>
-
-        <div className="case-study-grid">
-          <div className="case-study-column">
-            <h4>{copy.seoImprovements}</h4>
-            <ul className="bullet-list">
-              {selectedProjectCopy.caseStudy.seo.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="case-study-column">
-            <h4>{copy.deploymentStack}</h4>
-            <ul className="bullet-list">
-              {selectedProjectCopy.caseStudy.deployment.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="case-study-column case-study-code">
-            <h4>
-              <Code2 size={16} />
-              {copy.codeSnippet}
-            </h4>
-            <pre>
-              <code>{selectedProject.caseStudy.codeSnippet}</code>
-            </pre>
-          </div>
-
-          <div className="case-study-column">
-            <h4>{copy.clientTestimonial}</h4>
-            <blockquote>{selectedProjectCopy.caseStudy.testimonial}</blockquote>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

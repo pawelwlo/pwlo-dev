@@ -58,6 +58,7 @@ export function WindowFrame({
         aria-label={controlsCopy.drag(title)}
         lang={locale}
         onPointerDown={(event) => onDragStart?.(event)}
+        onDoubleClick={onToggleMaximize}
       >
         <div className="window-title">{title}</div>
         <div className="window-actions">

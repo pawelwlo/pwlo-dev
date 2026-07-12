@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Gauge, MoonStar, Settings2, ShieldCheck, SunMedium, Zap } from "lucide-react";
+import { ChevronDown, Gauge, Settings2, ShieldCheck, Zap } from "lucide-react";
 
 import { localeOptions, type Locale } from "@/i18n/translations";
 import { useCountUp } from "@/hooks/useCountUp";
@@ -8,8 +8,6 @@ type HeroWindowProps = {
   locale: Locale;
   copy: {
     localeLabel: string;
-    themeLight: string;
-    themeDark: string;
     heroEyebrow: string;
     heroTitle: string;
     heroSubtitle: string;
@@ -24,18 +22,14 @@ type HeroWindowProps = {
     loadsUnderSecond: string;
     coreWebVitals: string;
   };
-  isDark: boolean;
   onChangeLocale: (locale: Locale) => void;
-  onToggleTheme: () => void;
   onContinueToDesktop?: () => void;
 };
 
 export function HeroWindow({
   locale,
   copy,
-  isDark,
   onChangeLocale,
-  onToggleTheme,
   onContinueToDesktop,
 }: HeroWindowProps) {
   const performance = useCountUp(100);
@@ -103,15 +97,6 @@ export function HeroWindow({
                 title="Settings"
               >
                 <Settings2 size={16} aria-hidden="true" />
-              </button>
-              <button
-                className="locale-toggle-button locale-toggle-icon"
-                type="button"
-                onClick={onToggleTheme}
-                aria-label={isDark ? copy.themeLight : copy.themeDark}
-                title={isDark ? copy.themeLight : copy.themeDark}
-              >
-                {isDark ? <SunMedium size={16} aria-hidden="true" /> : <MoonStar size={16} aria-hidden="true" />}
               </button>
               {isSettingsOpen ? (
                 <div className="locale-toggle-menu" role="menu" id="hero-settings-menu" aria-label={copy.localeLabel}>

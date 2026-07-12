@@ -123,10 +123,8 @@
     <script>
       ;(() => {
         try {
-          const savedTheme = window.localStorage.getItem("pwlo-theme")
-          const theme = savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark"
-          window.localStorage.setItem("pwlo-theme", theme)
-          document.documentElement.dataset.theme = theme
+          window.localStorage.setItem("pwlo-theme", "dark")
+          document.documentElement.dataset.theme = "dark"
         } catch {
           document.documentElement.dataset.theme = "dark"
         }

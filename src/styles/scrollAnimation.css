@@ -3,6 +3,11 @@
   height: 240vh;
 }
 
+.scroll-animation--unlocked {
+  height: auto;
+  min-height: 100dvh;
+}
+
 .scroll-animation-sticky {
   position: sticky;
   top: var(--desktop-workspace-offset-top, 76px);
@@ -36,19 +41,38 @@
 .scroll-animation-sticky[data-workspace-unlocked="true"] .scroll-animation-desktop {
   opacity: 1;
   filter: none;
-  transform: translate3d(0, 0, 0) scale(1);
+  transform: none;
   pointer-events: auto;
 }
 
 .scroll-animation-sticky[data-workspace-unlocked="true"] .desktop-transition-shell,
-.scroll-animation-sticky[data-workspace-unlocked="true"] .desktop-transition-surface {
+.scroll-animation-sticky[data-workspace-unlocked="true"] .desktop-transition-workspace {
   opacity: 1;
   visibility: visible;
 }
 
-.scroll-animation-sticky[data-workspace-unlocked="true"] .desktop-surface {
-  background: var(--surface);
-  backdrop-filter: blur(16px);
+.scroll-animation-sticky[data-workspace-unlocked="true"] .desktop-transition-shell--bare,
+.scroll-animation-sticky[data-desktop-revealed="true"] .desktop-transition-shell--bare {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.scroll-animation-sticky[data-workspace-unlocked="true"] .desktop-transition-shell--bare .desktop-workspace,
+.scroll-animation-sticky[data-desktop-revealed="true"] .desktop-transition-shell--bare .desktop-workspace {
+  pointer-events: auto;
+}
+
+.scroll-animation-sticky[data-workspace-unlocked="true"] {
+  min-height: 100dvh;
 }
 
 .scroll-animation-sticky[data-desktop-revealed="true"] .scroll-animation-layers {
@@ -59,7 +83,7 @@
 .scroll-animation-sticky[data-desktop-revealed="true"] .scroll-animation-desktop {
   opacity: 1;
   filter: none;
-  transform: translate3d(0, 0, 0) scale(1);
+  transform: none;
   pointer-events: auto;
 }
 
@@ -218,30 +242,32 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   color: rgba(255, 255, 255, 0.9);
+  white-space: pre-wrap;
   text-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
 }
 
 .desktop-transition-shell {
   width: 100%;
+  position: relative;
+  min-height: calc(
+    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px)
+  );
+  height: calc(
+    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px)
+  );
 }
 
-.desktop-transition-surface {
+.desktop-transition-workspace,
+.desktop-workspace {
   width: 100%;
-  min-height: calc(
-    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px) - 96px
-  );
-  height: calc(
-    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px) - 96px
-  );
+  min-height: 100%;
+  height: 100%;
 }
 
-.scroll-animation-desktop .desktop-transition-surface {
-  min-height: calc(
-    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px) - 96px
-  );
-  height: calc(
-    100dvh - var(--desktop-workspace-offset-top, 76px) - var(--desktop-workspace-offset-bottom, 24px) - 96px
-  );
+.scroll-animation-desktop .desktop-transition-workspace,
+.scroll-animation-desktop .desktop-workspace {
+  min-height: 100%;
+  height: 100%;
 }
 
 @keyframes gradientMove {
@@ -258,10 +284,20 @@
   .scroll-animation {
     height: 255vh;
   }
+
+  .scroll-animation--unlocked {
+    height: auto;
+    min-height: 100dvh;
+  }
 }
 
 @media (max-width: 860px) {
   .scroll-animation {
     height: 210vh;
+  }
+
+  .scroll-animation--unlocked {
+    height: auto;
+    min-height: 100dvh;
   }
 }

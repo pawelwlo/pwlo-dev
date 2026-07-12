@@ -7,17 +7,17 @@
   --ios-icon-size-dock: 44px;
   --ios-icon-radius: 24px;
   --ios-icon-radius-dock: 22px;
-  --ios-dock-radius: 30px;
-  --ios-dock-height: 84px;
+  --ios-dock-radius: 36px;
+  --ios-dock-height: 68px;
   --ios-dock-gap: 14px;
   --ios-status-font:
     "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
   --ios-status-opacity: 0.85;
   --ios-status-weight: 300;
-  --ios-depth-shadow: 0 14px 36px rgba(0, 0, 0, 0.14);
-  --ios-glass-border: rgba(255, 255, 255, 0.35);
-  --ios-glass-surface: rgba(255, 255, 255, 0.25);
-  --ios-glass-blur: blur(30px) saturate(1.35);
+  --ios-depth-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+  --ios-glass-border: rgba(255, 255, 255, 0.2);
+  --ios-glass-surface: rgba(255, 255, 255, 0.45);
+  --ios-glass-blur: blur(40px) saturate(1.4);
   --ios-inner-highlight: inset 0 1px 2px rgba(255, 255, 255, 0.4);
 
   --os-icon-size: var(--ios-icon-size-app);
@@ -34,15 +34,15 @@
 
 /* Status bar — thin SF Pro, reduced brightness */
 .os-shell .os-topbar.mobile-status-bar {
-  min-height: 48px;
+  min-height: 40px;
   margin: 0 0 var(--ios-space-1);
-  padding: 8px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(24px) saturate(1.2);
   box-shadow:
-    0 10px 28px rgba(0, 0, 0, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.08),
     var(--ios-inner-highlight);
 }
 
@@ -134,7 +134,7 @@
   .os-shell {
     --ios-icon-size-app: 78px;
     --ios-icon-size-dock: 50px;
-    --ios-dock-height: 96px;
+    --ios-dock-height: 76px;
     --os-padding-x: var(--ios-space-2);
   }
 

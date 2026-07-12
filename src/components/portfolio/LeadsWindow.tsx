@@ -1,3 +1,4 @@
+import { ArrowRight } from "lucide-react";
 import type { ChangeEvent } from "react";
 
 import type { LeadRecord } from "@/lib/leadsApi";
@@ -10,6 +11,7 @@ type LeadsWindowProps = {
     adminKeyLabel: string;
     adminKeyPlaceholder: string;
     loadLeads: string;
+    loadLeadsAction: string;
     loading: string;
     empty: string;
     unauthorized: string;
@@ -36,6 +38,7 @@ function formatSubmittedAt(value: string) {
     return new Intl.DateTimeFormat("en", {
       dateStyle: "medium",
       timeStyle: "short",
+      hour12: false,
     }).format(new Date(value));
   } catch {
     return value;
@@ -69,8 +72,9 @@ export function LeadsWindow({
             onChange={(event: ChangeEvent<HTMLInputElement>) => onAdminKeyChange(event.target.value)}
           />
         </label>
-        <button className="primary-button" type="button" onClick={onRefresh} disabled={isLoading}>
-          {isLoading ? copy.loading : copy.loadLeads}
+        <button className="primary-button" type="button" onClick={onRefresh} disabled={isLoading} style={{ display: "inline-flex" }}>
+          {isLoading ? copy.loading : copy.loadLeadsAction}
+          {!isLoading && <ArrowRight size={16} style={{ marginLeft: "4px" }} />}
         </button>
       </div>
 

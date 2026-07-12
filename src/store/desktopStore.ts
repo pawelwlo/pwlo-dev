@@ -35,24 +35,12 @@ const initialLocale: Locale = (() => {
   return getLocaleFromPath(window.location.pathname);
 })();
 
-const initialTheme: ThemeMode = (() => {
-  if (typeof window === "undefined") {
-    return "dark";
-  }
-
-  const datasetTheme = window.document?.documentElement?.dataset?.theme;
-
-  if (datasetTheme === "light" || datasetTheme === "dark") {
-    return datasetTheme;
-  }
-
-  return "dark";
-})();
+const initialTheme: ThemeMode = "dark";
 
 export const useDesktopStore = create<DesktopStore>((set) => ({
   locale: initialLocale,
   theme: initialTheme,
-  openWindows: ["about", "projects", "contact"],
+  openWindows: ["projects"],
   activeWindow: "projects",
   selectedProjectId: projects[0].id,
   setLocale: (locale) => set({ locale }),

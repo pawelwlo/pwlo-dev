@@ -1,8 +1,8 @@
 /* iOS-style glossy pastel app icons */
 .mobile-icon {
   --ios-icon-gradient: linear-gradient(145deg, #c8ccd2 0%, #f1f3f5 100%);
-  --ios-icon-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-  --ios-icon-gloss: linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.15));
+  --ios-icon-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  --ios-icon-gloss: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.1));
 
   position: relative;
   display: grid;
@@ -57,23 +57,23 @@
 }
 
 .mobile-icon--blue {
-  --ios-icon-gradient: linear-gradient(145deg, #4da3ff 0%, #a8d4ff 100%);
+  --ios-icon-gradient: linear-gradient(145deg, #5baaff 0%, #b4dbff 100%);
 }
 
 .mobile-icon--purple {
-  --ios-icon-gradient: linear-gradient(145deg, #a07cff 0%, #d7c8ff 100%);
+  --ios-icon-gradient: linear-gradient(145deg, #a888ff 0%, #dcd0ff 100%);
 }
 
 .mobile-icon--green {
-  --ios-icon-gradient: linear-gradient(145deg, #5edc9a 0%, #b9f2d0 100%);
+  --ios-icon-gradient: linear-gradient(145deg, #6ee0a2 0%, #c2f4d5 100%);
 }
 
 .mobile-icon--orange {
-  --ios-icon-gradient: linear-gradient(145deg, #ffb36b 0%, #ffe0c2 100%);
+  --ios-icon-gradient: linear-gradient(145deg, #ffb97a 0%, #ffe3c9 100%);
 }
 
 .mobile-icon--pink {
-  --ios-icon-gradient: linear-gradient(145deg, #ff7fbf 0%, #ffd0e8 100%);
+  --ios-icon-gradient: linear-gradient(145deg, #ff8bc4 0%, #ffd4ea 100%);
 }
 
 .mobile-icon--gray {
@@ -92,12 +92,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   border: 0;
   background: transparent;
   padding: 0;
   color: inherit;
   cursor: pointer;
+  transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .mobile-app-icon:focus-visible {
@@ -106,17 +107,24 @@
   border-radius: 20px;
 }
 
-.mobile-app-icon:active .mobile-icon {
-  transform: scale(0.92);
+@media (hover: hover) {
+  .mobile-app-icon:hover {
+    transform: scale(1.06);
+  }
+}
+
+.mobile-app-icon:active {
+  transform: scale(0.97);
+  transition-duration: 100ms;
 }
 
 .mobile-app-icon__label,
 .os-shell .mobile-app-icon .os-app-label {
   font-family: var(--ios-status-font);
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
 /* Legacy glyph bridge — hide when mobile icon is present */

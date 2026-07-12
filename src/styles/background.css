@@ -5,7 +5,7 @@
   z-index: 0;
   overflow: hidden;
   contain: strict;
-  background: linear-gradient(135deg, #3d6f9b 0%, #c98f72 52%, #e8b4c8 100%);
+  background: #f8f9fc linear-gradient(135deg, rgba(200, 220, 240, 0.6) 0%, rgba(220, 210, 235, 0.5) 52%, rgba(240, 215, 225, 0.6) 100%);
   transform: translateZ(0);
 }
 
@@ -28,6 +28,11 @@
   filter: blur(var(--mobile-wallpaper-blur, 100px)) saturate(0.4) brightness(0.75);
   transform: scale(1.14);
   will-change: transform;
+  opacity: 0.1; /* Reduce visibility of patterns in light mode */
+}
+
+:root[data-theme="dark"] .mobile-background__photo {
+  opacity: 1; /* Restore in dark mode */
 }
 
 .mobile-background__gradient {
@@ -102,7 +107,7 @@
   justify-content: center;
   gap: var(--ios-dock-gap);
   min-height: var(--ios-dock-height);
-  padding: 12px 16px;
+  padding: 12px 24px;
   border: 1px solid var(--ios-glass-border);
   border-radius: var(--ios-dock-radius);
   background: var(--ios-glass-surface);
@@ -133,15 +138,28 @@
   background: transparent;
   padding: 0;
   cursor: pointer;
-  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  color: rgba(242, 242, 242, 0.4);
+  transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s var(--os-ease-out), filter 0.2s var(--os-ease-out);
 }
 
-.mobile-dock__item:hover {
-  transform: translateY(-2px);
+.mobile-dock__item.active {
+  color: var(--os-accent);
+  filter: drop-shadow(0 0 8px var(--os-accent-glow));
+}
+
+@media (hover: hover) {
+  .mobile-dock__item:hover {
+    transform: scale(1.15) translateY(-6px);
+  }
+  .mobile-dock__item:hover + .mobile-dock__item,
+  .mobile-dock__item:has(+ .mobile-dock__item:hover) {
+    transform: scale(1.06) translateY(-2px);
+  }
 }
 
 .mobile-dock__item:active {
-  transform: translateY(0) scale(0.96);
+  transform: scale(0.95);
+  transition-duration: 100ms;
 }
 
 /* Suppress legacy dock chrome when mobile dock is active */
@@ -165,7 +183,7 @@
 @media (min-width: 768px) {
   .mobile-dock {
     gap: 16px;
-    padding: 14px 18px;
-    border-radius: 32px;
+    padding: 14px 28px;
+    border-radius: var(--ios-dock-radius);
   }
 }

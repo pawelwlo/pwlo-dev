@@ -8,6 +8,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { createPortal } from "react-dom";
 import {
   Cloud,
   CloudFog,
@@ -20,7 +21,6 @@ import {
   Languages,
   Layers3,
   Mail,
-  MoonStar,
   Search,
   ShieldCheck,
   SunMedium,
@@ -46,6 +46,7 @@ import {
 import { desktopIcons, type WindowId } from "@/data/portfolioData";
 import { copyByLocale, localeOptions, type Locale } from "@/i18n/translations";
 import { getLocalePath } from "@/lib/localeRouting";
+import { cn } from "@/lib/utils";
 import { fetchAdminLeads, submitLead, type LeadRecord } from "@/lib/leadsApi";
 import { useDesktopStore } from "@/store/desktopStore";
 
@@ -110,7 +111,55 @@ const isSupabaseConfigured = Boolean(
 );
 const garmischWeatherUrl =
   "https://api.open-meteo.com/v1/forecast?latitude=47.4917&longitude=11.0955&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1";
-const desktopPrivacyConsentStorageKey = "pwlo-desktop-privacy-accepted-v1";
+const desktopPrivacyConsentStorageKey = "pwlo-desktop-privacy-consent";
+
+function BootSequence({ message, onComplete }: { message: string; onComplete: () => void }) {
+  const [progress, setProgress] = useState(0);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  useEffect(() => {
+    const startTime = Date.now();
+    const duration = 2000;
+    let animationFrameId: number;
+    let timeoutId: number;
+
+    const tick = () => {
+      const elapsed = Date.now() - startTime;
+      const nextProgress = Math.min(100, Math.floor((elapsed / duration) * 100));
+      setProgress(nextProgress);
+
+      if (nextProgress < 100) {
+        animationFrameId = requestAnimationFrame(tick);
+      } else {
+        timeoutId = window.setTimeout(() => {
+          onCompleteRef.current();
+        }, 300);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  return (
+    <div className="os-boot-screen">
+      <div className="boot-content">
+        <div className="boot-logo">
+          <img src="/logo.png" alt="Boot Logo" width={100} height={100} style={{ objectFit: "contain", opacity: 0.9 }} />
+        </div>
+        <div className="boot-text">{message}</div>
+        <div className="boot-percentage">{progress}%</div>
+      </div>
+    </div>
+  );
+}
 
 type WeatherSnapshot = {
   temperature: number;
@@ -253,9 +302,7 @@ export default function Home() {
   const {
     locale,
     setLocale,
-    theme,
     setTheme,
-    toggleTheme,
     openWindows,
     activeWindow,
     selectedProjectId,
@@ -264,9 +311,9 @@ export default function Home() {
     focusWindow,
     selectProject,
   } = useDesktopStore();
+  const copy = copyByLocale[locale];
   const [windowRects, setWindowRects] = useState(initialWindowRects);
   const [windowStates, setWindowStates] = useState(initialWindowStates);
-  const [pointerGlow, setPointerGlow] = useState({ x: 0, y: 0 });
   const [isSubmittingInquiry, setIsSubmittingInquiry] = useState(false);
   const [contactStatus, setContactStatus] = useState<ContactStatus>(null);
   const [adminKey, setAdminKey] = useState("");
@@ -277,23 +324,35 @@ export default function Home() {
     new Intl.DateTimeFormat("en", {
       hour: "2-digit",
       minute: "2-digit",
+      hour12: false,
     }).format(new Date()),
   );
   const [weatherSnapshot, setWeatherSnapshot] = useState<WeatherSnapshot>(defaultWeatherSnapshot);
   const [isCompactLayout, setIsCompactLayout] = useState(getIsCompactLayout);
-  const [desktopLockscreenState, setDesktopLockscreenState] = useState<"locked" | "unlocking" | "unlocked">(() => {
+  const [desktopLockscreenState, setDesktopLockscreenState] = useState<"booting" | "locked" | "unlocking" | "unlocked">(() => {
     if (typeof window === "undefined") {
-      return "locked";
+      return "booting";
     }
 
     try {
+      if (window.sessionStorage.getItem("pwlo-trigger-boot") === "true") {
+        return "booting";
+      }
       return window.localStorage.getItem(desktopPrivacyConsentStorageKey) === "true" ? "unlocked" : "locked";
     } catch {
-      return "locked";
+      return "unlocked";
     }
   });
-  const [hasAcceptedDesktopCookies, setHasAcceptedDesktopCookies] = useState(false);
-  const [hasAcceptedDesktopTerms, setHasAcceptedDesktopTerms] = useState(false);
+  const [bootMessage, setBootMessage] = useState<string>(() => {
+    if (typeof window === "undefined") {
+      return copy.bootMessages.system;
+    }
+    try {
+      return window.sessionStorage.getItem("pwlo-trigger-boot-msg") || copy.bootMessages.system;
+    } catch {
+      return copy.bootMessages.system;
+    }
+  });
   const [isDesktopPrivacyInfoExpanded, setIsDesktopPrivacyInfoExpanded] = useState(false);
   const [isLocaleMenuOpen, setIsLocaleMenuOpen] = useState(false);
   const [desktopSearch, setDesktopSearch] = useState("");
@@ -317,6 +376,18 @@ export default function Home() {
       }
 
       const nextPath = getLocalePath(nextLocale);
+      const nextCopy = copyByLocale[nextLocale];
+      let bootMsg = nextCopy.bootMessages.system;
+      if (nextLocale === "en") bootMsg = nextCopy.bootMessages.langEn;
+      if (nextLocale === "pl") bootMsg = nextCopy.bootMessages.langPl;
+      if (nextLocale === "de") bootMsg = nextCopy.bootMessages.langDe;
+
+      try {
+        window.sessionStorage.setItem("pwlo-trigger-boot", "true");
+        window.sessionStorage.setItem("pwlo-trigger-boot-msg", bootMsg);
+      } catch {
+        // ignore
+      }
 
       window.localStorage.setItem("pwlo-locale", nextLocale);
       setLocale(nextLocale);
@@ -324,6 +395,17 @@ export default function Home() {
     },
     [locale, setLocale],
   );
+
+  // BootSequence controls the booting -> unlocked transition.
+
+  useEffect(() => {
+    try {
+      window.sessionStorage.removeItem("pwlo-trigger-boot");
+      window.sessionStorage.removeItem("pwlo-trigger-boot-msg");
+    } catch {
+      // ignore
+    }
+  }, []);
 
   useEffect(() => {
     const handlePointerDown = (event: PointerEvent) => {
@@ -360,11 +442,9 @@ export default function Home() {
   }, [isLocaleMenuOpen, isSearchFocused]);
 
   useEffect(() => {
-    const savedTheme = window.localStorage.getItem("pwlo-theme");
-
-    if (savedTheme === "dark" || savedTheme === "light") {
-      setTheme(savedTheme);
-    }
+    setTheme("dark");
+    document.documentElement.dataset.theme = "dark";
+    window.localStorage.setItem("pwlo-theme", "dark");
 
     const savedAdminKey = window.localStorage.getItem("pwlo-admin-key");
 
@@ -372,11 +452,6 @@ export default function Home() {
       setAdminKey(savedAdminKey);
     }
   }, [setTheme]);
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem("pwlo-theme", theme);
-  }, [theme]);
 
   useEffect(() => {
     window.localStorage.setItem("pwlo-locale", locale);
@@ -392,7 +467,6 @@ export default function Home() {
     window.localStorage.removeItem("pwlo-admin-key");
   }, [adminKey]);
 
-  const copy = copyByLocale[locale];
   const weatherPresentation = useMemo(
     () => getWeatherPresentation(weatherSnapshot.weatherCode, locale),
     [weatherSnapshot.weatherCode, locale],
@@ -409,6 +483,7 @@ export default function Home() {
     const formatter = new Intl.DateTimeFormat(locale, {
       hour: "2-digit",
       minute: "2-digit",
+      hour12: false,
     });
     let isMounted = true;
 
@@ -644,7 +719,8 @@ export default function Home() {
       return;
     }
     if (desktopSearch.trim()) {
-      window.find(desktopSearch, false, false, true, false, false, false);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).find(desktopSearch, false, false, true, false, false, false);
     }
   }, [searchWindowMatches, searchHighlightIndex, desktopSearch, handleSearchOpenWindow]);
 
@@ -920,7 +996,7 @@ export default function Home() {
     focusWindow(windowId);
   };
 
-  const closeWindowWithState = (windowId: WindowId) => {
+  const closeWindowWithState = useCallback((windowId: WindowId) => {
     autoMaximizedRef.current.delete(windowId);
     setWindowStates((current) => ({
       ...current,
@@ -932,18 +1008,24 @@ export default function Home() {
       },
     }));
     closeWindow(windowId);
-  };
+  }, [closeWindow]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && activeWindow) {
+        closeWindowWithState(activeWindow);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeWindow, closeWindowWithState]);
 
   const windowContent = useMemo<Record<WindowId, JSX.Element>>(
     () => ({
       projects: (
         <ProjectsWindow
           locale={locale}
-          copy={{
-            ...copy.projects,
-            seo: copy.seo,
-          }}
-          selectedProjectId={selectedProjectId}
+          copy={copy.projects}
           onSelectProject={(projectId) => {
             selectProject(projectId);
             openFromIconWithAutoMaximize("projects");
@@ -978,10 +1060,6 @@ export default function Home() {
   );
 
   const acceptDesktopPrivacyNotice = () => {
-    if (!hasAcceptedDesktopCookies || !hasAcceptedDesktopTerms) {
-      return;
-    }
-
     try {
       window.localStorage.setItem(desktopPrivacyConsentStorageKey, "true");
     } catch {
@@ -994,7 +1072,7 @@ export default function Home() {
 
     setDesktopLockscreenState("unlocking");
     desktopUnlockTimerRef.current = window.setTimeout(() => {
-      setDesktopLockscreenState("unlocked");
+      setDesktopLockscreenState("booting");
     }, 320);
   };
 
@@ -1037,8 +1115,6 @@ export default function Home() {
         leadsError={leadsError}
         leads={leads}
         onChangeLocale={handleLocaleChange}
-        onToggleTheme={toggleTheme}
-        isDark={theme === "dark"}
       />
     );
   }
@@ -1046,7 +1122,7 @@ export default function Home() {
   return (
     <main
       ref={portfolioShellRef}
-      className={`portfolio-shell${isDesktopLockscreenVisible ? " portfolio-shell-locked" : ""}`}
+      className={`portfolio-shell${isDesktopLockscreenVisible ? " portfolio-shell-locked" : ""}${desktopLockscreenState === "booting" ? " portfolio-shell-booting" : ""}`}
       onMouseMove={(event) => {
         const viewportWidth = window.innerWidth || 1;
         const viewportHeight = window.innerHeight || 1;
@@ -1076,7 +1152,11 @@ export default function Home() {
       <div className="shell-noise" aria-hidden="true" />
       <div className="shell-grid" aria-hidden="true" />
 
-      {isDesktopLockscreenVisible ? (
+      {desktopLockscreenState === "booting" && (
+        <BootSequence message={bootMessage} onComplete={() => setDesktopLockscreenState("unlocked")} />
+      )}
+
+      {isDesktopLockscreenVisible && desktopLockscreenState !== "booting" ? (
         <section
           className={`desktop-lockscreen${desktopLockscreenState === "unlocking" ? " desktop-lockscreen-unlocking" : ""}`}
           aria-label={copy.osLayout.lockscreen.title}
@@ -1084,7 +1164,13 @@ export default function Home() {
           <div className="desktop-lockscreen-clock" aria-live="polite">
             <div className="desktop-lockscreen-time">{localTime}</div>
             <div className="desktop-lockscreen-date">{desktopDate}</div>
-            <div className="desktop-lockscreen-welcome">{copy.osLayout.lockscreen.welcome}</div>
+            <div className="desktop-lockscreen-welcome">
+              {copy.osLayout.lockscreen.welcome.split('\n\n').map((line, i, arr) => (
+                <div key={i} className={i === arr.length - 1 ? "desktop-lockscreen-credit" : "desktop-lockscreen-welcome-line"}>
+                  {line}
+                </div>
+              ))}
+            </div>
           </div>
 
           <section className="desktop-lockscreen-panel" aria-label={copy.osLayout.lockscreen.title}>
@@ -1097,31 +1183,11 @@ export default function Home() {
                 ) : null}
               </div>
 
-              <div className="desktop-lockscreen-consent" aria-label={copy.osLayout.lockscreen.consentAriaLabel}>
-                <label className="desktop-lockscreen-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={hasAcceptedDesktopCookies}
-                    onChange={(event) => setHasAcceptedDesktopCookies(event.target.checked)}
-                  />
-                  <span>{copy.osLayout.lockscreen.cookiesConsent}</span>
-                </label>
-                <label className="desktop-lockscreen-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={hasAcceptedDesktopTerms}
-                    onChange={(event) => setHasAcceptedDesktopTerms(event.target.checked)}
-                  />
-                  <span>{copy.osLayout.lockscreen.termsConsent}</span>
-                </label>
-              </div>
-
               <div className="desktop-lockscreen-actions">
                 <button
                   className="desktop-lockscreen-button desktop-lockscreen-button-primary"
                   type="button"
                   onClick={acceptDesktopPrivacyNotice}
-                  disabled={!hasAcceptedDesktopCookies || !hasAcceptedDesktopTerms}
                 >
                   {copy.osLayout.lockscreen.accept}
                 </button>
@@ -1262,15 +1328,6 @@ export default function Home() {
                 </div>
               ) : null}
             </div>
-            <button
-              className="system-status-item system-status-control"
-              type="button"
-              onClick={toggleTheme}
-              aria-label={theme === "dark" ? copy.themeLight : copy.themeDark}
-              title={theme === "dark" ? copy.themeLight : copy.themeDark}
-            >
-              {theme === "dark" ? <SunMedium size={16} aria-hidden="true" /> : <MoonStar size={16} aria-hidden="true" />}
-            </button>
           </div>
           <div className="system-status-weather" aria-label="Weather in Garmisch-Partenkirchen">
             <span className="system-status-weather-icon" aria-hidden="true">
@@ -1297,45 +1354,7 @@ export default function Home() {
         workspaceUnlocked={desktopLockscreenState === "unlocked"}
         hero={<Hero time={localTime} date={desktopDate} welcome={copy.osLayout.lockscreen.welcome} />}
         desktop={
-          <Desktop
-            surfaceRef={desktopSurfaceRef}
-            onSurfaceMouseMove={(event) => {
-              const bounds = event.currentTarget.getBoundingClientRect();
-              setPointerGlow({
-                x: ((event.clientX - bounds.left) / bounds.width - 0.5) * 20,
-                y: ((event.clientY - bounds.top) / bounds.height - 0.5) * 20,
-              });
-            }}
-            dock={
-              <div className="desktop-dock" aria-label="macOS style dock">
-                {desktopIcons.map((item) => {
-                  const Icon = iconMap[item.id];
-                  const iconCopy = copy.desktopIcons[item.id];
-
-                  return (
-                    <DesktopIcon
-                      key={item.id}
-                      variant="dock"
-                      icon={Icon}
-                      label={iconCopy.label}
-                      subtitle={iconCopy.subtitle}
-                      stat={item.stat}
-                      isActive={activeWindow === item.id}
-                      onOpen={() => openFromIconWithAutoMaximize(item.id)}
-                    />
-                  );
-                })}
-              </div>
-            }
-          >
-            <div
-              className="desktop-parallax"
-              aria-hidden="true"
-              style={{
-                transform: `translate3d(${pointerGlow.x}px, ${pointerGlow.y}px, 0)`,
-              }}
-            />
-
+          <Desktop surfaceRef={desktopSurfaceRef}>
             <div className="windows-layer">
               {openWindows
                 .filter((windowId) => !windowStates[windowId].minimized)
@@ -1345,7 +1364,10 @@ export default function Home() {
                     title={copy.windowTitles[windowId]}
                     locale={locale}
                     controlsCopy={copy.windowControls}
-                    className="floating-window"
+                    className={cn(
+                      "floating-window",
+                      windowDragStateRef.current?.id === windowId && "window-dragging"
+                    )}
                     isActive={activeWindow === windowId}
                     isMaximized={windowStates[windowId].maximized}
                     onFocus={() => focusWindow(windowId)}
@@ -1359,11 +1381,11 @@ export default function Home() {
                       ...(isCompactLayout
                         ? {}
                         : {
-                            left: `${windowRects[windowId].x}px`,
-                            top: `${windowRects[windowId].y}px`,
-                            width: `${windowRects[windowId].width}px`,
-                            height: `${windowRects[windowId].height}px`,
-                          }),
+                          left: `${windowRects[windowId].x}px`,
+                          top: `${windowRects[windowId].y}px`,
+                          width: `${windowRects[windowId].width}px`,
+                          height: `${windowRects[windowId].height}px`,
+                        }),
                     }}
                   >
                     {windowContent[windowId]}
@@ -1373,6 +1395,31 @@ export default function Home() {
           </Desktop>
         }
       />
+
+      {desktopLockscreenState === "unlocked" && typeof document !== "undefined"
+        ? createPortal(
+            <div className="desktop-dock desktop-dock--viewport" aria-label="macOS style dock">
+              {desktopIcons.map((item) => {
+                const Icon = iconMap[item.id];
+                const iconCopy = copy.desktopIcons[item.id];
+
+                return (
+                  <DesktopIcon
+                    key={item.id}
+                    variant="dock"
+                    icon={Icon}
+                    label={iconCopy.label}
+                    subtitle={iconCopy.subtitle}
+                    stat={item.stat}
+                    isActive={activeWindow === item.id}
+                    onOpen={() => openFromIconWithAutoMaximize(item.id)}
+                  />
+                );
+              })}
+            </div>,
+            document.body,
+          )
+        : null}
 
       <footer className="site-footer">
         <span>© 2026 Pawel Wlodarczyk</span>

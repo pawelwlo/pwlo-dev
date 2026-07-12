@@ -350,7 +350,10 @@ export const ScrollAnimation = forwardRef<ScrollAnimationHandle, ScrollAnimation
   const heroHidden = getScrollVisualState(progress, 0).heroHidden;
 
   return (
-    <div className="scroll-animation" ref={containerRef}>
+    <div
+      className={`scroll-animation${workspaceUnlocked ? " scroll-animation--unlocked" : ""}`}
+      ref={containerRef}
+    >
       <div
         className="scroll-animation-sticky"
         ref={stickyRef}
