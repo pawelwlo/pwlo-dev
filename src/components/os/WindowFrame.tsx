@@ -1,8 +1,37 @@
 import type { CSSProperties, PointerEvent, PropsWithChildren } from "react";
-import { Minus, Square, X } from "lucide-react";
+import { Minus, X } from "lucide-react";
 
 import type { Locale } from "@/i18n/translations";
 import { cn } from "@/lib/utils";
+
+function WindowMaximizeIcon({ isMaximized }: { isMaximized: boolean }) {
+  if (isMaximized) {
+    return (
+      <svg
+        className="window-maximize-icon"
+        width="12"
+        height="12"
+        viewBox="0 0 12 12"
+        aria-hidden="true"
+      >
+        <rect x="4.25" y="0.75" width="7" height="7" rx="0.5" fill="none" stroke="currentColor" strokeWidth="1.35" />
+        <rect x="0.75" y="4.25" width="7" height="7" rx="0.5" fill="none" stroke="currentColor" strokeWidth="1.35" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      className="window-maximize-icon"
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      aria-hidden="true"
+    >
+      <rect x="1.25" y="1.25" width="9.5" height="9.5" rx="0.5" fill="none" stroke="currentColor" strokeWidth="1.35" />
+    </svg>
+  );
+}
 
 export type ResizeDirection = "n" | "e" | "s" | "w" | "ne" | "nw" | "se" | "sw";
 
@@ -78,7 +107,7 @@ export function WindowFrame({
             onPointerDown={(event) => event.stopPropagation()}
             onClick={onToggleMaximize}
           >
-            <Square size={12} strokeWidth={2.2} />
+            <WindowMaximizeIcon isMaximized={isMaximized} />
           </button>
           <button
             className="window-action window-action-close"

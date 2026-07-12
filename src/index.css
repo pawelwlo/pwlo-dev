@@ -1918,6 +1918,10 @@ button {
   border-radius: 999px;
 }
 
+.window-maximize-icon {
+  display: block;
+}
+
 .window-action-close:hover {
   color: #d92d20;
 }
