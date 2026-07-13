@@ -21,6 +21,23 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (!import.meta.env.PROD) {
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.defer = true;
+    script.src = "https://cloud.umami.is/script.js";
+    script.dataset.websiteId = "b0983bb4-2d3c-4034-bdb6-9d85280959d6";
+    script.dataset.domains = "pwlo.dev,www.pwlo.dev";
+    document.head.appendChild(script);
+
+    return () => {
+      script.remove();
+    };
+  }, []);
+
+  useEffect(() => {
     const requestIdle = window.requestIdleCallback?.bind(window);
 
     if (requestIdle) {
