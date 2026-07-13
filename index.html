@@ -132,6 +132,17 @@
     </script>
     <script>
       ;(() => {
+        try {
+          if (window.sessionStorage.getItem("pwlo-trigger-boot") === "true") {
+            document.documentElement.classList.add("locale-boot-pending")
+          }
+        } catch {
+          // Ignore storage access errors.
+        }
+      })()
+    </script>
+    <script>
+      ;(() => {
         const path = window.location.pathname
         if (path !== "/" && path !== "") return
 

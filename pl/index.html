@@ -17,7 +17,7 @@
     <meta name="theme-color" content="#0f1115" />
     <meta
       name="description"
-      content="pwlo.dev - ultraszybki web development z naciskiem na wydajnosc, SEO i Core Web Vitals."
+      content="pwlo.dev - ultraszybki web development z naciskiem na wydajność, SEO i Core Web Vitals."
     />
     <link rel="canonical" href="https://www.pwlo.dev/pl/" />
     <link rel="alternate" hreflang="en" href="https://www.pwlo.dev/" />
@@ -29,7 +29,7 @@
     <meta property="og:title" content="pwlo.dev | Ultraszybkie nowoczesne strony" />
     <meta
       property="og:description"
-      content="Web development nastawiony na wydajnosc, SEO i Core Web Vitals dla firm oraz tworcow."
+      content="Web development nastawiony na wydajność, SEO i Core Web Vitals dla firm oraz twórców."
     />
     <meta property="og:url" content="https://www.pwlo.dev/pl/" />
     <meta property="og:locale" content="pl_PL" />
@@ -40,15 +40,15 @@
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="pwlo.dev portfolio web developera nastawionego na wydajnosc" />
+    <meta property="og:image:alt" content="pwlo.dev portfolio web developera nastawionego na wydajność" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="pwlo.dev | Ultraszybkie nowoczesne strony" />
     <meta
       name="twitter:description"
-      content="Web development nastawiony na wydajnosc, SEO i Core Web Vitals dla firm oraz tworcow."
+      content="Web development nastawiony na wydajność, SEO i Core Web Vitals dla firm oraz twórców."
     />
     <meta name="twitter:image" content="https://www.pwlo.dev/og-image.png" />
-    <meta name="twitter:image:alt" content="pwlo.dev portfolio web developera nastawionego na wydajnosc" />
+    <meta name="twitter:image:alt" content="pwlo.dev portfolio web developera nastawionego na wydajność" />
     <title>pwlo.dev | Ultraszybkie nowoczesne strony</title>
     <script type="application/ld+json">
       {
@@ -59,7 +59,7 @@
             "@id": "https://www.pwlo.dev/pl/#website",
             "name": "pwlo.dev",
             "url": "https://www.pwlo.dev/pl/",
-            "description": "Web development nastawiony na wydajnosc, SEO i Core Web Vitals dla firm oraz tworcow.",
+            "description": "Web development nastawiony na wydajność, SEO i Core Web Vitals dla firm oraz twórców.",
             "inLanguage": "pl",
             "publisher": {
               "@id": "https://www.pwlo.dev/#organization"
@@ -72,7 +72,7 @@
             "url": "https://www.pwlo.dev/",
             "logo": "https://www.pwlo.dev/logo.png",
             "image": "https://www.pwlo.dev/og-image.png",
-            "description": "Web development nastawiony na wydajnosc, SEO i Core Web Vitals dla firm oraz tworcow.",
+            "description": "Web development nastawiony na wydajność, SEO i Core Web Vitals dla firm oraz twórców.",
             "email": "pawel@pwlo.dev",
             "founder": {
               "@id": "https://www.pwlo.dev/#person"
@@ -127,6 +127,17 @@
           document.documentElement.dataset.theme = "dark"
         } catch {
           document.documentElement.dataset.theme = "dark"
+        }
+      })()
+    </script>
+    <script>
+      ;(() => {
+        try {
+          if (window.sessionStorage.getItem("pwlo-trigger-boot") === "true") {
+            document.documentElement.classList.add("locale-boot-pending")
+          }
+        } catch {
+          // Ignore storage access errors.
         }
       })()
     </script>

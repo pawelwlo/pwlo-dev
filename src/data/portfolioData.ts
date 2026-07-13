@@ -7,6 +7,17 @@ export type DesktopIconItem = {
   stat: string;
 };
 
+export type ProjectTechTagId =
+  | "production-site"
+  | "live-domain"
+  | "responsive-ui"
+  | "web-app"
+  | "interactive-ui"
+  | "platform"
+  | "production-preview"
+  | "brand-site"
+  | "productivity-app";
+
 export type Project = {
   id: string;
   title: string;
@@ -14,7 +25,7 @@ export type Project = {
   previewUrl: string;
   screenshotSrc: string;
   description: string;
-  tech: string[];
+  tech: ProjectTechTagId[];
   performanceBadge: string;
   screenshotLabel: string;
   screenshotDetails: string[];
@@ -45,7 +56,7 @@ export const projects: Project[] = [
     previewUrl: "https://dietanacodzien.pl",
     screenshotSrc: "/dietanacodzien.webp",
     description: "Nutrition-focused production website presented as a live portfolio project preview.",
-    tech: ["Production site", "Live domain", "Responsive UI"],
+    tech: ["production-site", "live-domain", "responsive-ui"],
     performanceBadge: "Live preview",
     screenshotLabel: "Live domain / Landing / Content flow",
     screenshotDetails: ["Production", "Responsive", "Preview"],
@@ -69,7 +80,7 @@ export const projects: Project[] = [
     previewUrl: "https://magiccolouringbook.app",
     screenshotSrc: "/magicbook.webp",
     description: "Interactive app project listed with a direct live preview for fast portfolio browsing.",
-    tech: ["Web app", "Interactive UI", "Live domain"],
+    tech: ["web-app", "interactive-ui", "live-domain"],
     performanceBadge: "Live preview",
     screenshotLabel: "App preview / Flow / Interface",
     screenshotDetails: ["Production", "App", "Preview"],
@@ -96,7 +107,7 @@ export const projects: Project[] = [
     previewUrl: "https://instant-jobs.com",
     screenshotSrc: "/instantjobs.webp",
     description: "Job-focused live project entry with direct access to the production domain.",
-    tech: ["Platform", "Live domain", "Responsive UI"],
+    tech: ["platform", "live-domain", "responsive-ui"],
     performanceBadge: "Live preview",
     screenshotLabel: "Landing / Jobs / Conversion path",
     screenshotDetails: ["Production", "Platform", "Preview"],
@@ -121,7 +132,7 @@ export const imageStyle = {
     previewUrl: "https://hotelworker.app",
     screenshotSrc: "/hotelworker.webp",
     description: "Hospitality-focused app entry added with a clean live preview link.",
-    tech: ["Web app", "Live domain", "Production preview"],
+    tech: ["web-app", "live-domain", "production-preview"],
     performanceBadge: "Live preview",
     screenshotLabel: "App flow / Interface / Production domain",
     screenshotDetails: ["Production", "Hospitality", "Preview"],
@@ -143,7 +154,7 @@ export const imageStyle = {
     previewUrl: "https://coffeebagus.com",
     screenshotSrc: "/coffeebagus.webp",
     description: "Brand site portfolio entry with a direct preview to the live domain.",
-    tech: ["Brand site", "Live domain", "Responsive UI"],
+    tech: ["brand-site", "live-domain", "responsive-ui"],
     performanceBadge: "Live preview",
     screenshotLabel: "Brand experience / Pages / Production domain",
     screenshotDetails: ["Production", "Brand", "Preview"],
@@ -166,7 +177,7 @@ export const imageStyle = {
     previewUrl: "https://tasktracker.pl",
     screenshotSrc: "/tasktracker.webp",
     description: "Productivity project card linked directly to the production preview.",
-    tech: ["Productivity app", "Live domain", "Production preview"],
+    tech: ["productivity-app", "live-domain", "production-preview"],
     performanceBadge: "Live preview",
     screenshotLabel: "Dashboard / Workflow / Production domain",
     screenshotDetails: ["Production", "App", "Preview"],

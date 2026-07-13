@@ -23,7 +23,7 @@ import {
   UserRound,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState, type ComponentType, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type FormEvent } from "react";
 
 import { LeadsWindow } from "@/components/portfolio/LeadsWindow";
 import { AboutWindow, ContactWindow, SpeedTestForm, TechStackWindow } from "@/components/portfolio/UtilityWindows";
@@ -32,6 +32,11 @@ import { MobileBackground } from "@/components/MobileBackground";
 import { MobileDock } from "@/components/MobileDock";
 import { projects } from "@/data/portfolioData";
 import { getProjectTranslation, localeOptions, type Copy, type Locale } from "@/i18n/translations";
+import {
+  clearLocaleBootSession,
+  hasPendingLocaleBoot,
+  localeBootMessageStorageKey,
+} from "@/lib/localeBoot";
 
 type OsAppId =
   | "home"
@@ -112,21 +117,21 @@ function getWeatherPresentation(weatherCode: number, locale: Locale): { label: s
 
   if (weatherCode === 1 || weatherCode === 2) {
     return {
-      label: locale === "pl" ? "Czesciowe zachmurzenie" : locale === "de" ? "Teilweise bewolkt" : "Partly Cloudy",
+      label: locale === "pl" ? "Częściowe zachmurzenie" : locale === "de" ? "Teilweise bewölkt" : "Partly Cloudy",
       icon: CloudSun,
     };
   }
 
   if (weatherCode === 3) {
     return {
-      label: locale === "pl" ? "Pochmurno" : locale === "de" ? "Bewoelkt" : "Cloudy",
+      label: locale === "pl" ? "Pochmurno" : locale === "de" ? "Bewölkt" : "Cloudy",
       icon: Cloud,
     };
   }
 
   if (weatherCode === 45 || weatherCode === 48) {
     return {
-      label: locale === "pl" ? "Mgla" : locale === "de" ? "Nebel" : "Fog",
+      label: locale === "pl" ? "Mgła" : locale === "de" ? "Nebel" : "Fog",
       icon: CloudFog,
     };
   }
@@ -140,7 +145,7 @@ function getWeatherPresentation(weatherCode: number, locale: Locale): { label: s
 
   if ((weatherCode >= 71 && weatherCode <= 77) || weatherCode === 85 || weatherCode === 86) {
     return {
-      label: locale === "pl" ? "Snieg" : locale === "de" ? "Schnee" : "Snow",
+      label: locale === "pl" ? "Śnieg" : locale === "de" ? "Schnee" : "Snow",
       icon: CloudSnow,
     };
   }
@@ -242,7 +247,7 @@ export function OsHomeLayout({
     }
 
     try {
-      if (window.sessionStorage.getItem("pwlo-trigger-boot") === "true") {
+      if (hasPendingLocaleBoot()) {
         return "booting";
       }
       return window.localStorage.getItem(privacyConsentStorageKey) === "true" ? "unlocked" : "locked";
@@ -256,7 +261,7 @@ export function OsHomeLayout({
     }
 
     try {
-      return window.sessionStorage.getItem("pwlo-trigger-boot-msg") || copy.bootMessages.system;
+      return window.sessionStorage.getItem(localeBootMessageStorageKey) || copy.bootMessages.system;
     } catch {
       return copy.bootMessages.system;
     }
@@ -289,6 +294,11 @@ export function OsHomeLayout({
   }, []);
   const homeTitle = isTablet ? copy.osLayout.tabletTitle : copy.osLayout.mobileTitle;
   const isLockscreenVisible = lockscreenState !== "unlocked";
+
+  const completeMobileBootSequence = useCallback(() => {
+    clearLocaleBootSession();
+    setLockscreenState("unlocked");
+  }, []);
 
   const selectedProject = useMemo(
     () => projects.find((project) => project.id === selectedProjectId) ?? projects[0],
@@ -538,13 +548,13 @@ export function OsHomeLayout({
 
   return (
     <main
-      className={`os-shell ${isLockscreenVisible ? "os-shell-locked" : ""}`}
+      className={`os-shell ${isLockscreenVisible ? "os-shell-locked" : ""}${lockscreenState === "booting" ? " os-shell-booting" : ""}`}
       data-os-mode={activeApp === "home" ? "home" : "app"}
     >
       <MobileBackground />
 
       {lockscreenState === "booting" && (
-        <BootScreen message={bootMessage} onComplete={() => setLockscreenState("unlocked")} />
+        <BootScreen message={bootMessage} onComplete={completeMobileBootSequence} />
       )}
 
       {isLockscreenVisible && lockscreenState !== "booting" ? (
@@ -718,34 +728,35 @@ export function OsHomeLayout({
                         const projectCopy = getProjectTranslation(locale, project.id);
 
                         return (
-                          <button
-                            key={project.id}
-                            className="os-app-style-item"
-                            type="button"
-                            onClick={() => {
-                              onSelectProject(project.id);
-                              setProjectView("detail");
-                              scrollToTop();
-                            }}
-                          >
-                            <div className="os-app-style-icon" aria-hidden="true">
-                              <img
-                                className="os-app-style-icon-img"
-                                src={project.screenshotSrc}
-                                alt=""
-                                loading="lazy"
-                                decoding="async"
-                              />
-                            </div>
-                            <div className="os-app-style-title">{projectCopy.title}</div>
-                            <div className="os-app-style-pills">
-                              {project.tech.slice(0, 2).map((tag) => (
-                                <span key={tag} className="os-app-style-pill">
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
-                          </button>
+                          <div key={project.id} className="os-app-style-item">
+                            <button
+                              className="os-app-style-item-trigger"
+                              type="button"
+                              onClick={() => {
+                                onSelectProject(project.id);
+                                setProjectView("detail");
+                                scrollToTop();
+                              }}
+                            >
+                              <div className="os-app-style-icon" aria-hidden="true">
+                                <img
+                                  className="os-app-style-icon-img"
+                                  src={project.screenshotSrc}
+                                  alt=""
+                                  loading="lazy"
+                                  decoding="async"
+                                />
+                              </div>
+                            </button>
+                            <a
+                              className="os-app-style-title"
+                              href={project.previewUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {projectCopy.title}
+                            </a>
+                          </div>
                         );
                       })}
                     </div>
@@ -945,9 +956,6 @@ export function OsHomeLayout({
                             type="button"
                             onClick={() => {
                               if (opt.value === locale) return;
-                              const msg = opt.value === "en" ? copy.bootMessages.langEn : opt.value === "pl" ? copy.bootMessages.langPl : copy.bootMessages.langDe;
-                              setBootMessage(msg);
-                              setLockscreenState("booting");
                               onChangeLocale(opt.value);
                             }}
                           >

@@ -47,6 +47,12 @@ import { desktopIcons, type WindowId } from "@/data/portfolioData";
 import { copyByLocale, localeOptions, type Locale } from "@/i18n/translations";
 import { getLocalePath } from "@/lib/localeRouting";
 import { persistLocalePreference } from "@/lib/geoLocale";
+import {
+  clearLocaleBootSession,
+  hasPendingLocaleBoot,
+  localeBootMessageStorageKey,
+  markLocaleBootPending,
+} from "@/lib/localeBoot";
 import { cn } from "@/lib/utils";
 import { fetchAdminLeads, submitLead, type LeadRecord } from "@/lib/leadsApi";
 import { useDesktopStore } from "@/store/desktopStore";
@@ -186,21 +192,21 @@ function getWeatherPresentation(weatherCode: number, locale: Locale): { label: s
 
   if (weatherCode === 1 || weatherCode === 2) {
     return {
-      label: locale === "pl" ? "Czesciowe zachmurzenie" : locale === "de" ? "Teilweise bewolkt" : "Partly Cloudy",
+      label: locale === "pl" ? "Częściowe zachmurzenie" : locale === "de" ? "Teilweise bewölkt" : "Partly Cloudy",
       icon: CloudSun,
     };
   }
 
   if (weatherCode === 3) {
     return {
-      label: locale === "pl" ? "Pochmurno" : locale === "de" ? "Bewoelkt" : "Cloudy",
+      label: locale === "pl" ? "Pochmurno" : locale === "de" ? "Bewölkt" : "Cloudy",
       icon: Cloud,
     };
   }
 
   if (weatherCode === 45 || weatherCode === 48) {
     return {
-      label: locale === "pl" ? "Mgla" : locale === "de" ? "Nebel" : "Fog",
+      label: locale === "pl" ? "Mgła" : locale === "de" ? "Nebel" : "Fog",
       icon: CloudFog,
     };
   }
@@ -214,7 +220,7 @@ function getWeatherPresentation(weatherCode: number, locale: Locale): { label: s
 
   if ((weatherCode >= 71 && weatherCode <= 77) || weatherCode === 85 || weatherCode === 86) {
     return {
-      label: locale === "pl" ? "Snieg" : locale === "de" ? "Schnee" : "Snow",
+      label: locale === "pl" ? "Śnieg" : locale === "de" ? "Schnee" : "Snow",
       icon: CloudSnow,
     };
   }
@@ -336,7 +342,7 @@ export default function Home() {
     }
 
     try {
-      if (window.sessionStorage.getItem("pwlo-trigger-boot") === "true") {
+      if (hasPendingLocaleBoot()) {
         return "booting";
       }
       return window.localStorage.getItem(desktopPrivacyConsentStorageKey) === "true" ? "unlocked" : "locked";
@@ -349,7 +355,7 @@ export default function Home() {
       return copy.bootMessages.system;
     }
     try {
-      return window.sessionStorage.getItem("pwlo-trigger-boot-msg") || copy.bootMessages.system;
+      return window.sessionStorage.getItem(localeBootMessageStorageKey) || copy.bootMessages.system;
     } catch {
       return copy.bootMessages.system;
     }
@@ -383,29 +389,18 @@ export default function Home() {
       if (nextLocale === "pl") bootMsg = nextCopy.bootMessages.langPl;
       if (nextLocale === "de") bootMsg = nextCopy.bootMessages.langDe;
 
-      try {
-        window.sessionStorage.setItem("pwlo-trigger-boot", "true");
-        window.sessionStorage.setItem("pwlo-trigger-boot-msg", bootMsg);
-      } catch {
-        // ignore
-      }
-
+      markLocaleBootPending(bootMsg);
       persistLocalePreference(nextLocale);
-      setLocale(nextLocale);
       window.location.assign(nextPath);
     },
-    [locale, setLocale],
+    [locale],
   );
 
   // BootSequence controls the booting -> unlocked transition.
 
-  useEffect(() => {
-    try {
-      window.sessionStorage.removeItem("pwlo-trigger-boot");
-      window.sessionStorage.removeItem("pwlo-trigger-boot-msg");
-    } catch {
-      // ignore
-    }
+  const completeDesktopBootSequence = useCallback(() => {
+    clearLocaleBootSession();
+    setDesktopLockscreenState("unlocked");
   }, []);
 
   useEffect(() => {
@@ -1154,7 +1149,7 @@ export default function Home() {
       <div className="shell-grid" aria-hidden="true" />
 
       {desktopLockscreenState === "booting" && (
-        <BootSequence message={bootMessage} onComplete={() => setDesktopLockscreenState("unlocked")} />
+        <BootSequence message={bootMessage} onComplete={completeDesktopBootSequence} />
       )}
 
       {isDesktopLockscreenVisible && desktopLockscreenState !== "booting" ? (

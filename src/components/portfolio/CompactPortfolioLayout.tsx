@@ -8,7 +8,7 @@ import { useMemo, useState, type FormEvent } from "react";
 
 import { ContactWindow, SpeedTestForm } from "@/components/portfolio/UtilityWindows";
 import { projects } from "@/data/portfolioData";
-import { getProjectTranslation, localeOptions, type Copy, type Locale } from "@/i18n/translations";
+import { getProjectTechTag, getProjectTranslation, localeOptions, type Copy, type Locale } from "@/i18n/translations";
 
 type CompactPortfolioLayoutProps = {
   locale: Locale;
@@ -263,9 +263,9 @@ export function CompactPortfolioLayout({
                 </div>
 
                 <div className="tech-pill-row">
-                  {project.tech.map((item) => (
-                    <span key={item} className="tech-pill">
-                      {item}
+                  {project.tech.map((tagId) => (
+                    <span key={tagId} className="tech-pill">
+                      {getProjectTechTag(locale, tagId)}
                     </span>
                   ))}
                 </div>

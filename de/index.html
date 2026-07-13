@@ -29,7 +29,7 @@
     <meta property="og:title" content="pwlo.dev | Ultraschnelle moderne Websites" />
     <meta
       property="og:description"
-      content="Performance-orientierte Webentwicklung fuer Unternehmen und Creator mit Fokus auf SEO und Core Web Vitals."
+      content="Performance-orientierte Webentwicklung für Unternehmen und Creator mit Fokus auf SEO und Core Web Vitals."
     />
     <meta property="og:url" content="https://www.pwlo.dev/de/" />
     <meta property="og:locale" content="de_DE" />
@@ -40,15 +40,15 @@
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="pwlo.dev Portfolio fuer performance-orientierte Webentwicklung" />
+    <meta property="og:image:alt" content="pwlo.dev Portfolio für performance-orientierte Webentwicklung" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="pwlo.dev | Ultraschnelle moderne Websites" />
     <meta
       name="twitter:description"
-      content="Performance-orientierte Webentwicklung fuer Unternehmen und Creator mit Fokus auf SEO und Core Web Vitals."
+      content="Performance-orientierte Webentwicklung für Unternehmen und Creator mit Fokus auf SEO und Core Web Vitals."
     />
     <meta name="twitter:image" content="https://www.pwlo.dev/og-image.png" />
-    <meta name="twitter:image:alt" content="pwlo.dev Portfolio fuer performance-orientierte Webentwicklung" />
+    <meta name="twitter:image:alt" content="pwlo.dev Portfolio für performance-orientierte Webentwicklung" />
     <title>pwlo.dev | Ultraschnelle moderne Websites</title>
     <script type="application/ld+json">
       {
@@ -59,7 +59,7 @@
             "@id": "https://www.pwlo.dev/de/#website",
             "name": "pwlo.dev",
             "url": "https://www.pwlo.dev/de/",
-            "description": "Performance-orientierte Webentwicklung fuer Unternehmen und Creator mit Fokus auf SEO und Core Web Vitals.",
+            "description": "Performance-orientierte Webentwicklung für Unternehmen und Creator mit Fokus auf SEO und Core Web Vitals.",
             "inLanguage": "de",
             "publisher": {
               "@id": "https://www.pwlo.dev/#organization"
@@ -72,7 +72,7 @@
             "url": "https://www.pwlo.dev/",
             "logo": "https://www.pwlo.dev/logo.png",
             "image": "https://www.pwlo.dev/og-image.png",
-            "description": "Performance-orientierte Webentwicklung fuer Unternehmen und Creator mit Fokus auf SEO und Core Web Vitals.",
+            "description": "Performance-orientierte Webentwicklung für Unternehmen und Creator mit Fokus auf SEO und Core Web Vitals.",
             "email": "pawel@pwlo.dev",
             "founder": {
               "@id": "https://www.pwlo.dev/#person"
@@ -127,6 +127,17 @@
           document.documentElement.dataset.theme = "dark"
         } catch {
           document.documentElement.dataset.theme = "dark"
+        }
+      })()
+    </script>
+    <script>
+      ;(() => {
+        try {
+          if (window.sessionStorage.getItem("pwlo-trigger-boot") === "true") {
+            document.documentElement.classList.add("locale-boot-pending")
+          }
+        } catch {
+          // Ignore storage access errors.
         }
       })()
     </script>

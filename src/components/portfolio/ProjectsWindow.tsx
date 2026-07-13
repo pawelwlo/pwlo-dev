@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import type { KeyboardEvent } from "react";
 
 import { projects } from "@/data/portfolioData";
-import { getProjectTranslation, type Locale } from "@/i18n/translations";
+import { getProjectTechTag, getProjectTranslation, type Locale } from "@/i18n/translations";
 
 type ProjectsWindowProps = {
   locale: Locale;
@@ -79,9 +79,9 @@ export function ProjectsWindow({
               </div>
 
               <div className="tech-pill-row">
-                {project.tech.map((item) => (
-                  <span key={item} className="tech-pill">
-                    {item}
+                {project.tech.map((tagId) => (
+                  <span key={tagId} className="tech-pill">
+                    {getProjectTechTag(locale, tagId)}
                   </span>
                 ))}
               </div>
