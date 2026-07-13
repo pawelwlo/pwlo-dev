@@ -80,8 +80,6 @@ export function AboutWindow({ copy }: CopyProps) {
 
       <div className="about-copy">
         <div style={{ marginBottom: "24px" }}>
-          <h3 style={{ marginBottom: "16px" }}>{copy.about.title}</h3>
-          
           <div className="about-details">
             <div style={{ fontWeight: 500, marginBottom: "4px" }}>{copy.about.name}</div>
             <div style={{ fontWeight: 300, color: "var(--text-secondary)", fontSize: "0.95rem", marginBottom: "2px" }}>{copy.about.role}</div>
