@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type FormEvent } from "react";
 
+import { BootSequence } from "@/components/BootSequence";
 import { LeadsWindow } from "@/components/portfolio/LeadsWindow";
 import { AboutWindow, ContactWindow, SpeedTestForm, TechStackWindow } from "@/components/portfolio/UtilityWindows";
 import { MobileAppIcon } from "@/components/MobileIcons";
@@ -167,54 +168,6 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function BootScreen({ message, onComplete }: { message: string; onComplete: () => void }) {
-  const [progress, setProgress] = useState(0);
-  const onCompleteRef = useRef(onComplete);
-
-  useEffect(() => {
-    onCompleteRef.current = onComplete;
-  }, [onComplete]);
-
-  useEffect(() => {
-    const startTime = Date.now();
-    const duration = 2000;
-    let animationFrameId: number;
-    let timeoutId: number;
-
-    const tick = () => {
-      const elapsed = Date.now() - startTime;
-      const nextProgress = Math.min(100, Math.floor((elapsed / duration) * 100));
-      setProgress(nextProgress);
-
-      if (nextProgress < 100) {
-        animationFrameId = requestAnimationFrame(tick);
-      } else {
-        timeoutId = window.setTimeout(() => {
-          onCompleteRef.current();
-        }, 300);
-      }
-    };
-
-    animationFrameId = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      clearTimeout(timeoutId);
-    };
-  }, []);
-
-  return (
-    <div className="os-boot-screen">
-      <div className="boot-content">
-        <div className="boot-logo">
-          <img src="/logo.png" alt="Boot Logo" width={100} height={100} style={{ objectFit: "contain", opacity: 0.9 }} />
-        </div>
-        <div className="boot-text">{message}</div>
-        <div className="boot-percentage">{progress}%</div>
-      </div>
-    </div>
-  );
-}
-
 export function OsHomeLayout({
   locale,
   copy,
@@ -266,6 +219,7 @@ export function OsHomeLayout({
       return copy.bootMessages.system;
     }
   });
+  const [isBootExiting, setIsBootExiting] = useState(false);
   const [isPrivacyInfoExpanded, setIsPrivacyInfoExpanded] = useState(false);
   const [weatherSnapshot, setWeatherSnapshot] = useState<WeatherSnapshot>(defaultWeatherSnapshot);
   const [isTablet, setIsTablet] = useState(() => {
@@ -548,13 +502,17 @@ export function OsHomeLayout({
 
   return (
     <main
-      className={`os-shell ${isLockscreenVisible ? "os-shell-locked" : ""}${lockscreenState === "booting" ? " os-shell-booting" : ""}`}
+      className={`os-shell ${isLockscreenVisible ? "os-shell-locked" : ""}${lockscreenState === "booting" ? " os-shell-booting" : ""}${isBootExiting ? " os-shell-boot-exit" : ""}`}
       data-os-mode={activeApp === "home" ? "home" : "app"}
     >
       <MobileBackground />
 
       {lockscreenState === "booting" && (
-        <BootScreen message={bootMessage} onComplete={completeMobileBootSequence} />
+        <BootSequence
+          message={bootMessage}
+          onExitStart={() => setIsBootExiting(true)}
+          onComplete={completeMobileBootSequence}
+        />
       )}
 
       {isLockscreenVisible && lockscreenState !== "booting" ? (

@@ -174,6 +174,14 @@ html.locale-boot-pending body {
   opacity: 1;
 }
 
+.portfolio-shell-boot-exit > :not(.os-boot-screen),
+.os-shell-boot-exit > :not(.os-boot-screen) {
+  visibility: visible;
+  opacity: 0;
+  transform: scale(0.97);
+  animation: boot-shell-reveal 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 .portfolio-shell-locked .desktop-wallpaper-layer-base {
   opacity: 0.12;
 }
@@ -5410,6 +5418,15 @@ html.locale-boot-pending body {
   animation: boot-screen-fade-in 0.3s ease-out;
 }
 
+.os-boot-screen--exiting {
+  animation: boot-screen-exit 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  pointer-events: none;
+}
+
+.os-boot-screen--exiting .boot-content {
+  animation: boot-content-zoom-in 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 .boot-content {
   display: flex;
   flex-direction: column;
@@ -5442,6 +5459,46 @@ html.locale-boot-pending body {
 
   to {
     opacity: 1;
+  }
+}
+
+@keyframes boot-screen-exit {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+}
+
+@keyframes boot-content-zoom-in {
+  from {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1.08);
+    filter: blur(6px);
+  }
+}
+
+@keyframes boot-shell-reveal {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 

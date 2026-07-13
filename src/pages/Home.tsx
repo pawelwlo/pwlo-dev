@@ -29,6 +29,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { BootSequence } from "@/components/BootSequence";
 import { DesktopIcon } from "@/components/os/DesktopIcon";
 import { WindowFrame, type ResizeDirection } from "@/components/os/WindowFrame";
 import { Desktop } from "@/components/Desktop";
@@ -119,54 +120,6 @@ const isSupabaseConfigured = Boolean(
 const garmischWeatherUrl =
   "https://api.open-meteo.com/v1/forecast?latitude=47.4917&longitude=11.0955&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1";
 const desktopPrivacyConsentStorageKey = "pwlo-desktop-privacy-consent";
-
-function BootSequence({ message, onComplete }: { message: string; onComplete: () => void }) {
-  const [progress, setProgress] = useState(0);
-  const onCompleteRef = useRef(onComplete);
-
-  useEffect(() => {
-    onCompleteRef.current = onComplete;
-  }, [onComplete]);
-
-  useEffect(() => {
-    const startTime = Date.now();
-    const duration = 2000;
-    let animationFrameId: number;
-    let timeoutId: number;
-
-    const tick = () => {
-      const elapsed = Date.now() - startTime;
-      const nextProgress = Math.min(100, Math.floor((elapsed / duration) * 100));
-      setProgress(nextProgress);
-
-      if (nextProgress < 100) {
-        animationFrameId = requestAnimationFrame(tick);
-      } else {
-        timeoutId = window.setTimeout(() => {
-          onCompleteRef.current();
-        }, 300);
-      }
-    };
-
-    animationFrameId = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      clearTimeout(timeoutId);
-    };
-  }, []);
-
-  return (
-    <div className="os-boot-screen">
-      <div className="boot-content">
-        <div className="boot-logo">
-          <img src="/logo.png" alt="Boot Logo" width={100} height={100} style={{ objectFit: "contain", opacity: 0.9 }} />
-        </div>
-        <div className="boot-text">{message}</div>
-        <div className="boot-percentage">{progress}%</div>
-      </div>
-    </div>
-  );
-}
 
 type WeatherSnapshot = {
   temperature: number;
@@ -360,6 +313,7 @@ export default function Home() {
       return copy.bootMessages.system;
     }
   });
+  const [isBootExiting, setIsBootExiting] = useState(false);
   const [isDesktopPrivacyInfoExpanded, setIsDesktopPrivacyInfoExpanded] = useState(false);
   const [isLocaleMenuOpen, setIsLocaleMenuOpen] = useState(false);
   const [desktopSearch, setDesktopSearch] = useState("");
@@ -1118,7 +1072,7 @@ export default function Home() {
   return (
     <main
       ref={portfolioShellRef}
-      className={`portfolio-shell${isDesktopLockscreenVisible ? " portfolio-shell-locked" : ""}${desktopLockscreenState === "booting" ? " portfolio-shell-booting" : ""}`}
+      className={`portfolio-shell${isDesktopLockscreenVisible ? " portfolio-shell-locked" : ""}${desktopLockscreenState === "booting" ? " portfolio-shell-booting" : ""}${isBootExiting ? " portfolio-shell-boot-exit" : ""}`}
       onMouseMove={(event) => {
         const viewportWidth = window.innerWidth || 1;
         const viewportHeight = window.innerHeight || 1;
@@ -1149,7 +1103,11 @@ export default function Home() {
       <div className="shell-grid" aria-hidden="true" />
 
       {desktopLockscreenState === "booting" && (
-        <BootSequence message={bootMessage} onComplete={completeDesktopBootSequence} />
+        <BootSequence
+          message={bootMessage}
+          onExitStart={() => setIsBootExiting(true)}
+          onComplete={completeDesktopBootSequence}
+        />
       )}
 
       {isDesktopLockscreenVisible && desktopLockscreenState !== "booting" ? (
