@@ -1095,7 +1095,6 @@ export default function Home() {
         <div className="desktop-wallpaper-layer desktop-wallpaper-layer-base" />
         <div className="desktop-wallpaper-layer desktop-wallpaper-layer-warm" />
         <div className="desktop-wallpaper-layer desktop-wallpaper-layer-pink" />
-        <div className="desktop-wallpaper-photo" />
         <div className="desktop-wallpaper-noise" />
         <div className="desktop-wallpaper-content-tint" />
       </div>

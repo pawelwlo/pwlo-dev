@@ -30,14 +30,15 @@ export const IOS_GLOSS = {
 } as const;
 
 export const IOS_WALLPAPER = {
-  imageUrl: "/os-mobile-wallpaper.webp",
-  blur: "100px",
-  saturation: 0.4,
-  brightness: 0.75,
-  bloom: "radial-gradient(circle at 40% 30%, rgba(255, 200, 150, 0.25), transparent 58%)",
-  gloss: "linear-gradient(to bottom, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))",
+  imageUrl: "none",
+  blur: "0px",
+  saturation: 1,
+  brightness: 1,
+  bloom:
+    "radial-gradient(circle at 40% 30%, rgba(120, 160, 255, 0.28), transparent 58%), radial-gradient(circle at 78% 68%, rgba(200, 90, 140, 0.18), transparent 48%)",
+  gloss: "linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0))",
   diagonal:
-    "linear-gradient(135deg, rgba(77, 163, 255, 0.28) 0%, rgba(255, 179, 107, 0.22) 48%, rgba(255, 127, 191, 0.2) 100%)",
+    "linear-gradient(180deg, #0e1e38 0%, #162b50 32%, #4a2141 72%, #5c2c3a 100%)",
 } as const;
 
 export const tintClassToIosTint: Record<string, IosIconTint> = {

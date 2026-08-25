@@ -28,6 +28,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, 
 import { BootSequence } from "@/components/BootSequence";
 import { LeadsWindow } from "@/components/portfolio/LeadsWindow";
 import { AboutWindow, ContactWindow, SpeedTestForm, TechStackWindow } from "@/components/portfolio/UtilityWindows";
+import { TechIcon } from "@/components/portfolio/TechIcons";
 import { MobileAppIcon } from "@/components/MobileIcons";
 import { MobileBackground } from "@/components/MobileBackground";
 import { MobileDock } from "@/components/MobileDock";
@@ -813,10 +814,13 @@ export function OsHomeLayout({
 
                         <div className="os-project-detail-content">
                           <div className="stack-card">
-                            {selectedOpenSource?.items.map((item: any) => (
-                              <div key={item.name} className="os-stack-detail-tool">
-                                <div className="os-stack-detail-tool-name">{item.name}</div>
-                                <div className="os-stack-detail-tool-purpose">{item.purpose}</div>
+                            {selectedOpenSource?.items.map((item) => (
+                              <div key={item.name} className="tech-item" style={{ marginBottom: "14px" }}>
+                                <TechIcon id={item.icon} />
+                                <div className="tech-item-copy">
+                                  <div className="tech-item-name">{item.name}</div>
+                                  <div className="tech-item-purpose">{item.purpose}</div>
+                                </div>
                               </div>
                             ))}
                           </div>
@@ -852,6 +856,7 @@ export function OsHomeLayout({
 
                   <article className="os-card os-seo-card">
                     <h3>{copy.speed.title}</h3>
+                    <p>{copy.speed.subtitle}</p>
                     <p>{copy.speed.description}</p>
                     <ul className="bullet-list" style={{ marginBottom: "16px" }}>
                       {copy.speed.items.map((item) => (

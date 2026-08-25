@@ -1,4 +1,5 @@
 import type { WindowId, ProjectTechTagId } from "@/data/portfolioData";
+import type { TechIconId } from "@/components/portfolio/TechIcons";
 
 export type Locale = "en" | "pl" | "de";
 
@@ -125,16 +126,27 @@ export type Copy = {
     location: string;
     photoPlaceholder: string;
     bio: string[];
+    clientsHeading: string;
+    clients: string[];
     resumeAction: string;
   };
   techStack: {
     eyebrow: string;
     title: string;
-    columns: Array<{ title: string; items: Array<{ name: string; purpose: string; projectsCount?: number }> }>;
+    columns: Array<{
+      title: string;
+      items: Array<{
+        name: string;
+        purpose: string;
+        icon: TechIconId;
+        projectsCount?: number;
+      }>;
+    }>;
   };
   speed: {
     eyebrow: string;
     title: string;
+    subtitle: string;
     description: string;
     items: string[];
     cta: string;
@@ -221,62 +233,12 @@ export const localeOptions: LocaleOption[] = [
 
 const projectTranslations: Record<Locale, Record<string, ProjectTranslation>> = {
   en: {
-    "dieta-na-codzien": {
-      title: "Dieta Na Codzien",
-      description: "Nutrition-focused production website presented as a live portfolio project preview.",
-      performanceBadge: "Live preview",
-      screenshotDetails: ["Production", "Responsive", "Preview"],
-      caseStudy: {
-        before: "Original project details available on request",
-        after: "Live production preview available now",
-        seo: [
-          "Live domain ready for review",
-          "Case study details can be expanded",
-          "SEO notes can be added per project",
-        ],
-        deployment: ["Live production domain", "External preview link", "Portfolio case study entry"],
-        testimonial: "Live preview available at dietanacodzien.pl.",
-      },
-    },
-    "magic-colouring-book": {
-      title: "Magic Colouring Book",
-      description: "Interactive app project listed with a direct live preview for fast portfolio browsing.",
-      performanceBadge: "Live preview",
-      screenshotDetails: ["Production", "App", "Preview"],
-      caseStudy: {
-        before: "Project background available on request",
-        after: "Live application preview available now",
-        seo: [
-          "Live domain ready for review",
-          "Project notes can be customized",
-          "Portfolio entry supports direct preview",
-        ],
-        deployment: ["Live production domain", "External preview link", "Portfolio case study entry"],
-        testimonial: "Live preview available at magiccolouringbook.app.",
-      },
-    },
-    "instant-jobs": {
-      title: "Instant Jobs",
-      description: "Job-focused live project entry with direct access to the production domain.",
-      performanceBadge: "Live preview",
-      screenshotDetails: ["Production", "Platform", "Preview"],
-      caseStudy: {
-        before: "Project background available on request",
-        after: "Live site preview available now",
-        seo: [
-          "Live domain ready for review",
-          "Case study notes can be extended",
-          "Direct preview improves portfolio flow",
-        ],
-        deployment: ["Live production domain", "External preview link", "Portfolio case study entry"],
-        testimonial: "Live preview available at instant-jobs.com.",
-      },
-    },
     "hotel-worker": {
       title: "Hotel Worker",
-      description: "Hospitality-focused app entry added with a clean live preview link.",
+      description:
+        "Hotel operations management system. Streamlines staff scheduling, leave requests, and real-time team task coordination.",
       performanceBadge: "Live preview",
-      screenshotDetails: ["Production", "Hospitality", "Preview"],
+      screenshotDetails: ["SaaS", "Hospitality", "Web App"],
       caseStudy: {
         before: "Project background available on request",
         after: "Live application preview available now",
@@ -291,9 +253,10 @@ const projectTranslations: Record<Locale, Record<string, ProjectTranslation>> = 
     },
     "coffee-bagus": {
       title: "Coffee Bagus",
-      description: "Brand site portfolio entry with a direct preview to the live domain.",
+      description:
+        "Modern sales platform for an artisan coffee brand (Farm-to-Cup). Features a minimalist, responsive design and an intuitive checkout flow.",
       performanceBadge: "Live preview",
-      screenshotDetails: ["Production", "Brand", "Preview"],
+      screenshotDetails: ["E-commerce", "Branding", "UI/UX"],
       caseStudy: {
         before: "Project background available on request",
         after: "Live site preview available now",
@@ -308,9 +271,10 @@ const projectTranslations: Record<Locale, Record<string, ProjectTranslation>> = 
     },
     "task-tracker": {
       title: "Task Tracker",
-      description: "Productivity project card linked directly to the production preview.",
+      description:
+        "Project management tool for teams. Centralizes plans, deadlines, and communication to make assigning work and tracking progress easier.",
       performanceBadge: "Live preview",
-      screenshotDetails: ["Production", "App", "Preview"],
+      screenshotDetails: ["SaaS", "Productivity", "Web App"],
       caseStudy: {
         before: "Project background available on request",
         after: "Live site preview available now",
@@ -323,64 +287,68 @@ const projectTranslations: Record<Locale, Record<string, ProjectTranslation>> = 
         testimonial: "Live preview available at tasktracker.pl.",
       },
     },
-  },
-  pl: {
     "dieta-na-codzien": {
-      title: "Dieta Na Codzien",
-      description: "Serwis dietetyczny pokazany w portfolio jako produkcyjny projekt z podglądem na żywo.",
-      performanceBadge: "Podgląd na żywo",
-      screenshotDetails: ["Produkcja", "Responsywny", "Podgląd"],
+      title: "Dieta Na Co Dzień",
+      description:
+        "Clear brand and offer site for a dietitian, integrated with a client panel, educational blog, and online consultation booking.",
+      performanceBadge: "Live preview",
+      screenshotDetails: ["Landing Page", "Health", "Services"],
       caseStudy: {
-        before: "Szczegóły wyjściowe projektu dostępne na życzenie",
-        after: "Podgląd produkcyjny jest już dostępny",
+        before: "Original project details available on request",
+        after: "Live production preview available now",
         seo: [
-          "Domena na żywo gotowa do oceny",
-          "Opis case study można rozbudować",
-          "Notatki SEO można dopasować do projektu",
+          "Live domain ready for review",
+          "Case study details can be expanded",
+          "SEO notes can be added per project",
         ],
-        deployment: ["Domena produkcyjna", "Zewnętrzny link podglądu", "Wpis case study w portfolio"],
-        testimonial: "Podgląd na żywo jest dostępny pod adresem dietanacodzien.pl.",
+        deployment: ["Live production domain", "External preview link", "Portfolio case study entry"],
+        testimonial: "Live preview available at dietanacodzien.pl.",
       },
     },
     "magic-colouring-book": {
       title: "Magic Colouring Book",
-      description: "Interaktywna aplikacja z bezpośrednim podglądem na żywo dla szybkiego przeglądania portfolio.",
-      performanceBadge: "Podgląd na żywo",
-      screenshotDetails: ["Produkcja", "Aplikacja", "Podgląd"],
+      description:
+        "Interactive AI-powered coloring page generator. Create unique templates from text or voice, paint in the browser, and export to print (PDF).",
+      performanceBadge: "Live preview",
+      screenshotDetails: ["AI App", "Education", "Entertainment"],
       caseStudy: {
-        before: "Tło projektu dostępne na życzenie",
-        after: "Podgląd aplikacji jest już dostępny",
+        before: "Project background available on request",
+        after: "Live application preview available now",
         seo: [
-          "Domena na żywo gotowa do oceny",
-          "Notatki do projektu można dopasować",
-          "Wpis w portfolio wspiera bezpośredni podgląd",
+          "Live domain ready for review",
+          "Project notes can be customized",
+          "Portfolio entry supports direct preview",
         ],
-        deployment: ["Domena produkcyjna", "Zewnętrzny link podglądu", "Wpis case study w portfolio"],
-        testimonial: "Podgląd na żywo jest dostępny pod adresem magiccolouringbook.app.",
+        deployment: ["Live production domain", "External preview link", "Portfolio case study entry"],
+        testimonial: "Live preview available at magiccolouringbook.app.",
       },
     },
     "instant-jobs": {
       title: "Instant Jobs",
-      description: "Projekt z obszaru pracy z bezpośrednim dostępem do produkcyjnej domeny.",
-      performanceBadge: "Podgląd na żywo",
-      screenshotDetails: ["Produkcja", "Platforma", "Podgląd"],
+      description:
+        "Local marketplace connecting clients with gig workers in real time. Simple interface for posting jobs and applying.",
+      performanceBadge: "Live preview",
+      screenshotDetails: ["Marketplace", "Recruitment", "Web App"],
       caseStudy: {
-        before: "Tło projektu dostępne na życzenie",
-        after: "Podgląd strony jest już dostępny",
+        before: "Project background available on request",
+        after: "Live site preview available now",
         seo: [
-          "Domena na żywo gotowa do oceny",
-          "Notatki case study można rozszerzyć",
-          "Bezpośredni podgląd poprawia przepływ portfolio",
+          "Live domain ready for review",
+          "Case study notes can be extended",
+          "Direct preview improves portfolio flow",
         ],
-        deployment: ["Domena produkcyjna", "Zewnętrzny link podglądu", "Wpis case study w portfolio"],
-        testimonial: "Podgląd na żywo jest dostępny pod adresem instant-jobs.com.",
+        deployment: ["Live production domain", "External preview link", "Portfolio case study entry"],
+        testimonial: "Live preview available at instant-jobs.com.",
       },
     },
+  },
+  pl: {
     "hotel-worker": {
       title: "Hotel Worker",
-      description: "Aplikacja dla branży hospitality z czystym linkiem do podglądu na żywo.",
+      description:
+        "System zarządzania operacjami hotelowymi. Usprawnia grafik pracy personelu, zgłaszanie urlopów i koordynację zadań zespołu w czasie rzeczywistym.",
       performanceBadge: "Podgląd na żywo",
-      screenshotDetails: ["Produkcja", "Hospitality", "Podgląd"],
+      screenshotDetails: ["SaaS", "Hospitality", "Web App"],
       caseStudy: {
         before: "Tło projektu dostępne na życzenie",
         after: "Podgląd aplikacji jest już dostępny",
@@ -395,9 +363,10 @@ const projectTranslations: Record<Locale, Record<string, ProjectTranslation>> = 
     },
     "coffee-bagus": {
       title: "Coffee Bagus",
-      description: "Projekt marki z bezpośrednim podglądem do domeny na żywo.",
+      description:
+        "Nowoczesna platforma sprzedażowa dla rzemieślniczej marki kawy (model Farm-to-Cup). Wyróżnia się minimalistycznym, responsywnym designem i intuicyjnym procesem zakupowym.",
       performanceBadge: "Podgląd na żywo",
-      screenshotDetails: ["Produkcja", "Marka", "Podgląd"],
+      screenshotDetails: ["E-commerce", "Branding", "UI/UX"],
       caseStudy: {
         before: "Tło projektu dostępne na życzenie",
         after: "Podgląd strony jest już dostępny",
@@ -412,9 +381,10 @@ const projectTranslations: Record<Locale, Record<string, ProjectTranslation>> = 
     },
     "task-tracker": {
       title: "Task Tracker",
-      description: "Projekt produktywności połączony bezpośrednio z produkcyjnym podglądem.",
+      description:
+        "Narzędzie do zarządzania projektami dla zespołów. Centralizuje plany, terminy i komunikację, ułatwiając delegowanie zadań i śledzenie postępów prac.",
       performanceBadge: "Podgląd na żywo",
-      screenshotDetails: ["Produkcja", "Aplikacja", "Podgląd"],
+      screenshotDetails: ["SaaS", "Produktywność", "Web App"],
       caseStudy: {
         before: "Tło projektu dostępne na życzenie",
         after: "Podgląd strony jest już dostępny",
@@ -427,64 +397,68 @@ const projectTranslations: Record<Locale, Record<string, ProjectTranslation>> = 
         testimonial: "Podgląd na żywo jest dostępny pod adresem tasktracker.pl.",
       },
     },
-  },
-  de: {
     "dieta-na-codzien": {
-      title: "Dieta Na Codzien",
-      description: "Ernährungsorientierte Website, im Portfolio als Live-Vorschau eines Produktivprojekts gezeigt.",
-      performanceBadge: "Live-Vorschau",
-      screenshotDetails: ["Produktion", "Responsiv", "Vorschau"],
+      title: "Dieta Na Co Dzień",
+      description:
+        "Przejrzysta strona wizerunkowo-ofertowa dla dietetyka zintegrowana z panelem klienta, blogiem edukacyjnym oraz modułem rezerwacji konsultacji online.",
+      performanceBadge: "Podgląd na żywo",
+      screenshotDetails: ["Landing Page", "Zdrowie", "Usługi"],
       caseStudy: {
-        before: "Ursprüngliche Projektdetails auf Anfrage verfügbar",
-        after: "Die Produktivvorschau ist jetzt verfügbar",
+        before: "Szczegóły wyjściowe projektu dostępne na życzenie",
+        after: "Podgląd produkcyjny jest już dostępny",
         seo: [
-          "Live-Domain bereit zur Prüfung",
-          "Case-Study-Details können erweitert werden",
-          "SEO-Notizen können je Projekt ergänzt werden",
+          "Domena na żywo gotowa do oceny",
+          "Opis case study można rozbudować",
+          "Notatki SEO można dopasować do projektu",
         ],
-        deployment: ["Produktive Live-Domain", "Externer Vorschau-Link", "Portfolio-Case-Study-Eintrag"],
-        testimonial: "Live-Vorschau verfügbar unter dietanacodzien.pl.",
+        deployment: ["Domena produkcyjna", "Zewnętrzny link podglądu", "Wpis case study w portfolio"],
+        testimonial: "Podgląd na żywo jest dostępny pod adresem dietanacodzien.pl.",
       },
     },
     "magic-colouring-book": {
       title: "Magic Colouring Book",
-      description: "Interaktive App mit direkter Live-Vorschau für schnelles Portfolio-Browsing.",
-      performanceBadge: "Live-Vorschau",
-      screenshotDetails: ["Produktion", "App", "Vorschau"],
+      description:
+        "Interaktywny generator kolorowanek napędzany sztuczną inteligencją. Umożliwia tworzenie unikalnych szablonów na podstawie tekstu/głosu, malowanie w przeglądarce i eksport do druku (PDF).",
+      performanceBadge: "Podgląd na żywo",
+      screenshotDetails: ["AI App", "Edukacja", "Rozrywka"],
       caseStudy: {
-        before: "Projektkontext auf Anfrage verfügbar",
-        after: "Die App-Vorschau ist jetzt verfügbar",
+        before: "Tło projektu dostępne na życzenie",
+        after: "Podgląd aplikacji jest już dostępny",
         seo: [
-          "Live-Domain bereit zur Prüfung",
-          "Projektnotizen können angepasst werden",
-          "Portfolio-Eintrag unterstützt direkte Vorschau",
+          "Domena na żywo gotowa do oceny",
+          "Notatki do projektu można dopasować",
+          "Wpis w portfolio wspiera bezpośredni podgląd",
         ],
-        deployment: ["Produktive Live-Domain", "Externer Vorschau-Link", "Portfolio-Case-Study-Eintrag"],
-        testimonial: "Live-Vorschau verfügbar unter magiccolouringbook.app.",
+        deployment: ["Domena produkcyjna", "Zewnętrzny link podglądu", "Wpis case study w portfolio"],
+        testimonial: "Podgląd na żywo jest dostępny pod adresem magiccolouringbook.app.",
       },
     },
     "instant-jobs": {
       title: "Instant Jobs",
-      description: "Job-Plattform mit direktem Zugriff auf die Produktivdomain.",
-      performanceBadge: "Live-Vorschau",
-      screenshotDetails: ["Produktion", "Plattform", "Vorschau"],
+      description:
+        "Lokalna platforma typu marketplace łącząca zleceniodawców z wykonawcami prac dorywczych w czasie rzeczywistym. Prosty interfejs dodawania ogłoszeń i aplikowania.",
+      performanceBadge: "Podgląd na żywo",
+      screenshotDetails: ["Marketplace", "Rekrutacja", "Web App"],
       caseStudy: {
-        before: "Projektkontext auf Anfrage verfügbar",
-        after: "Die Seitenvorschau ist jetzt verfügbar",
+        before: "Tło projektu dostępne na życzenie",
+        after: "Podgląd strony jest już dostępny",
         seo: [
-          "Live-Domain bereit zur Prüfung",
-          "Case-Study-Notizen können erweitert werden",
-          "Direkte Vorschau verbessert den Portfolio-Flow",
+          "Domena na żywo gotowa do oceny",
+          "Notatki case study można rozszerzyć",
+          "Bezpośredni podgląd poprawia przepływ portfolio",
         ],
-        deployment: ["Produktive Live-Domain", "Externer Vorschau-Link", "Portfolio-Case-Study-Eintrag"],
-        testimonial: "Live-Vorschau verfügbar unter instant-jobs.com.",
+        deployment: ["Domena produkcyjna", "Zewnętrzny link podglądu", "Wpis case study w portfolio"],
+        testimonial: "Podgląd na żywo jest dostępny pod adresem instant-jobs.com.",
       },
     },
+  },
+  de: {
     "hotel-worker": {
       title: "Hotel Worker",
-      description: "Hospitality-App mit sauber integriertem Live-Vorschau-Link.",
+      description:
+        "System zur Verwaltung von Hotelabläufen. Optimiert Dienstpläne, Urlaubsanträge und die Echtzeit-Koordination von Teamaufgaben.",
       performanceBadge: "Live-Vorschau",
-      screenshotDetails: ["Produktion", "Hospitality", "Vorschau"],
+      screenshotDetails: ["SaaS", "Hospitality", "Web App"],
       caseStudy: {
         before: "Projektkontext auf Anfrage verfügbar",
         after: "Die App-Vorschau ist jetzt verfügbar",
@@ -499,9 +473,10 @@ const projectTranslations: Record<Locale, Record<string, ProjectTranslation>> = 
     },
     "coffee-bagus": {
       title: "Coffee Bagus",
-      description: "Brand-Website mit direkter Vorschau auf die Live-Domain.",
+      description:
+        "Moderne Verkaufsplattform für eine handwerkliche Kaffeemarke (Farm-to-Cup). Mit minimalistischem, responsivem Design und intuitivem Kaufprozess.",
       performanceBadge: "Live-Vorschau",
-      screenshotDetails: ["Produktion", "Brand", "Vorschau"],
+      screenshotDetails: ["E-commerce", "Branding", "UI/UX"],
       caseStudy: {
         before: "Projektkontext auf Anfrage verfügbar",
         after: "Die Seitenvorschau ist jetzt verfügbar",
@@ -516,9 +491,10 @@ const projectTranslations: Record<Locale, Record<string, ProjectTranslation>> = 
     },
     "task-tracker": {
       title: "Task Tracker",
-      description: "Produktivitätsprojekt mit direkter Verlinkung zur Produktivvorschau.",
+      description:
+        "Projektmanagement-Tool für Teams. Bündelt Pläne, Fristen und Kommunikation und erleichtert so die Aufgabenverteilung und Fortschrittskontrolle.",
       performanceBadge: "Live-Vorschau",
-      screenshotDetails: ["Produktion", "App", "Vorschau"],
+      screenshotDetails: ["SaaS", "Produktivität", "Web App"],
       caseStudy: {
         before: "Projektkontext auf Anfrage verfügbar",
         after: "Die Seitenvorschau ist jetzt verfügbar",
@@ -529,6 +505,60 @@ const projectTranslations: Record<Locale, Record<string, ProjectTranslation>> = 
         ],
         deployment: ["Produktive Live-Domain", "Externer Vorschau-Link", "Portfolio-Case-Study-Eintrag"],
         testimonial: "Live-Vorschau verfügbar unter tasktracker.pl.",
+      },
+    },
+    "dieta-na-codzien": {
+      title: "Dieta Na Co Dzień",
+      description:
+        "Klare Image- und Angebotsseite für Ernährungsberatung mit Kundenpanel, Bildungsblog und Online-Buchung von Beratungen.",
+      performanceBadge: "Live-Vorschau",
+      screenshotDetails: ["Landing Page", "Gesundheit", "Services"],
+      caseStudy: {
+        before: "Ursprüngliche Projektdetails auf Anfrage verfügbar",
+        after: "Die Produktivvorschau ist jetzt verfügbar",
+        seo: [
+          "Live-Domain bereit zur Prüfung",
+          "Case-Study-Details können erweitert werden",
+          "SEO-Notizen können je Projekt ergänzt werden",
+        ],
+        deployment: ["Produktive Live-Domain", "Externer Vorschau-Link", "Portfolio-Case-Study-Eintrag"],
+        testimonial: "Live-Vorschau verfügbar unter dietanacodzien.pl.",
+      },
+    },
+    "magic-colouring-book": {
+      title: "Magic Colouring Book",
+      description:
+        "Interaktiver KI-gestützter Malbuch-Generator. Erstellt einzigartige Vorlagen aus Text oder Sprache, ermöglicht Malen im Browser und Export zum Drucken (PDF).",
+      performanceBadge: "Live-Vorschau",
+      screenshotDetails: ["AI App", "Bildung", "Unterhaltung"],
+      caseStudy: {
+        before: "Projektkontext auf Anfrage verfügbar",
+        after: "Die App-Vorschau ist jetzt verfügbar",
+        seo: [
+          "Live-Domain bereit zur Prüfung",
+          "Projektnotizen können angepasst werden",
+          "Portfolio-Eintrag unterstützt direkte Vorschau",
+        ],
+        deployment: ["Produktive Live-Domain", "Externer Vorschau-Link", "Portfolio-Case-Study-Eintrag"],
+        testimonial: "Live-Vorschau verfügbar unter magiccolouringbook.app.",
+      },
+    },
+    "instant-jobs": {
+      title: "Instant Jobs",
+      description:
+        "Lokale Marketplace-Plattform, die Auftraggeber und Gelegenheitsjobber in Echtzeit verbindet. Einfache Oberfläche zum Erstellen von Anzeigen und Bewerben.",
+      performanceBadge: "Live-Vorschau",
+      screenshotDetails: ["Marketplace", "Recruiting", "Web App"],
+      caseStudy: {
+        before: "Projektkontext auf Anfrage verfügbar",
+        after: "Die Seitenvorschau ist jetzt verfügbar",
+        seo: [
+          "Live-Domain bereit zur Prüfung",
+          "Case-Study-Notizen können erweitert werden",
+          "Direkte Vorschau verbessert den Portfolio-Flow",
+        ],
+        deployment: ["Produktive Live-Domain", "Externer Vorschau-Link", "Portfolio-Case-Study-Eintrag"],
+        testimonial: "Live-Vorschau verfügbar unter instant-jobs.com.",
       },
     },
   },
@@ -647,60 +677,74 @@ export const copyByLocale: Record<Locale, Copy> = {
     },
     about: {
       eyebrow: "ABOUT ME",
-      title: "I build fast, modern web experiences.",
+      title: "About me",
       name: "Paweł Włodarczyk",
-      role: "Web developer · UI/UX · Performance-focused",
-      location: "Germany · Available for freelance",
+      role: "Your partner in building modern websites.",
+      location: "Garmisch-Partenkirchen, DE",
       photoPlaceholder: "Photo placeholder",
       bio: [
-        "I specialize in building scalable, performance-driven web applications.",
-        "My workflow prioritizes clean architecture and minimal dependencies to ship fast.",
-        "I prefer working with React, Next.js, Node.js, and Supabase for robust solutions."
+        "I'm Paweł — a freelancer specializing in fast, modern, and secure web apps.",
+        "I help businesses grow online with scalable solutions.",
       ],
+      clientsHeading: "Trusted by clients from:",
+      clients: ["Germany (DE), Poland (PL)", "Asia and around the world."],
       resumeAction: "View resume",
     },
     techStack: {
       eyebrow: "TECH STACK",
-      title: "Tools I use to build fast.",
+      title: "What these tools do for your business.",
       columns: [
-        { title: "Frontend", items: [
-          { name: "React", purpose: "UI component library", projectsCount: 12 },
-          { name: "Next.js", purpose: "React framework for production", projectsCount: 8 },
-          { name: "Tailwind CSS", purpose: "Utility-first styling", projectsCount: 15 },
-          { name: "TypeScript", purpose: "Static typing for JS", projectsCount: 18 }
-        ]},
-        { title: "Backend", items: [
-          { name: "Node.js", purpose: "JavaScript runtime", projectsCount: 14 },
-          { name: "Express", purpose: "Web framework for Node.js", projectsCount: 10 },
-          { name: "Supabase", purpose: "Open source Firebase alternative", projectsCount: 6 },
-          { name: "PostgreSQL", purpose: "Relational database", projectsCount: 12 }
-        ]},
-        { title: "UI/UX", items: [
-          { name: "Figma", purpose: "Design and prototyping", projectsCount: 20 },
-          { name: "Framer Motion", purpose: "Animation library", projectsCount: 5 }
-        ]},
-        { title: "Deployment", items: [
-          { name: "Vercel", purpose: "Frontend hosting", projectsCount: 15 },
-          { name: "Docker", purpose: "Containerization", projectsCount: 8 }
-        ]},
-        { title: "Performance", items: [
-          { name: "Lighthouse", purpose: "Performance auditing", projectsCount: 20 },
-          { name: "Web Vitals", purpose: "Core metrics tracking", projectsCount: 18 }
-        ]},
-        { title: "Analytics", items: [
-          { name: "Plausible", purpose: "Privacy-friendly analytics", projectsCount: 4 },
-          { name: "PostHog", purpose: "Product analytics", projectsCount: 2 }
-        ]}
+        {
+          title: "Frontend",
+          items: [
+            { name: "React / Next.js", purpose: "Modern interface", icon: "react" },
+            { name: "Tailwind CSS", purpose: "Mobile-ready layouts", icon: "tailwind" },
+            { name: "TypeScript", purpose: "Reliable, bug-resistant code", icon: "typescript" },
+          ],
+        },
+        {
+          title: "Backend & Data",
+          items: [
+            { name: "Node.js", purpose: "Fast data processing", icon: "nodejs" },
+            { name: "Supabase / PostgreSQL", purpose: "Secure databases and user accounts", icon: "supabase" },
+            { name: "AI integrations", purpose: "Practical AI-powered features", icon: "ai" },
+          ],
+        },
+        {
+          title: "Infrastructure",
+          items: [
+            { name: "Vercel & CDN", purpose: "Global, fast hosting", icon: "vercel" },
+            { name: "Git / GitHub", purpose: "Safe backups and updates", icon: "git" },
+            { name: "Figma", purpose: "Unique visual design", icon: "figma" },
+          ],
+        },
+        {
+          title: "Quality guarantee",
+          items: [
+            { name: "Google optimization", purpose: "100/100 speed test scores", icon: "google" },
+            { name: "Responsiveness", purpose: "Smooth on every device", icon: "responsive" },
+            { name: "Accessibility (a11y)", purpose: "Intuitive for everyone", icon: "a11y" },
+          ],
+        },
       ],
     },
     speed: {
       eyebrow: "SEO & SPEED",
-      title: "Performance matters.",
-      description: "Fast sites convert better, rank better, and feel more trustworthy. Every layer is designed for clarity, low overhead, and measurable outcomes.",
-      items: ["Image compression", "Lazy loading", "Code splitting", "CDN delivery", "Lighthouse audits", "SEO structure"],
-      cta: "Ask for Audit",
+      title: "Speed & Google Visibility",
+      subtitle: "A fast website means more customers and higher sales.",
+      description:
+        "Nobody likes to wait. Your site will open instantly on every phone and computer. Visitors stay longer, leave for competitors less often, and are more likely to buy or send an inquiry.",
+      items: [
+        "Lightning-fast loading",
+        "Strong Google visibility",
+        "Images that load in a fraction of a second",
+        "Smooth performance on phones",
+        "Top Google score (100/100)",
+        "More inquiries from customers",
+      ],
+      cta: "Check your website speed for free",
       ctaSubject: "Speed audit",
-      scoreLabel: "Lighthouse Score",
+      scoreLabel: "Maximum Google speed score (100/100)",
       scoreValue: "100",
       domain: "Domain",
       domainPlaceholder: "yoursite.com",
@@ -885,35 +929,74 @@ export const copyByLocale: Record<Locale, Copy> = {
     },
     about: {
       eyebrow: "Profil",
-      title: "O mnie.",
+      title: "O mnie",
       name: "Paweł Włodarczyk",
-      role: "Freelance Web Developer",
+      role: "Twój partner w budowaniu nowoczesnych stron webowych.",
       location: "Garmisch-Partenkirchen, DE",
       photoPlaceholder: "Miejsce na zdjęcie",
       bio: [
-        "Jestem Paweł Włodarczyk, freelance web developerem skupionym na szybkich, nowoczesnych i skalowalnych stronach.",
-        "Współpracuję z klientami z Niemiec, Polski, Indonezji i z całego świata."
+        "Jestem Paweł – freelancer specjalizujący się w tworzeniu szybkich, nowoczesnych i bezpiecznych aplikacji internetowych.",
+        "Pomagam firmom rosnąć online dzięki skalowalnym rozwiązaniom.",
       ],
+      clientsHeading: "Zaufali mi klienci z:",
+      clients: ["Niemiec (DE), Polski (PL)", "Azji i z całego świata."],
       resumeAction: "Pobierz CV",
     },
     techStack: {
       eyebrow: "Narzędzia",
-      title: "Tech stack",
+      title: "Co zyskujesz dzięki tym narzędziom.",
       columns: [
-        { title: "Frontend", items: [{ name: "React", purpose: "UI" }, { name: "Next.js", purpose: "Framework" }, { name: "Tailwind", purpose: "CSS" }, { name: "TypeScript", purpose: "Język" }] },
-        { title: "Backend", items: [{ name: "Node.js", purpose: "Runtime" }, { name: "Express", purpose: "Serwer" }, { name: "Supabase", purpose: "Baza danych" }, { name: "PostgreSQL", purpose: "SQL" }] },
-        { title: "Narzędzia", items: [{ name: "Git", purpose: "Wersjonowanie" }, { name: "Vercel", purpose: "Hosting" }, { name: "Docker", purpose: "Kontenery" }, { name: "Figma", purpose: "Design" }] },
-        { title: "Specjalizacje", items: [{ name: "Optymalizacja", purpose: "Szybkość" }, { name: "Czysta arch.", purpose: "Kod" }, { name: "Dostępność", purpose: "UX" }] },
+        {
+          title: "Frontend",
+          items: [
+            { name: "React / Next.js", purpose: "Nowoczesny interfejs", icon: "react" },
+            { name: "Tailwind CSS", purpose: "Dopasowanie do smartfonów", icon: "tailwind" },
+            { name: "TypeScript", purpose: "Bezawaryjne działanie", icon: "typescript" },
+          ],
+        },
+        {
+          title: "Backend & Dane",
+          items: [
+            { name: "Node.js", purpose: "Szybkie przetwarzanie danych", icon: "nodejs" },
+            { name: "Supabase / PostgreSQL", purpose: "Bezpieczne bazy i konta użytkowników", icon: "supabase" },
+            { name: "Integracje AI", purpose: "Funkcje sztucznej inteligencji", icon: "ai" },
+          ],
+        },
+        {
+          title: "Infrastruktura",
+          items: [
+            { name: "Vercel & CDN", purpose: "Globalny, szybki hosting", icon: "vercel" },
+            { name: "Git / GitHub", purpose: "Bezpieczne kopie i aktualizacje", icon: "git" },
+            { name: "Figma", purpose: "Unikalny projekt graficzny", icon: "figma" },
+          ],
+        },
+        {
+          title: "Gwarancja jakości",
+          items: [
+            { name: "Optymalizacja Google", purpose: "Wynik 100/100 w testach szybkości", icon: "google" },
+            { name: "Responsywność", purpose: "Płynność na każdym urządzeniu", icon: "responsive" },
+            { name: "Dostępność (a11y)", purpose: "Intuicyjna obsługa dla każdego", icon: "a11y" },
+          ],
+        },
       ],
     },
     speed: {
       eyebrow: "Filozofia wydajności",
-      title: "Szybkość to funkcja.",
-      description: "Szybkie strony lepiej konwertują, lepiej się pozycjonują i budzą większe zaufanie. Każda warstwa jest projektowana pod klarowność, niski narzut i mierzalne wyniki.",
-      items: ["Kompresja obrazow", "Lazy loading", "Code splitting", "Dostarczanie przez CDN", "Audyty Lighthouse", "Struktura SEO"],
-      cta: "Poproś o bezpłatny audyt szybkości",
+      title: "Szybkość i Widoczność w Google",
+      subtitle: "Szybka strona to więcej klientów i wyższa sprzedaż.",
+      description:
+        "Nikt nie lubi czekać. Twoja strona otworzy się błyskawicznie na każdym telefonie i komputerze. Dzięki temu odwiedzający nie uciekają do konkurencji, spędzają na niej więcej czasu i chętniej kupują lub wysyłają zapytania.",
+      items: [
+        "Błyskawiczne ładowanie",
+        "Świetna widoczność w Google",
+        "Zdjęcia ładujące się w ułamku sekundy",
+        "Płynne działanie na telefonach",
+        "Najwyższa ocena Google (100/100)",
+        "Więcej zapytań od klientów",
+      ],
+      cta: "Sprawdź bezpłatnie szybkość swojej strony",
       ctaSubject: "Audyt szybkości",
-      scoreLabel: "Wynik",
+      scoreLabel: "Maksymalna ocena szybkości od Google (100/100)",
       scoreValue: "100",
       domain: "Domena",
       domainPlaceholder: "twojastrona.pl",
@@ -1098,35 +1181,74 @@ export const copyByLocale: Record<Locale, Copy> = {
     },
     about: {
       eyebrow: "Profil",
-      title: "Über mich.",
+      title: "Über mich",
       name: "Paweł Włodarczyk",
-      role: "Freelance Web Developer",
+      role: "Ihr Partner für moderne Websites.",
       location: "Garmisch-Partenkirchen, DE",
       photoPlaceholder: "Platzhalter für Foto",
       bio: [
-        "Ich bin Paweł Włodarczyk, freiberuflicher Webentwickler mit Fokus auf schnelle, moderne und skalierbare Websites.",
-        "Ich arbeite mit Kunden aus Deutschland, Polen, Indonesien und weltweit."
+        "Ich bin Paweł — Freelancer mit Fokus auf schnelle, moderne und sichere Webanwendungen.",
+        "Ich helfe Unternehmen, online mit skalierbaren Lösungen zu wachsen.",
       ],
+      clientsHeading: "Vertrauen von Kunden aus:",
+      clients: ["Deutschland (DE), Polen (PL)", "Asien und der ganzen Welt."],
       resumeAction: "Lebenslauf herunterladen",
     },
     techStack: {
       eyebrow: "Tools",
-      title: "Tech Stack",
+      title: "Was diese Tools für Ihr Business leisten.",
       columns: [
-        { title: "Frontend", items: [{ name: "React", purpose: "UI Library" }, { name: "Next.js", purpose: "Framework" }, { name: "Tailwind", purpose: "Styling" }, { name: "TypeScript", purpose: "Sprache" }] },
-        { title: "Backend", items: [{ name: "Node.js", purpose: "Runtime" }, { name: "Express", purpose: "Server" }, { name: "Supabase", purpose: "Datenbank" }, { name: "PostgreSQL", purpose: "SQL" }] },
-        { title: "Tools", items: [{ name: "Git", purpose: "Versionierung" }, { name: "Vercel", purpose: "Hosting" }, { name: "Docker", purpose: "Container" }, { name: "Figma", purpose: "Design" }] },
-        { title: "Spezialisierungen", items: [{ name: "Speed-Optimierung", purpose: "Ladezeiten" }, { name: "Saubere Architektur", purpose: "Code" }, { name: "Barrierefreiheit", purpose: "UX" }] },
+        {
+          title: "Frontend",
+          items: [
+            { name: "React / Next.js", purpose: "Modernes Interface", icon: "react" },
+            { name: "Tailwind CSS", purpose: "Optimiert für Smartphones", icon: "tailwind" },
+            { name: "TypeScript", purpose: "Zuverlässiger, fehlerarmer Code", icon: "typescript" },
+          ],
+        },
+        {
+          title: "Backend & Daten",
+          items: [
+            { name: "Node.js", purpose: "Schnelle Datenverarbeitung", icon: "nodejs" },
+            { name: "Supabase / PostgreSQL", purpose: "Sichere Datenbanken und Benutzerkonten", icon: "supabase" },
+            { name: "KI-Integrationen", purpose: "Praktische KI-Funktionen", icon: "ai" },
+          ],
+        },
+        {
+          title: "Infrastruktur",
+          items: [
+            { name: "Vercel & CDN", purpose: "Globales, schnelles Hosting", icon: "vercel" },
+            { name: "Git / GitHub", purpose: "Sichere Backups und Updates", icon: "git" },
+            { name: "Figma", purpose: "Einzigartiges visuelles Design", icon: "figma" },
+          ],
+        },
+        {
+          title: "Qualitätsgarantie",
+          items: [
+            { name: "Google-Optimierung", purpose: "100/100 in Speed-Tests", icon: "google" },
+            { name: "Responsiveness", purpose: "Flüssig auf jedem Gerät", icon: "responsive" },
+            { name: "Barrierefreiheit (a11y)", purpose: "Intuitive Bedienung für alle", icon: "a11y" },
+          ],
+        },
       ],
     },
     speed: {
       eyebrow: "Performance-Philosophie",
-      title: "Speed ist ein Feature.",
-      description: "Schnelle Websites konvertieren besser, ranken besser und wirken vertrauenswürdiger. Jede Ebene ist auf Klarheit, geringe Last und messbare Ergebnisse ausgelegt.",
-      items: ["Bildkomprimierung", "Lazy Loading", "Code Splitting", "CDN-Auslieferung", "Lighthouse-Audits", "SEO-Struktur"],
-      cta: "Kostenlosen Speed-Audit anfragen",
+      title: "Geschwindigkeit & Sichtbarkeit bei Google",
+      subtitle: "Eine schnelle Website bedeutet mehr Kunden und höheren Umsatz.",
+      description:
+        "Niemand wartet gerne. Ihre Seite öffnet sich sofort auf jedem Smartphone und Computer. Besucher bleiben länger, wechseln seltener zur Konkurrenz und fragen oder kaufen eher.",
+      items: [
+        "Blitzschnelles Laden",
+        "Starke Sichtbarkeit bei Google",
+        "Bilder, die in Sekundenbruchteilen laden",
+        "Flüssige Performance auf Handys",
+        "Höchste Google-Bewertung (100/100)",
+        "Mehr Anfragen von Kunden",
+      ],
+      cta: "Website-Geschwindigkeit kostenlos prüfen",
       ctaSubject: "Speed-Audit",
-      scoreLabel: "Score",
+      scoreLabel: "Maximale Google-Geschwindigkeitsbewertung (100/100)",
       scoreValue: "100",
       domain: "Domain",
       domainPlaceholder: "ihreseite.de",
@@ -1203,37 +1325,61 @@ export const copyByLocale: Record<Locale, Copy> = {
 
 const projectTechTags: Record<Locale, Record<ProjectTechTagId, string>> = {
   en: {
-    "production-site": "Production site",
-    "live-domain": "Live domain",
-    "responsive-ui": "Responsive UI",
-    "web-app": "Web app",
-    "interactive-ui": "Interactive UI",
-    platform: "Platform",
-    "production-preview": "Production preview",
+    "admin-panel": "Admin panel",
+    "team-management": "Team management",
+    "live-demo": "Live demo",
+    "online-store": "Online store",
+    "product-page": "Product page",
+    rwd: "RWD",
+    "kanban-tasks": "Kanban / Tasks",
+    dashboard: "Dashboard",
+    "online-booking": "Online booking",
     "brand-site": "Brand site",
-    "productivity-app": "Productivity app",
+    "seo-friendly": "SEO friendly",
+    "ai-integration": "AI integration",
+    "html5-canvas": "HTML5 / Canvas",
+    "pdf-generation": "PDF generation",
+    marketplace: "Marketplace",
+    "job-listings": "Job listings",
+    geolocation: "Geolocation",
   },
   pl: {
-    "production-site": "Strona produkcyjna",
-    "live-domain": "Domena na żywo",
-    "responsive-ui": "Responsywny interfejs",
-    "web-app": "Aplikacja webowa",
-    "interactive-ui": "Interaktywny interfejs",
-    platform: "Platforma",
-    "production-preview": "Podgląd produkcyjny",
-    "brand-site": "Strona marki",
-    "productivity-app": "Aplikacja produktywności",
+    "admin-panel": "Panel administracyjny",
+    "team-management": "Zarządzanie zespołem",
+    "live-demo": "Live Demo",
+    "online-store": "Sklep internetowy",
+    "product-page": "Strona produktowa",
+    rwd: "RWD",
+    "kanban-tasks": "Kanban / Zadania",
+    dashboard: "Dashboard",
+    "online-booking": "Rezerwacja online",
+    "brand-site": "Strona wizerunkowa",
+    "seo-friendly": "SEO friendly",
+    "ai-integration": "Integracja AI",
+    "html5-canvas": "Płótno HTML5 / Canvas",
+    "pdf-generation": "Generowanie PDF",
+    marketplace: "Marketplace",
+    "job-listings": "System ogłoszeń",
+    geolocation: "Geolokalizacja",
   },
   de: {
-    "production-site": "Produktionsseite",
-    "live-domain": "Live-Domain",
-    "responsive-ui": "Responsives UI",
-    "web-app": "Web-App",
-    "interactive-ui": "Interaktives UI",
-    platform: "Plattform",
-    "production-preview": "Produktionsvorschau",
-    "brand-site": "Markenwebsite",
-    "productivity-app": "Produktivitäts-App",
+    "admin-panel": "Admin-Panel",
+    "team-management": "Teamverwaltung",
+    "live-demo": "Live-Demo",
+    "online-store": "Online-Shop",
+    "product-page": "Produktseite",
+    rwd: "RWD",
+    "kanban-tasks": "Kanban / Aufgaben",
+    dashboard: "Dashboard",
+    "online-booking": "Online-Buchung",
+    "brand-site": "Image-Website",
+    "seo-friendly": "SEO-freundlich",
+    "ai-integration": "KI-Integration",
+    "html5-canvas": "HTML5 / Canvas",
+    "pdf-generation": "PDF-Generierung",
+    marketplace: "Marketplace",
+    "job-listings": "Anzeigensystem",
+    geolocation: "Geolokalisierung",
   },
 };
 

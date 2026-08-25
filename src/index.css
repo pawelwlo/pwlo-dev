@@ -144,7 +144,7 @@ button {
 }
 
 .portfolio-shell-locked .desktop-wallpaper-photo {
-  display: block;
+  display: none;
 }
 
 .portfolio-shell-booting .desktop-wallpaper-photo {
@@ -183,21 +183,21 @@ html.locale-boot-pending body {
 }
 
 .portfolio-shell-locked .desktop-wallpaper-layer-base {
-  opacity: 0.12;
+  opacity: 0.9;
 }
 
 .portfolio-shell-locked .desktop-wallpaper-layer-warm {
-  opacity: 0.12;
+  opacity: 0.75;
 }
 
 .portfolio-shell-locked .desktop-wallpaper-layer-pink {
-  opacity: 0.12;
+  opacity: 0.7;
 }
 
 .portfolio-shell-locked .desktop-wallpaper-content-tint {
   background:
-    radial-gradient(circle at 50% 35%, rgba(0, 0, 0, 0.02), transparent 42%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.08));
+    radial-gradient(circle at 50% 28%, rgba(255, 220, 180, 0.06), transparent 40%),
+    linear-gradient(180deg, rgba(6, 10, 20, 0.1), rgba(6, 10, 20, 0.22));
 }
 
 .desktop-wallpaper-layer {
@@ -1534,16 +1534,12 @@ html.locale-boot-pending body {
 }
 
 :root[data-theme="dark"] .desktop-wallpaper-photo {
-  filter: blur(88px) saturate(0.56) brightness(0.5) contrast(1.06);
+  display: none;
 }
 
 :root[data-theme="dark"] .portfolio-shell-locked .desktop-wallpaper-photo {
-  background: url("/1729D9FB-8203-4A75-88A6-19E41EBA8995_1_201_a.jpeg") center center / cover no-repeat;
-  filter: none;
-  transform: scale(1.04);
-  opacity: 1;
+  display: none;
 }
-
 
 :root[data-theme="dark"] .desktop-wallpaper-content-tint {
   background:
@@ -1553,8 +1549,8 @@ html.locale-boot-pending body {
 
 :root[data-theme="dark"] .portfolio-shell-locked .desktop-wallpaper-content-tint {
   background:
-    radial-gradient(circle at 50% 35%, rgba(0, 0, 0, 0.02), transparent 34%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.1));
+    radial-gradient(circle at 50% 28%, rgba(255, 220, 180, 0.06), transparent 36%),
+    linear-gradient(180deg, rgba(8, 12, 24, 0.08), rgba(8, 12, 24, 0.2));
 }
 
 :root[data-theme="dark"] .desktop-lockscreen::before {
@@ -1855,7 +1851,7 @@ html.locale-boot-pending body {
 .floating-window-about {
   top: 96px;
   right: 28px;
-  width: min(520px, calc(100% - 380px));
+  width: min(640px, calc(100% - 360px));
 }
 
 .floating-window-tech {
@@ -2281,8 +2277,161 @@ html.locale-boot-pending body {
 }
 
 .about-layout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 8px 4px 4px;
+}
+
+.about-profile-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 0 8px 0 4px;
+  margin-bottom: -36px;
+}
+
+.about-avatar {
+  width: 118px;
+  height: 118px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.88);
+  background: #1a1d24;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.about-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 12%;
+  display: block;
+}
+
+.about-profile-identity {
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.about-profile-name {
+  margin: 0 0 10px;
+  font-size: clamp(1.55rem, 2.2vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+.about-profile-role {
+  margin: 0 0 8px;
+  max-width: 34ch;
+  font-size: 1.02rem;
+  font-weight: 400;
+  line-height: 1.45;
+  color: rgba(242, 242, 242, 0.82);
+}
+
+.about-profile-location {
+  margin: 0;
+  font-size: 0.94rem;
+  font-weight: 300;
+  color: rgba(242, 242, 242, 0.58);
+}
+
+.about-profile-card {
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  background: rgba(12, 14, 20, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 18px 40px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  padding: 52px 28px 28px;
+}
+
+.about-profile-body {
   display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 22px;
+}
+
+.about-bio-group {
+  display: grid;
+  gap: 12px;
+}
+
+.about-bio {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(242, 242, 242, 0.86);
+}
+
+.about-clients {
+  margin-top: 4px;
+}
+
+.about-clients-heading {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.about-clients-list {
+  margin: 0;
+  padding: 0 0 0 1.2rem;
+  display: grid;
+  gap: 8px;
+  color: rgba(242, 242, 242, 0.78);
+  font-size: 0.98rem;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.about-clients-list li::marker {
+  color: rgba(242, 242, 242, 0.45);
+}
+
+@media (max-width: 640px) {
+  .about-layout {
+    padding: 4px 0 0;
+  }
+
+  .about-profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: -28px;
+    gap: 16px;
+  }
+
+  .about-avatar {
+    width: 96px;
+    height: 96px;
+  }
+
+  .about-profile-name {
+    font-size: 1.4rem;
+  }
+
+  .about-profile-role {
+    max-width: none;
+  }
+
+  .about-profile-card {
+    border-radius: 22px;
+    padding: 44px 20px 22px;
+  }
 }
 
 .about-photo-card {
@@ -2305,13 +2454,62 @@ html.locale-boot-pending body {
   display: block;
 }
 
-.about-bio {
-  margin: 0 0 18px;
-  font-size: 1rem;
-}
-
 .stack-card {
   padding: 24px;
+}
+
+.tech-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tech-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 0;
+  position: relative;
+}
+
+.tech-item:last-child {
+  margin-bottom: 0;
+}
+
+.tech-item-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--text-secondary);
+}
+
+.tech-item-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.tech-item-copy {
+  min-width: 0;
+}
+
+.tech-item-name {
+  font-weight: 500;
+  margin-bottom: 2px;
+  color: var(--text);
+}
+
+.tech-item-purpose {
+  font-weight: 300;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .speed-layout {
@@ -3042,7 +3240,7 @@ html.locale-boot-pending body {
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background: linear-gradient(135deg, #8aa2aa 0%, #b08f82 52%, #d1b3a9 100%);
+  background: linear-gradient(180deg, #181d33 0%, #1e284b 32%, #2a2e55 72%, #423555 100%);
 }
 
 .os-wallpaper::before,
@@ -3055,20 +3253,19 @@ html.locale-boot-pending body {
 
 .os-wallpaper::before {
   background:
-    linear-gradient(135deg, rgba(119, 154, 165, 0.42), rgba(186, 146, 127, 0.28) 50%, rgba(221, 183, 166, 0.2)),
-    url("/os-mobile-wallpaper.webp") center center / cover no-repeat;
-  filter: blur(80px) saturate(0.7) brightness(0.94);
-  transform: scale(1.16);
+    radial-gradient(circle at 18% 18%, rgba(68, 85, 200, 0.4), transparent 45%),
+    radial-gradient(circle at 74% 58%, rgba(80, 50, 180, 0.3), transparent 50%),
+    linear-gradient(140deg, rgba(20, 30, 60, 0.5), rgba(40, 50, 90, 0.2) 42%, transparent);
+  filter: blur(50px);
+  transform: scale(1.08);
 }
 
 .os-wallpaper::after {
   inset: 0;
   background:
-    linear-gradient(135deg, rgba(231, 238, 241, 0.08), rgba(214, 192, 181, 0.04) 52%, rgba(188, 149, 136, 0.08)),
-    radial-gradient(circle at 16% 18%, rgba(155, 186, 204, 0.18), transparent 32%),
-    radial-gradient(circle at 78% 24%, rgba(223, 184, 153, 0.14), transparent 28%),
-    radial-gradient(circle at 28% 84%, rgba(126, 149, 170, 0.16), transparent 36%),
-    radial-gradient(circle at 74% 86%, rgba(204, 162, 149, 0.14), transparent 36%);
+    radial-gradient(circle at 72% 32%, rgba(230, 140, 80, 0.22), transparent 40%),
+    radial-gradient(circle at 20% 70%, rgba(200, 90, 140, 0.16), transparent 40%),
+    linear-gradient(180deg, rgba(3, 7, 14, 0.12), rgba(3, 7, 14, 0.28));
 }
 
 .os-shell-locked {
@@ -3104,14 +3301,12 @@ html.locale-boot-pending body {
 
 .os-lockscreen::before {
   background:
-    linear-gradient(135deg, rgba(133, 166, 176, 0.24), rgba(196, 154, 136, 0.16) 48%, rgba(221, 183, 167, 0.1)),
-    radial-gradient(circle at 18% 16%, rgba(154, 188, 207, 0.22), transparent 36%),
-    radial-gradient(circle at 82% 18%, rgba(224, 184, 154, 0.14), transparent 30%),
-    radial-gradient(circle at 20% 84%, rgba(118, 145, 167, 0.2), transparent 40%),
-    radial-gradient(circle at 72% 84%, rgba(201, 157, 147, 0.12), transparent 40%),
-    url("/os-mobile-wallpaper.webp") center center / cover no-repeat;
-  filter: blur(84px) saturate(0.68) brightness(0.9);
-  transform: scale(1.12);
+    radial-gradient(circle at 18% 18%, rgba(68, 85, 200, 0.36), transparent 45%),
+    radial-gradient(circle at 74% 58%, rgba(80, 50, 180, 0.28), transparent 50%),
+    radial-gradient(circle at 72% 28%, rgba(230, 140, 80, 0.2), transparent 40%),
+    linear-gradient(180deg, #0e1e38 0%, #162b50 32%, #4a2141 72%, #5c2c3a 100%);
+  filter: blur(36px) saturate(1.05);
+  transform: scale(1.08);
 }
 
 .os-lockscreen::after {
@@ -3321,20 +3516,18 @@ html.locale-boot-pending body {
 }
 
 :root[data-theme="dark"] .os-wallpaper {
-  background: linear-gradient(135deg, #5d707b 0%, #8b776f 52%, #ab928b 100%);
+  background: linear-gradient(180deg, #0e1e38 0%, #162b50 32%, #4a2141 72%, #5c2c3a 100%);
 }
 
 :root[data-theme="dark"] .os-wallpaper::before {
-  filter: blur(84px) saturate(0.64) brightness(0.78);
+  filter: blur(52px) saturate(1.05) brightness(0.95);
 }
 
 :root[data-theme="dark"] .os-wallpaper::after {
   background:
-    linear-gradient(135deg, rgba(16, 24, 34, 0.28), rgba(33, 28, 31, 0.14) 52%, rgba(71, 56, 52, 0.12)),
-    radial-gradient(circle at 16% 18%, rgba(120, 148, 170, 0.18), transparent 32%),
-    radial-gradient(circle at 78% 24%, rgba(198, 158, 130, 0.12), transparent 28%),
-    radial-gradient(circle at 28% 84%, rgba(92, 114, 134, 0.18), transparent 36%),
-    radial-gradient(circle at 74% 86%, rgba(170, 130, 119, 0.12), transparent 36%);
+    radial-gradient(circle at 72% 32%, rgba(230, 140, 80, 0.2), transparent 40%),
+    radial-gradient(circle at 20% 70%, rgba(200, 90, 140, 0.14), transparent 40%),
+    linear-gradient(180deg, rgba(3, 7, 14, 0.14), rgba(3, 7, 14, 0.3));
 }
 
 .os-topbar,

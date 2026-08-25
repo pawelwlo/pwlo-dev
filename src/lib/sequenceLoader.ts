@@ -1,20 +1,9 @@
 export const SEQUENCE_FRAME_COUNT = 40;
 export const SEQUENCE_BASE_PATH = "/sequence";
-export const SEQUENCE_FALLBACK_IMAGE = "/1729D9FB-8203-4A75-88A6-19E41EBA8995_1_201_a.jpeg";
 
 export function getSequenceFramePath(index: number): string {
   const frameNumber = String(index + 1).padStart(4, "0");
   return `${SEQUENCE_BASE_PATH}/frame_${frameNumber}.jpg`;
-}
-
-function loadImage(src: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    image.decoding = "async";
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error(`Failed to load sequence frame: ${src}`));
-    image.src = src;
-  });
 }
 
 function imageFromCanvas(canvas: HTMLCanvasElement): Promise<HTMLImageElement> {
@@ -22,13 +11,55 @@ function imageFromCanvas(canvas: HTMLCanvasElement): Promise<HTMLImageElement> {
     const image = new Image();
     image.decoding = "async";
     image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error("Failed to materialize synthesized frame"));
+    image.onerror = () => reject(new Error("Failed to materialize soft background frame"));
     image.src = canvas.toDataURL("image/jpeg", 0.84);
   });
 }
 
+function paintSoftColorBackground(
+  context: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  progress: number,
+) {
+  const warmShift = progress * 0.18;
+  const coolShift = (1 - progress) * 0.16;
+
+  const base = context.createLinearGradient(0, 0, width * 0.2, height);
+  base.addColorStop(0, `rgb(${14 + warmShift * 20}, ${30 + coolShift * 20}, ${56})`);
+  base.addColorStop(0.32, `rgb(${22 + warmShift * 24}, ${43 + coolShift * 16}, ${80})`);
+  base.addColorStop(0.68, `rgb(${74 + warmShift * 18}, ${33}, ${65})`);
+  base.addColorStop(1, `rgb(${92 + warmShift * 16}, ${44 + warmShift * 8}, ${58})`);
+  context.fillStyle = base;
+  context.fillRect(0, 0, width, height);
+
+  const sunX = width * (0.52 + progress * 0.06);
+  const sunY = height * (0.2 - progress * 0.03);
+  const sun = context.createRadialGradient(sunX, sunY, 0, sunX, sunY, width * 0.38);
+  sun.addColorStop(0, "rgba(255, 214, 170, 0.34)");
+  sun.addColorStop(0.5, "rgba(210, 150, 180, 0.12)");
+  sun.addColorStop(1, "rgba(210, 150, 180, 0)");
+  context.fillStyle = sun;
+  context.fillRect(0, 0, width, height);
+
+  const blueX = width * (0.16 - progress * 0.03);
+  const blueY = height * (0.68 + progress * 0.04);
+  const blue = context.createRadialGradient(blueX, blueY, 0, blueX, blueY, width * 0.48);
+  blue.addColorStop(0, "rgba(90, 140, 230, 0.32)");
+  blue.addColorStop(1, "rgba(90, 140, 230, 0)");
+  context.fillStyle = blue;
+  context.fillRect(0, 0, width, height);
+
+  const pinkX = width * (0.84 + progress * 0.02);
+  const pinkY = height * (0.52 - progress * 0.05);
+  const pink = context.createRadialGradient(pinkX, pinkY, 0, pinkX, pinkY, width * 0.36);
+  pink.addColorStop(0, "rgba(180, 110, 170, 0.28)");
+  pink.addColorStop(1, "rgba(180, 110, 170, 0)");
+  context.fillStyle = pink;
+  context.fillRect(0, 0, width, height);
+}
+
 async function synthesizeSequenceFrames(): Promise<HTMLImageElement[]> {
-  const base = await loadImage(SEQUENCE_FALLBACK_IMAGE);
   const width = 1920;
   const height = 1080;
   const frames: HTMLImageElement[] = [];
@@ -44,23 +75,7 @@ async function synthesizeSequenceFrames(): Promise<HTMLImageElement[]> {
       throw new Error("Canvas 2D context unavailable");
     }
 
-    const blur = 92 - progress * 68;
-    const brightness = 0.42 + progress * 0.34;
-    const saturation = 0.52 + progress * 0.28;
-    const hueRotate = progress * 10 - 5;
-    const offsetX = (progress - 0.5) * 36;
-    const offsetY = (progress - 0.5) * 22;
-    const scale = 1.22 - progress * 0.1;
-
-    context.filter = `blur(${blur}px) brightness(${brightness}) saturate(${saturation}) hue-rotate(${hueRotate}deg)`;
-    context.drawImage(
-      base,
-      offsetX - ((scale - 1) * width) / 2,
-      offsetY - ((scale - 1) * height) / 2,
-      width * scale,
-      height * scale,
-    );
-
+    paintSoftColorBackground(context, width, height, progress);
     frames.push(await imageFromCanvas(canvas));
   }
 
@@ -68,18 +83,7 @@ async function synthesizeSequenceFrames(): Promise<HTMLImageElement[]> {
 }
 
 export async function loadSequenceFrames(): Promise<HTMLImageElement[]> {
-  const loadedFrames = await Promise.allSettled(
-    Array.from({ length: SEQUENCE_FRAME_COUNT }, (_, index) => loadImage(getSequenceFramePath(index))),
-  );
-
-  const resolvedFrames = loadedFrames
-    .filter((result): result is PromiseFulfilledResult<HTMLImageElement> => result.status === "fulfilled")
-    .map((result) => result.value);
-
-  if (resolvedFrames.length === SEQUENCE_FRAME_COUNT) {
-    return resolvedFrames;
-  }
-
+  // Always use soft app-matching gradients — never load the old photo sequence.
   return synthesizeSequenceFrames();
 }
 

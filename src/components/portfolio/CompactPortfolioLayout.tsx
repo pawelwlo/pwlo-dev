@@ -7,6 +7,7 @@ import {
 import { useMemo, useState, type FormEvent } from "react";
 
 import { ContactWindow, SpeedTestForm } from "@/components/portfolio/UtilityWindows";
+import { TechIcon } from "@/components/portfolio/TechIcons";
 import { projects } from "@/data/portfolioData";
 import { getProjectTechTag, getProjectTranslation, localeOptions, type Copy, type Locale } from "@/i18n/translations";
 
@@ -206,13 +207,32 @@ export function CompactPortfolioLayout({
 
       <section className="compact-profile-card ios-card ios-animate">
         <span className="eyebrow">{copy.windowTitles.about}</span>
-        <p className="compact-profile-bio">{copy.about.bio}</p>
-        <div className="compact-skill-pills">
-          {copy.techStack.columns[0].items.map((item) => (
-            <span key={item.name} className="tech-pill">
-              {item.name}
-            </span>
-          ))}
+        <div className="about-layout" style={{ padding: 0 }}>
+          <header className="about-profile-header">
+            <div className="about-avatar">
+              <img
+                className="about-avatar-image"
+                src="/image_website.png"
+                alt={copy.about.name}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div className="about-profile-identity">
+              <h3 className="about-profile-name">{copy.about.name}</h3>
+              <p className="about-profile-role">{copy.about.role}</p>
+              <p className="about-profile-location">{copy.about.location}</p>
+            </div>
+          </header>
+          <article className="about-profile-card">
+            <div className="about-bio-group">
+              {copy.about.bio.map((paragraph) => (
+                <p key={paragraph} className="about-bio">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </article>
         </div>
       </section>
 
@@ -342,9 +362,15 @@ export function CompactPortfolioLayout({
               style={{ animationDelay: `${index * 70}ms` }}
             >
               <h3>{column.title}</h3>
-              <ul className="bullet-list">
+              <ul className="tech-list">
                 {column.items.map((item) => (
-                  <li key={item.name}>{item.name}</li>
+                  <li key={item.name} className="tech-item">
+                    <TechIcon id={item.icon} />
+                    <div className="tech-item-copy">
+                      <div className="tech-item-name">{item.name}</div>
+                      <div className="tech-item-purpose">{item.purpose}</div>
+                    </div>
+                  </li>
                 ))}
               </ul>
             </article>
@@ -364,6 +390,7 @@ export function CompactPortfolioLayout({
         <div className="compact-seo-grid">
           <article className="compact-seo-card ios-card ios-animate">
             <h3>{copy.speed.title}</h3>
+            <p>{copy.speed.subtitle}</p>
             <p>{copy.speed.description}</p>
             <div className="compact-seo-badges">
               <span className="metric-badge">{copy.loadsUnderSecond}</span>

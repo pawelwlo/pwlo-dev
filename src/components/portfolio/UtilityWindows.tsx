@@ -2,6 +2,7 @@ import { ArrowRight, Github, Mail, CheckCircle2 } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { submitLead } from "@/lib/leadsApi";
 import { isSupabaseConfigured } from "@/lib/supabase";
+import { TechIcon, type TechIconId } from "@/components/portfolio/TechIcons";
 
 import type { Locale } from "@/i18n/translations";
 
@@ -16,16 +17,22 @@ type CopyProps = {
       location: string;
       photoPlaceholder: string;
       bio: string[];
+      clientsHeading: string;
+      clients: string[];
       resumeAction: string;
     };
     techStack: {
       eyebrow: string;
       title: string;
-      columns: Array<{ title: string; items: Array<{ name: string; purpose: string; projectsCount?: number }> }>;
+      columns: Array<{
+        title: string;
+        items: Array<{ name: string; purpose: string; icon: TechIconId; projectsCount?: number }>;
+      }>;
     };
     speed: {
       eyebrow: string;
       title: string;
+      subtitle: string;
       description: string;
       items: string[];
       cta: string;
@@ -66,35 +73,35 @@ type CopyProps = {
 export function AboutWindow({ copy }: CopyProps) {
   return (
     <div className="about-layout">
-      <div className="about-photo-card">
-        <div className="about-photo-placeholder">
+      <header className="about-profile-header">
+        <div className="about-avatar">
           <img
-            className="about-photo-image"
-            src="/B970F845-D014-4C09-BAA2-17435B122CD9_1_201_a.jpeg"
-            alt="Pawel Wlodarczyk"
+            className="about-avatar-image"
+            src="/image_website.png"
+            alt={copy.about.name}
             loading="lazy"
             decoding="async"
           />
         </div>
-      </div>
 
-      <div className="about-copy">
-        <div style={{ marginBottom: "24px" }}>
-          <div className="about-details">
-            <div style={{ fontWeight: 500, marginBottom: "4px" }}>{copy.about.name}</div>
-            <div style={{ fontWeight: 300, color: "var(--text-secondary)", fontSize: "0.95rem", marginBottom: "2px" }}>{copy.about.role}</div>
-            <div style={{ fontWeight: 300, color: "var(--text-secondary)", fontSize: "0.95rem" }}>{copy.about.location}</div>
+        <div className="about-profile-identity">
+          <h3 className="about-profile-name">{copy.about.name}</h3>
+          <p className="about-profile-role">{copy.about.role}</p>
+          <p className="about-profile-location">{copy.about.location}</p>
+        </div>
+      </header>
+
+      <article className="about-profile-card">
+        <div className="about-profile-body">
+          <div className="about-bio-group">
+            {copy.about.bio.map((paragraph) => (
+              <p key={paragraph} className="about-bio">
+                {paragraph}
+              </p>
+            ))}
           </div>
         </div>
-
-        <div className="about-bio-card stack-card">
-          {copy.about.bio.map((paragraph, index) => (
-            <p key={index} className="about-bio" style={{ marginBottom: index === copy.about.bio.length - 1 ? 0 : "12px", fontWeight: 300, lineHeight: 1.6 }}>
-              {paragraph}
-            </p>
-          ))}
-        </div>
-      </div>
+      </article>
     </div>
   );
 }
@@ -111,16 +118,12 @@ export function TechStackWindow({ copy }: CopyProps) {
             <h3 style={{ marginBottom: "16px", fontSize: "1.1rem" }}>{column.title}</h3>
             <ul className="bullet-list tech-list">
               {column.items.map((item) => (
-                <li key={item.name} style={{ marginBottom: "12px", paddingLeft: "16px", position: "relative" }}>
-                  <div style={{ fontWeight: 500, marginBottom: "2px" }}>
-                    {item.name}
-                    {item.projectsCount ? (
-                      <span className="tech-pill" style={{ marginLeft: "8px", fontSize: "0.75rem", padding: "2px 6px" }}>
-                        {item.projectsCount} projects
-                      </span>
-                    ) : null}
+                <li key={item.name} className="tech-item">
+                  <TechIcon id={item.icon} />
+                  <div className="tech-item-copy">
+                    <div className="tech-item-name">{item.name}</div>
+                    <div className="tech-item-purpose">{item.purpose}</div>
                   </div>
-                  <div style={{ fontWeight: 300, color: "var(--text-secondary)", fontSize: "0.9rem" }}>{item.purpose}</div>
                 </li>
               ))}
             </ul>
@@ -268,9 +271,12 @@ export function SpeedWindow({ locale, copy }: CopyProps) {
   return (
     <div className="speed-layout">
       <div className="speed-copy-block" style={{ marginBottom: "24px" }}>
-        <h3>{copy.speed.title}</h3>
+        <h3 style={{ marginBottom: "8px" }}>{copy.speed.title}</h3>
+        <p style={{ margin: 0, fontWeight: 300, fontSize: "0.95rem", color: "var(--text-secondary)" }}>
+          {copy.speed.subtitle}
+        </p>
       </div>
-      
+
       <div className="os-speed-score-card">
         <div className="os-speed-score-ring">
           {copy.speed.scoreValue || 100}

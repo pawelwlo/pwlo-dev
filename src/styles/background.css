@@ -1,11 +1,11 @@
-/* iOS wallpaper — blurred photo, pastel bloom, gloss */
+/* iOS wallpaper — soft app-matching gradients */
 .mobile-background {
   position: fixed;
   inset: 0;
   z-index: 0;
   overflow: hidden;
   contain: strict;
-  background: #f8f9fc linear-gradient(135deg, rgba(200, 220, 240, 0.6) 0%, rgba(220, 210, 235, 0.5) 52%, rgba(240, 215, 225, 0.6) 100%);
+  background: linear-gradient(180deg, #0e1e38 0%, #162b50 32%, #4a2141 72%, #5c2c3a 100%);
   transform: translateZ(0);
 }
 
@@ -20,25 +20,12 @@
 }
 
 .mobile-background__photo {
-  inset: -18%;
-  background-image: var(--mobile-wallpaper-image);
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  filter: blur(var(--mobile-wallpaper-blur, 100px)) saturate(0.4) brightness(0.75);
-  transform: scale(1.14);
-  will-change: transform;
-  opacity: 0.1; /* Reduce visibility of patterns in light mode */
-}
-
-:root[data-theme="dark"] .mobile-background__photo {
-  opacity: 1; /* Restore in dark mode */
+  display: none;
 }
 
 .mobile-background__gradient {
   background: var(--mobile-wallpaper-diagonal);
-  mix-blend-mode: soft-light;
-  opacity: 0.9;
+  opacity: 1;
 }
 
 .mobile-background__bloom {
@@ -52,15 +39,15 @@
 
 .mobile-background__vignette {
   background:
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12), transparent 42%),
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 42%),
     radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.22), transparent 48%),
     linear-gradient(180deg, rgba(8, 16, 28, 0.08), rgba(8, 16, 28, 0.18));
 }
 
 .mobile-background--lockscreen .mobile-background__vignette {
   background:
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.16), transparent 40%),
-    linear-gradient(180deg, rgba(8, 16, 28, 0.1), rgba(8, 16, 28, 0.24));
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12), transparent 40%),
+    linear-gradient(180deg, rgba(8, 16, 28, 0.08), rgba(8, 16, 28, 0.2));
 }
 
 /* Override legacy wallpaper pseudo layers */
@@ -72,27 +59,24 @@
 
 .os-shell .os-lockscreen::before {
   background:
-    linear-gradient(135deg, rgba(77, 163, 255, 0.22), rgba(255, 179, 107, 0.16) 48%, rgba(255, 127, 191, 0.14)),
-    radial-gradient(circle at 40% 30%, rgba(255, 200, 150, 0.22), transparent 58%),
-    var(--mobile-wallpaper-image, url("/os-mobile-wallpaper.webp")) center center / cover no-repeat;
-  filter: blur(100px) saturate(0.4) brightness(0.72);
+    radial-gradient(circle at 18% 18%, rgba(68, 85, 200, 0.36), transparent 45%),
+    radial-gradient(circle at 74% 58%, rgba(80, 50, 180, 0.28), transparent 50%),
+    radial-gradient(circle at 72% 28%, rgba(230, 140, 80, 0.2), transparent 40%),
+    linear-gradient(180deg, #0e1e38 0%, #162b50 32%, #4a2141 72%, #5c2c3a 100%);
+  filter: blur(36px) saturate(1.05);
 }
 
 .os-shell .os-lockscreen::after {
   background:
-    var(--mobile-wallpaper-gloss, linear-gradient(to bottom, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))),
-    linear-gradient(180deg, rgba(14, 22, 36, 0.1), rgba(24, 28, 36, 0.2));
-}
-
-:root[data-theme="dark"] .mobile-background__photo {
-  filter: blur(100px) saturate(0.34) brightness(0.58);
+    var(--mobile-wallpaper-gloss, linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0))),
+    linear-gradient(180deg, rgba(14, 22, 36, 0.08), rgba(24, 28, 36, 0.18));
 }
 
 :root[data-theme="dark"] .mobile-background__vignette {
   background:
     radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 40%),
     radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.34), transparent 50%),
-    linear-gradient(180deg, rgba(4, 8, 16, 0.18), rgba(4, 8, 16, 0.36));
+    linear-gradient(180deg, rgba(4, 8, 16, 0.12), rgba(4, 8, 16, 0.28));
 }
 
 /* Frosted glass dock */

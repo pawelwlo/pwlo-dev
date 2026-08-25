@@ -8,15 +8,23 @@ export type DesktopIconItem = {
 };
 
 export type ProjectTechTagId =
-  | "production-site"
-  | "live-domain"
-  | "responsive-ui"
-  | "web-app"
-  | "interactive-ui"
-  | "platform"
-  | "production-preview"
+  | "admin-panel"
+  | "team-management"
+  | "live-demo"
+  | "online-store"
+  | "product-page"
+  | "rwd"
+  | "kanban-tasks"
+  | "dashboard"
+  | "online-booking"
   | "brand-site"
-  | "productivity-app";
+  | "seo-friendly"
+  | "ai-integration"
+  | "html5-canvas"
+  | "pdf-generation"
+  | "marketplace"
+  | "job-listings"
+  | "geolocation";
 
 export type Project = {
   id: string;
@@ -50,16 +58,92 @@ export const desktopIcons: DesktopIconItem[] = [
 
 export const projects: Project[] = [
   {
+    id: "hotel-worker",
+    title: "Hotel Worker",
+    domain: "hotelworker.app",
+    previewUrl: "https://hotelworker.app",
+    screenshotSrc: "/hotelworker.webp",
+    description:
+      "Hotel operations management system. Streamlines staff scheduling, leave requests, and real-time team task coordination.",
+    tech: ["admin-panel", "team-management", "live-demo"],
+    performanceBadge: "Live preview",
+    screenshotLabel: "App flow / Interface / Production domain",
+    screenshotDetails: ["SaaS", "Hospitality", "Web App"],
+    caseStudy: {
+      before: "Project background available on request",
+      after: "Live application preview available now",
+      seo: ["Live domain ready for review", "Case study notes can be extended", "Portfolio entry supports direct preview"],
+      codeSnippet: `export function openPreview(url: string) {
+  window.open(url, "_blank", "noopener,noreferrer");
+}`,
+      deployment: ["Live production domain", "External preview link", "Portfolio case study entry"],
+      testimonial: "Live preview available at hotelworker.app.",
+    },
+  },
+  {
+    id: "coffee-bagus",
+    title: "Coffee Bagus",
+    domain: "coffeebagus.com",
+    previewUrl: "https://coffeebagus.com",
+    screenshotSrc: "/coffeebagus.webp",
+    description:
+      "Modern sales platform for an artisan coffee brand (Farm-to-Cup). Features a minimalist, responsive design and an intuitive checkout flow.",
+    tech: ["online-store", "product-page", "rwd"],
+    performanceBadge: "Live preview",
+    screenshotLabel: "Brand experience / Pages / Production domain",
+    screenshotDetails: ["E-commerce", "Branding", "UI/UX"],
+    caseStudy: {
+      before: "Project background available on request",
+      after: "Live site preview available now",
+      seo: ["Live domain ready for review", "Case study notes can be extended", "Direct preview improves portfolio flow"],
+      codeSnippet: `const previewLink = {
+  label: "Live Preview",
+  href: "https://coffeebagus.com",
+};`,
+      deployment: ["Live production domain", "External preview link", "Portfolio case study entry"],
+      testimonial: "Live preview available at coffeebagus.com.",
+    },
+  },
+  {
+    id: "task-tracker",
+    title: "Task Tracker",
+    domain: "tasktracker.pl",
+    previewUrl: "https://tasktracker.pl",
+    screenshotSrc: "/tasktracker.webp",
+    description:
+      "Project management tool for teams. Centralizes plans, deadlines, and communication to make assigning work and tracking progress easier.",
+    tech: ["kanban-tasks", "dashboard", "live-demo"],
+    performanceBadge: "Live preview",
+    screenshotLabel: "Dashboard / Workflow / Production domain",
+    screenshotDetails: ["SaaS", "Productivity", "Web App"],
+    caseStudy: {
+      before: "Project background available on request",
+      after: "Live site preview available now",
+      seo: ["Live domain ready for review", "Case study notes can be extended", "Portfolio entry supports direct preview"],
+      codeSnippet: `export const domains = [
+  "hotelworker.app",
+  "coffeebagus.com",
+  "tasktracker.pl",
+  "dietanacodzien.pl",
+  "magiccolouringbook.app",
+  "instant-jobs.com",
+];`,
+      deployment: ["Live production domain", "External preview link", "Portfolio case study entry"],
+      testimonial: "Live preview available at tasktracker.pl.",
+    },
+  },
+  {
     id: "dieta-na-codzien",
-    title: "Dieta Na Codzien",
+    title: "Dieta Na Co Dzień",
     domain: "dietanacodzien.pl",
     previewUrl: "https://dietanacodzien.pl",
     screenshotSrc: "/dietanacodzien.webp",
-    description: "Nutrition-focused production website presented as a live portfolio project preview.",
-    tech: ["production-site", "live-domain", "responsive-ui"],
+    description:
+      "Clear brand and offer site for a dietitian, integrated with a client panel, educational blog, and online consultation booking.",
+    tech: ["online-booking", "brand-site", "seo-friendly"],
     performanceBadge: "Live preview",
     screenshotLabel: "Live domain / Landing / Content flow",
-    screenshotDetails: ["Production", "Responsive", "Preview"],
+    screenshotDetails: ["Landing Page", "Health", "Services"],
     caseStudy: {
       before: "Original project details available on request",
       after: "Live production preview available now",
@@ -79,11 +163,12 @@ export const projects: Project[] = [
     domain: "magiccolouringbook.app",
     previewUrl: "https://magiccolouringbook.app",
     screenshotSrc: "/magicbook.webp",
-    description: "Interactive app project listed with a direct live preview for fast portfolio browsing.",
-    tech: ["web-app", "interactive-ui", "live-domain"],
+    description:
+      "Interactive AI-powered coloring page generator. Create unique templates from text or voice, paint in the browser, and export to print (PDF).",
+    tech: ["ai-integration", "html5-canvas", "pdf-generation"],
     performanceBadge: "Live preview",
     screenshotLabel: "App preview / Flow / Interface",
-    screenshotDetails: ["Production", "App", "Preview"],
+    screenshotDetails: ["AI App", "Education", "Entertainment"],
     caseStudy: {
       before: "Project background available on request",
       after: "Live application preview available now",
@@ -106,11 +191,12 @@ export const projects: Project[] = [
     domain: "instant-jobs.com",
     previewUrl: "https://instant-jobs.com",
     screenshotSrc: "/instantjobs.webp",
-    description: "Job-focused live project entry with direct access to the production domain.",
-    tech: ["platform", "live-domain", "responsive-ui"],
+    description:
+      "Local marketplace connecting clients with gig workers in real time. Simple interface for posting jobs and applying.",
+    tech: ["marketplace", "job-listings", "geolocation"],
     performanceBadge: "Live preview",
     screenshotLabel: "Landing / Jobs / Conversion path",
-    screenshotDetails: ["Production", "Platform", "Preview"],
+    screenshotDetails: ["Marketplace", "Recruitment", "Web App"],
     caseStudy: {
       before: "Project background available on request",
       after: "Live site preview available now",
@@ -123,78 +209,6 @@ export const imageStyle = {
 };`,
       deployment: ["Live production domain", "External preview link", "Portfolio case study entry"],
       testimonial: "Live preview available at instant-jobs.com.",
-    },
-  },
-  {
-    id: "hotel-worker",
-    title: "Hotel Worker",
-    domain: "hotelworker.app",
-    previewUrl: "https://hotelworker.app",
-    screenshotSrc: "/hotelworker.webp",
-    description: "Hospitality-focused app entry added with a clean live preview link.",
-    tech: ["web-app", "live-domain", "production-preview"],
-    performanceBadge: "Live preview",
-    screenshotLabel: "App flow / Interface / Production domain",
-    screenshotDetails: ["Production", "Hospitality", "Preview"],
-    caseStudy: {
-      before: "Project background available on request",
-      after: "Live application preview available now",
-      seo: ["Live domain ready for review", "Case study notes can be extended", "Portfolio entry supports direct preview"],
-      codeSnippet: `export function openPreview(url: string) {
-  window.open(url, "_blank", "noopener,noreferrer");
-}`,
-      deployment: ["Live production domain", "External preview link", "Portfolio case study entry"],
-      testimonial: "Live preview available at hotelworker.app.",
-    },
-  },
-  {
-    id: "coffee-bagus",
-    title: "Coffee Bagus",
-    domain: "coffeebagus.com",
-    previewUrl: "https://coffeebagus.com",
-    screenshotSrc: "/coffeebagus.webp",
-    description: "Brand site portfolio entry with a direct preview to the live domain.",
-    tech: ["brand-site", "live-domain", "responsive-ui"],
-    performanceBadge: "Live preview",
-    screenshotLabel: "Brand experience / Pages / Production domain",
-    screenshotDetails: ["Production", "Brand", "Preview"],
-    caseStudy: {
-      before: "Project background available on request",
-      after: "Live site preview available now",
-      seo: ["Live domain ready for review", "Case study notes can be extended", "Direct preview improves portfolio flow"],
-      codeSnippet: `const previewLink = {
-  label: "Live Preview",
-  href: "https://coffeebagus.com",
-};`,
-      deployment: ["Live production domain", "External preview link", "Portfolio case study entry"],
-      testimonial: "Live preview available at coffeebagus.com.",
-    },
-  },
-  {
-    id: "task-tracker",
-    title: "Task Tracker",
-    domain: "tasktracker.pl",
-    previewUrl: "https://tasktracker.pl",
-    screenshotSrc: "/tasktracker.webp",
-    description: "Productivity project card linked directly to the production preview.",
-    tech: ["productivity-app", "live-domain", "production-preview"],
-    performanceBadge: "Live preview",
-    screenshotLabel: "Dashboard / Workflow / Production domain",
-    screenshotDetails: ["Production", "App", "Preview"],
-    caseStudy: {
-      before: "Project background available on request",
-      after: "Live site preview available now",
-      seo: ["Live domain ready for review", "Case study notes can be extended", "Portfolio entry supports direct preview"],
-      codeSnippet: `export const domains = [
-  "dietanacodzien.pl",
-  "magiccolouringbook.app",
-  "instant-jobs.com",
-  "hotelworker.app",
-  "coffeebagus.com",
-  "tasktracker.pl",
-];`,
-      deployment: ["Live production domain", "External preview link", "Portfolio case study entry"],
-      testimonial: "Live preview available at tasktracker.pl.",
     },
   },
 ];
