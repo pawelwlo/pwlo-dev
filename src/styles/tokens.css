@@ -1,0 +1,310 @@
+/**
+ * Portfolio OS — Design Tokens
+ * Dark-mode-first system inspired by Linear, Raycast, Arc, Vercel.
+ */
+
+:root[data-theme="dark"] {
+  /* ── Background & elevation ── */
+  --color-bg: #04060a;
+  --color-surface: #111827;
+  --color-surface-elevated: #1a2333;
+  --color-border: rgba(255, 255, 255, 0.12);
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+
+  /* ── Text hierarchy ── */
+  --color-text: #ffffff;
+  --color-text-secondary: #b3bcc8;
+  --color-text-muted: #7d8796;
+  --color-text-disabled: #5b6575;
+
+  /* ── Accent system ── */
+  --color-accent: #4f7cff;
+  --color-accent-hover: #6b93ff;
+  --color-accent-active: #3065ff;
+  --color-accent-secondary: #8b5cf6;
+  --color-accent-glow: rgba(79, 124, 255, 0.25);
+  --color-accent-subtle: rgba(79, 124, 255, 0.12);
+  --color-success: #10b981;
+  --color-success-subtle: rgba(16, 185, 129, 0.12);
+  --color-warning: #f59e0b;
+  --color-warning-subtle: rgba(245, 158, 11, 0.12);
+  --color-danger: #ef4444;
+  --color-danger-subtle: rgba(239, 68, 68, 0.12);
+  --color-category: #4f7cff;
+  --color-metadata: #7d8796;
+
+  /* ── Semantic icon tints (tablet / mobile) ── */
+  --icon-projects: #4f7cff;
+  --icon-tech: #8b5cf6;
+  --icon-seo: #10b981;
+  --icon-contact: #f59e0b;
+  --icon-neutral: #7d8796;
+
+  /* ── Window chrome ── */
+  --window-bg: #111827;
+  --window-bg-active: #1a2333;
+  --window-border: rgba(255, 255, 255, 0.12);
+  --window-border-active: #4f7cff;
+  --window-shadow-inactive: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --window-shadow-active:
+    0 16px 48px rgba(0, 0, 0, 0.45),
+    0 0 32px rgba(79, 124, 255, 0.12);
+  --window-glow-active: 0 0 0 1px rgba(79, 124, 255, 0.35);
+
+  /* ── Dock ── */
+  --dock-bg: rgba(17, 24, 39, 0.88);
+  --dock-border: rgba(255, 255, 255, 0.12);
+  --dock-item-inactive: #7d8796;
+  --dock-item-active: #4f7cff;
+  --dock-item-hover-bg: #1a2333;
+  --dock-glow-active: 0 0 16px rgba(79, 124, 255, 0.3);
+
+  /* ── Project cards ── */
+  --card-bg: #111827;
+  --card-border: rgba(255, 255, 255, 0.12);
+  --card-hover-border: rgba(79, 124, 255, 0.4);
+  --card-hover-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.4),
+    0 0 24px rgba(79, 124, 255, 0.08);
+
+  /* ── Wallpaper atmosphere ── */
+  --wallpaper-base: #04060a;
+  --wallpaper-glow-top: rgba(79, 124, 255, 0.12);
+  --wallpaper-glow-tl: rgba(79, 124, 255, 0.05);
+  --wallpaper-glow-br: rgba(139, 92, 246, 0.04);
+
+  /* ── Legacy aliases (backward compat) ── */
+  --bg: var(--color-bg);
+  --wallpaper:
+    radial-gradient(circle at 50% 20%, var(--wallpaper-glow-top), transparent 50%),
+    radial-gradient(circle at 0% 0%, var(--wallpaper-glow-tl), transparent 40%),
+    radial-gradient(circle at 100% 100%, var(--wallpaper-glow-br), transparent 40%),
+    var(--wallpaper-base);
+  --surface: var(--color-surface);
+  --surface-strong: var(--color-surface-elevated);
+  --surface-muted: var(--color-surface);
+  --border: var(--color-border);
+  --border-subtle: var(--color-border-subtle);
+  --shadow: var(--window-shadow-inactive);
+  --text: var(--color-text);
+  --text-soft: var(--color-text-secondary);
+  --text-secondary: var(--color-text-secondary);
+  --text-tertiary: var(--color-text-muted);
+  --text-muted: var(--color-text-muted);
+  --text-disabled: var(--color-text-disabled);
+  --primary: var(--color-accent);
+  --accent: var(--color-accent-hover);
+  --success: var(--color-success);
+  --desktop-bg: var(--color-surface);
+}
+
+/* ── Window elevation (dark) ── */
+:root[data-theme="dark"] .window-frame,
+:root[data-theme="dark"] .hero-window {
+  background: var(--window-bg);
+  border: 1px solid var(--window-border);
+  box-shadow: var(--window-shadow-inactive);
+  backdrop-filter: blur(24px) saturate(1.1);
+}
+
+:root[data-theme="dark"] .window-frame:not(.window-frame-active) {
+  opacity: 0.94;
+}
+
+:root[data-theme="dark"] .window-frame:not(.window-frame-active) .window-title {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+:root[data-theme="dark"] .window-frame-active {
+  background: var(--window-bg-active);
+  border-color: var(--window-border-active);
+  box-shadow: var(--window-shadow-active);
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .window-frame-active .window-title {
+  color: var(--color-text);
+  font-weight: 800;
+}
+
+:root[data-theme="dark"] .window-header {
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom-color: var(--color-border-subtle);
+}
+
+/* ── Dock (desktop) ── */
+:root[data-theme="dark"] .desktop-dock {
+  background: var(--dock-bg);
+  border-color: var(--dock-border);
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme="dark"] .desktop-dock-item:not(.desktop-icon-active) .desktop-icon-glyph {
+  color: var(--dock-item-inactive);
+  border-color: transparent;
+  background: var(--color-surface);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme="dark"] .desktop-dock-item:not(.desktop-icon-active) .desktop-icon-copy strong {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+:root[data-theme="dark"] .desktop-dock-item.desktop-icon-active .desktop-icon-glyph {
+  color: var(--dock-item-active);
+  border-color: var(--color-accent);
+  background: var(--color-surface-elevated);
+  box-shadow:
+    var(--window-glow-active),
+    var(--dock-glow-active);
+}
+
+:root[data-theme="dark"] .desktop-dock-item.desktop-icon-active .desktop-icon-copy strong {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+:root[data-theme="dark"] .desktop-dock-item.desktop-icon-active::after {
+  background: var(--color-accent);
+  box-shadow: 0 0 8px var(--color-accent-glow);
+}
+
+:root[data-theme="dark"] .desktop-dock-item:hover .desktop-icon-glyph {
+  background: var(--dock-item-hover-bg);
+  border-color: rgba(79, 124, 255, 0.25);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 0 12px rgba(79, 124, 255, 0.1);
+}
+
+/* ── Project cards ── */
+:root[data-theme="dark"] .project-card,
+:root[data-theme="dark"] .case-study-panel,
+:root[data-theme="dark"] .stack-card {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+:root[data-theme="dark"] .project-card:hover {
+  border-color: var(--card-hover-border);
+  box-shadow: var(--card-hover-shadow);
+  transform: translateY(-4px);
+}
+
+:root[data-theme="dark"] .project-heading h3,
+:root[data-theme="dark"] .project-content h3 {
+  color: var(--color-text);
+}
+
+:root[data-theme="dark"] .project-category {
+  color: var(--color-category);
+  font-weight: 500;
+}
+
+:root[data-theme="dark"] .project-description {
+  color: var(--color-text-secondary);
+  font-weight: 300;
+}
+
+:root[data-theme="dark"] .project-metadata {
+  color: var(--color-metadata);
+}
+
+:root[data-theme="dark"] .tech-pill {
+  background: var(--color-accent-subtle);
+  color: var(--color-accent-hover);
+  border-color: rgba(79, 124, 255, 0.2);
+}
+
+:root[data-theme="dark"] .performance-pill {
+  background: var(--color-success-subtle);
+  color: var(--color-success);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+:root[data-theme="dark"] .performance-pill-accent {
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
+  border-color: rgba(79, 124, 255, 0.2);
+}
+
+:root[data-theme="dark"] .project-shot {
+  background: var(--color-surface-elevated);
+  border-color: var(--color-border-subtle);
+}
+
+:root[data-theme="dark"] .project-domain-link {
+  color: var(--color-accent);
+}
+
+:root[data-theme="dark"] .project-domain-link:hover {
+  color: var(--color-accent-hover);
+}
+
+/* ── OS shell tokens ── */
+:root[data-theme="dark"] .os-shell {
+  --os-border: var(--color-border);
+  --os-surface: var(--color-surface);
+  --os-surface-soft: var(--color-surface-elevated);
+  --os-accent: var(--color-accent);
+  --os-accent-hover: var(--color-accent-hover);
+  --os-accent-glow: var(--color-accent-glow);
+  --os-shadow: var(--window-shadow-inactive);
+}
+
+/* ── Menu bar & search ── */
+:root[data-theme="dark"] .system-menu-bar {
+  background: rgba(17, 24, 39, 0.82);
+  border-color: var(--color-border);
+}
+
+:root[data-theme="dark"] .system-menu-bar-search {
+  background: var(--color-surface);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-secondary);
+}
+
+:root[data-theme="dark"] .system-menu-bar-search.system-menu-bar-search-focused {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-subtle);
+}
+
+/* ── Focus rings ── */
+:root[data-theme="dark"] .contact-form input:focus,
+:root[data-theme="dark"] .contact-form textarea:focus,
+:root[data-theme="dark"] .system-menu-bar-search:focus-within {
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 2px var(--color-accent-subtle) !important;
+}
+
+/* ── Semantic icon tint classes ── */
+:root[data-theme="dark"] .os-icon-tint-blue {
+  background: linear-gradient(145deg, #3d66e6 0%, #6b93ff 100%);
+}
+
+:root[data-theme="dark"] .os-icon-tint-indigo,
+:root[data-theme="dark"] .os-icon-tint-violet {
+  background: linear-gradient(145deg, #7c4fe0 0%, #a78bfa 100%);
+}
+
+:root[data-theme="dark"] .os-icon-tint-green {
+  background: linear-gradient(145deg, #0d9668 0%, #34d399 100%);
+}
+
+:root[data-theme="dark"] .os-icon-tint-amber {
+  background: linear-gradient(145deg, #d97706 0%, #fbbf24 100%);
+}
+
+:root[data-theme="dark"] .os-icon-tint-pink {
+  background: linear-gradient(145deg, #7c4fe0 0%, #a78bfa 100%);
+}
+
+:root[data-theme="dark"] .os-icon-tint-slate,
+:root[data-theme="dark"] .os-icon-tint-gray {
+  background: linear-gradient(145deg, #4b5563 0%, #9ca3af 100%);
+}

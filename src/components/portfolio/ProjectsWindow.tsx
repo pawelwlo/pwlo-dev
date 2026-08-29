@@ -71,10 +71,10 @@ export function ProjectsWindow({
               <div className="project-heading">
                 <div>
                   <h3 style={{ marginBottom: "4px" }}>{projectCopy.title}</h3>
-                  <div style={{ fontSize: "0.85rem", color: "var(--success)", fontWeight: 500, marginBottom: "8px" }}>
+                  <div className="project-category" style={{ fontSize: "0.85rem", marginBottom: "8px" }}>
                     {projectCopy.screenshotDetails.join(" · ")}
                   </div>
-                  <p style={{ fontWeight: 300, fontSize: "0.95rem" }}>{projectCopy.description}</p>
+                  <p className="project-description" style={{ fontSize: "0.95rem" }}>{projectCopy.description}</p>
                 </div>
               </div>
 

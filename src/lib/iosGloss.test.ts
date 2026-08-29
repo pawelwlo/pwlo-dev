@@ -15,7 +15,7 @@ describe("iosGloss", () => {
   });
 
   it("generates gloss and shadow utilities", () => {
-    expect(generateGloss()).toContain("rgba(255, 255, 255, 0.35)");
+    expect(generateGloss()).toContain("rgba(255, 255, 255, 0.28)");
     expect(generateShadow("icon")).toContain("inset 0 1px 2px");
     expect(generateShadow("dock")).toContain("0 20px 44px");
   });
@@ -23,7 +23,7 @@ describe("iosGloss", () => {
   it("maps legacy tint classes and exposes css variables", () => {
     expect(resolveIosTint("os-icon-tint-blue")).toBe("blue");
     expect(getIconCssVariables("pink")).toMatchObject({
-      "--ios-icon-gradient": expect.stringContaining("#FF7FBF"),
+      "--ios-icon-gradient": expect.stringContaining("#D97706"),
       "--ios-icon-shadow": expect.stringContaining("0 6px 18px"),
     });
   });

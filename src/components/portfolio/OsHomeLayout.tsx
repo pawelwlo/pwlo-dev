@@ -293,7 +293,7 @@ export function OsHomeLayout({
       id: "contact",
       label: copy.osLayout.apps.contact,
       icon: Mail,
-      tintClass: "os-icon-tint-pink",
+      tintClass: "os-icon-tint-amber",
     },
     {
       id: "tech",
@@ -305,7 +305,7 @@ export function OsHomeLayout({
       id: "about",
       label: copy.osLayout.apps.about,
       icon: UserRound,
-      tintClass: "os-icon-tint-amber",
+      tintClass: "os-icon-tint-gray",
     },
     {
       id: "leads",
@@ -341,9 +341,9 @@ export function OsHomeLayout({
       copy.techStack.columns.map((column, index) => {
         const iconConfig = [
           { icon: AppWindow, tintClass: "os-icon-tint-blue" },
-          { icon: Sparkles, tintClass: "os-icon-tint-pink" },
+          { icon: Sparkles, tintClass: "os-icon-tint-violet" },
           { icon: Gauge, tintClass: "os-icon-tint-green" },
-          { icon: ShieldCheck, tintClass: "os-icon-tint-slate" },
+          { icon: ShieldCheck, tintClass: "os-icon-tint-gray" },
         ][index % 4];
 
         return {

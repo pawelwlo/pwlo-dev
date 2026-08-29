@@ -6,6 +6,7 @@ import "@/styles/background.css";
 import "@/styles/icons.css";
 import "@/styles/mobile.css";
 import "@/styles/scrollAnimation.css";
+import "@/styles/tokens.css";
 
 const Analytics = lazy(async () => {
   const module = await import("@vercel/analytics/react");

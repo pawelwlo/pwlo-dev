@@ -114,12 +114,13 @@
 }
 
 .scroll-animation-layer-drift-a {
-  background:
-    radial-gradient(circle at 18% 18%, rgba(41, 93, 150, 0.62), transparent 30%),
-    radial-gradient(circle at 74% 58%, rgba(16, 60, 111, 0.56), transparent 34%),
-    linear-gradient(145deg, rgba(10, 38, 72, 0.98), rgba(18, 58, 98, 0.52) 44%, rgba(24, 66, 104, 0.18));
-  opacity: calc(0.42 + var(--sequence-layer-opacity, 1) * 0.36);
-  animation: gradientMove 18s ease-in-out infinite alternate;
+  background: var(--wallpaper, var(--bg));
+  opacity: 1;
+  animation: none;
+}
+
+.scroll-animation-layer-drift-c {
+  display: none;
 }
 
 .scroll-animation-layer-b {
@@ -149,17 +150,6 @@
     calc(var(--sequence-parallax-y, 0px) * 0.62 + var(--sequence-layer-c-float, 0px)),
     0
   );
-}
-
-.scroll-animation-layer-drift-c {
-  background:
-    radial-gradient(circle at 72% 32%, rgba(255, 183, 110, 0.34), transparent 20%),
-    radial-gradient(circle at 62% 62%, rgba(232, 136, 93, 0.4), transparent 26%),
-    radial-gradient(circle at 86% 70%, rgba(255, 205, 157, 0.2), transparent 22%);
-  mix-blend-mode: screen;
-  opacity: calc(0.34 + var(--sequence-layer-opacity, 1) * 0.3);
-  filter: blur(18px) saturate(1.08);
-  animation: gradientMove 14s ease-in-out infinite alternate-reverse;
 }
 
 .scroll-animation-hero,

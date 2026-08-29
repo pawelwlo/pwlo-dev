@@ -10,22 +10,23 @@ export type IosIconTint =
   | "violet"
   | "slate";
 
+/** Semantic icon palette — derived from design tokens, not arbitrary pastels. */
 export const IOS_ICON_GRADIENTS: Record<IosIconTint, { from: string; to: string }> = {
-  blue: { from: "#4DA3FF", to: "#A8D4FF" },
-  purple: { from: "#A07CFF", to: "#D7C8FF" },
-  green: { from: "#5EDC9A", to: "#B9F2D0" },
-  orange: { from: "#FFB36B", to: "#FFE0C2" },
-  pink: { from: "#FF7FBF", to: "#FFD0E8" },
-  gray: { from: "#C8CCD2", to: "#F1F3F5" },
-  violet: { from: "#9B8CFF", to: "#D4CCFF" },
-  slate: { from: "#A8B4C4", to: "#E4E9F0" },
+  blue: { from: "#3D66E6", to: "#6B93FF" },       /* Projects — primary accent */
+  purple: { from: "#7C4FE0", to: "#A78BFA" },     /* Tech / secondary accent */
+  violet: { from: "#7C4FE0", to: "#A78BFA" },     /* Tech stack */
+  green: { from: "#0D9668", to: "#34D399" },      /* SEO / success */
+  orange: { from: "#D97706", to: "#FBBF24" },     /* Contact / warning */
+  pink: { from: "#D97706", to: "#FBBF24" },       /* Alias → contact */
+  gray: { from: "#4B5563", to: "#9CA3AF" },       /* Settings / neutral */
+  slate: { from: "#4B5563", to: "#9CA3AF" },      /* Neutral utility */
 };
 
 export const IOS_GLOSS = {
-  topHighlight: "rgba(255, 255, 255, 0.35)",
-  bottomGloss: "rgba(255, 255, 255, 0.15)",
+  topHighlight: "rgba(255, 255, 255, 0.28)",
+  bottomGloss: "rgba(255, 255, 255, 0.08)",
   glyphStroke: "#ffffff",
-  glyphOpacity: 0.9,
+  glyphOpacity: 0.95,
   glyphStrokeWidth: 2,
 } as const;
 
@@ -34,22 +35,21 @@ export const IOS_WALLPAPER = {
   blur: "0px",
   saturation: 1,
   brightness: 1,
-  bloom:
-    "radial-gradient(circle at 40% 30%, rgba(120, 160, 255, 0.28), transparent 58%), radial-gradient(circle at 78% 68%, rgba(200, 90, 140, 0.18), transparent 48%)",
-  gloss: "linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0))",
-  diagonal:
-    "linear-gradient(180deg, #0e1e38 0%, #162b50 32%, #4a2141 72%, #5c2c3a 100%)",
+  bloom: "transparent",
+  gloss: "transparent",
+  diagonal: "#04060A",
 } as const;
 
+/** Maps CSS tint classes to semantic icon colors. */
 export const tintClassToIosTint: Record<string, IosIconTint> = {
-  "os-icon-tint-blue": "blue",
-  "os-icon-tint-indigo": "purple",
-  "os-icon-tint-green": "green",
-  "os-icon-tint-pink": "pink",
-  "os-icon-tint-violet": "violet",
-  "os-icon-tint-amber": "orange",
-  "os-icon-tint-slate": "slate",
-  "os-icon-tint-gray": "gray",
+  "os-icon-tint-blue": "blue",       /* Projects */
+  "os-icon-tint-indigo": "purple",   /* Open source */
+  "os-icon-tint-violet": "violet",   /* Tech */
+  "os-icon-tint-green": "green",     /* SEO */
+  "os-icon-tint-amber": "orange",    /* Contact */
+  "os-icon-tint-pink": "orange",     /* Legacy → contact */
+  "os-icon-tint-slate": "slate",     /* Utility */
+  "os-icon-tint-gray": "gray",       /* Settings */
 };
 
 export function resolveIosTint(tintClass: string): IosIconTint {
@@ -66,18 +66,18 @@ export function generateGloss(angle = 180): string {
 
 export function generateShadow(depth: IosGlossDepth = "icon"): string {
   if (depth === "dock") {
-    return "0 20px 44px rgba(0, 0, 0, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.4)";
+    return "0 20px 44px rgba(0, 0, 0, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.12)";
   }
 
   if (depth === "float") {
-    return "0 14px 36px rgba(0, 0, 0, 0.14), 0 4px 12px rgba(0, 0, 0, 0.08)";
+    return "0 14px 36px rgba(0, 0, 0, 0.28), 0 4px 12px rgba(0, 0, 0, 0.16)";
   }
 
   if (depth === "card") {
-    return "0 10px 28px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.28)";
+    return "0 10px 28px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.1)";
   }
 
-  return "0 6px 18px rgba(0, 0, 0, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.4)";
+  return "0 6px 18px rgba(0, 0, 0, 0.22), inset 0 1px 2px rgba(255, 255, 255, 0.14)";
 }
 
 export function getIconGradientStyle(tint: IosIconTint): { background: string } {
