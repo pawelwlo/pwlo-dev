@@ -77,7 +77,7 @@ export function AboutWindow({ copy }: CopyProps) {
         <div className="about-avatar">
           <img
             className="about-avatar-image"
-            src="/image_website.png"
+            src="/profile-picture.jpg"
             alt={copy.about.name}
             loading="lazy"
             decoding="async"

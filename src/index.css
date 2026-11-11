@@ -2239,8 +2239,8 @@ html.locale-boot-pending body {
 }
 
 .about-avatar {
-  width: 118px;
-  height: 118px;
+  width: 236px;
+  height: 236px;
   flex-shrink: 0;
   border-radius: 999px;
   overflow: hidden;
@@ -2360,8 +2360,8 @@ html.locale-boot-pending body {
   }
 
   .about-avatar {
-    width: 96px;
-    height: 96px;
+    width: 192px;
+    height: 192px;
   }
 
   .about-profile-name {
