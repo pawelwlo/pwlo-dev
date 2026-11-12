@@ -22,7 +22,7 @@ import {
   Layers3,
   Mail,
   Search,
-  ShieldCheck,
+  BadgePercent,
   SunMedium,
   UserRound,
   Wifi,
@@ -35,7 +35,7 @@ import { WindowFrame, type ResizeDirection } from "@/components/os/WindowFrame";
 import { Desktop } from "@/components/Desktop";
 import { Hero } from "@/components/Hero";
 import { ScrollAnimation, type ScrollAnimationHandle } from "@/components/ScrollAnimation";
-import { LeadsWindow } from "@/components/portfolio/LeadsWindow";
+import { OffersWindow } from "@/components/portfolio/OffersWindow";
 import { OsHomeLayout } from "@/components/portfolio/OsHomeLayout";
 import { ProjectsWindow } from "@/components/portfolio/ProjectsWindow";
 import {
@@ -55,7 +55,7 @@ import {
   markLocaleBootPending,
 } from "@/lib/localeBoot";
 import { cn } from "@/lib/utils";
-import { fetchAdminLeads, submitLead, type LeadRecord } from "@/lib/leadsApi";
+import { submitLead } from "@/lib/leadsApi";
 import { useDesktopStore } from "@/store/desktopStore";
 
 const iconMap: Record<WindowId, LucideIcon> = {
@@ -64,7 +64,7 @@ const iconMap: Record<WindowId, LucideIcon> = {
   tech: Layers3,
   contact: Mail,
   speed: Gauge,
-  leads: ShieldCheck,
+  offers: BadgePercent,
 };
 
 type WindowRect = {
@@ -82,7 +82,7 @@ const initialWindowRects: Record<WindowId, WindowRect> = {
   tech: { x: 160, y: 120, width: 520, height: 440, minWidth: 420, minHeight: 380 },
   contact: { x: 220, y: 160, width: 560, height: 540, minWidth: 460, minHeight: 480 },
   speed: { x: 640, y: 200, width: 580, height: 460, minWidth: 460, minHeight: 380 },
-  leads: { x: 280, y: 240, width: 780, height: 540, minWidth: 560, minHeight: 460 },
+  offers: { x: 220, y: 120, width: 920, height: 620, minWidth: 640, minHeight: 520 },
 };
 
 type WindowState = {
@@ -97,7 +97,7 @@ const initialWindowStates: Record<WindowId, WindowState> = {
   tech: { minimized: false, maximized: false, previousRect: null },
   contact: { minimized: false, maximized: false, previousRect: null },
   speed: { minimized: false, maximized: false, previousRect: null },
-  leads: { minimized: false, maximized: false, previousRect: null },
+  offers: { minimized: false, maximized: false, previousRect: null },
 };
 
 const compactLayoutBreakpoint = 1280;
@@ -276,10 +276,6 @@ export default function Home() {
   const [windowStates, setWindowStates] = useState(initialWindowStates);
   const [isSubmittingInquiry, setIsSubmittingInquiry] = useState(false);
   const [contactStatus, setContactStatus] = useState<ContactStatus>(null);
-  const [adminKey, setAdminKey] = useState("");
-  const [leads, setLeads] = useState<LeadRecord[]>([]);
-  const [isLoadingLeads, setIsLoadingLeads] = useState(false);
-  const [leadsError, setLeadsError] = useState<string | null>(null);
   const [localTime, setLocalTime] = useState(() =>
     new Intl.DateTimeFormat("en", {
       hour: "2-digit",
@@ -395,27 +391,12 @@ export default function Home() {
     setTheme("dark");
     document.documentElement.dataset.theme = "dark";
     window.localStorage.setItem("pwlo-theme", "dark");
-
-    const savedAdminKey = window.localStorage.getItem("pwlo-admin-key");
-
-    if (savedAdminKey) {
-      setAdminKey(savedAdminKey);
-    }
   }, [setTheme]);
 
   useEffect(() => {
     persistLocalePreference(locale);
     document.documentElement.lang = locale;
   }, [locale]);
-
-  useEffect(() => {
-    if (adminKey) {
-      window.localStorage.setItem("pwlo-admin-key", adminKey);
-      return;
-    }
-
-    window.localStorage.removeItem("pwlo-admin-key");
-  }, [adminKey]);
 
   const weatherPresentation = useMemo(
     () => getWeatherPresentation(weatherSnapshot.weatherCode, locale),
@@ -816,25 +797,6 @@ export default function Home() {
     setIsSubmittingInquiry(false);
   }, [copy.contact.missingConfig, copy.contact.submitError, copy.contact.submitSuccess, isSubmittingInquiry, locale]);
 
-  const handleRefreshLeads = useCallback(async () => {
-    if (!adminKey.trim()) {
-      setLeadsError(copy.leads.unauthorized);
-      return;
-    }
-
-    setIsLoadingLeads(true);
-    setLeadsError(null);
-
-    try {
-      const nextLeads = await fetchAdminLeads(adminKey.trim());
-      setLeads(nextLeads);
-    } catch (error) {
-      setLeadsError(error instanceof Error ? error.message : copy.leads.unauthorized);
-    } finally {
-      setIsLoadingLeads(false);
-    }
-  }, [adminKey, copy.leads.unauthorized]);
-
   const startResize = (
     windowId: WindowId,
     direction: ResizeDirection,
@@ -994,19 +956,14 @@ export default function Home() {
         />
       ),
       speed: <SpeedWindow locale={locale} copy={copy} />,
-      leads: (
-        <LeadsWindow
-          copy={copy.leads}
-          adminKey={adminKey}
-          onAdminKeyChange={setAdminKey}
-          onRefresh={handleRefreshLeads}
-          isLoading={isLoadingLeads}
-          errorMessage={leadsError}
-          leads={leads}
+      offers: (
+        <OffersWindow
+          copy={copy.offers}
+          onContactCta={() => openFromIconWithAutoMaximize("contact")}
         />
       ),
     }),
-    [adminKey, contactStatus?.message, contactStatus?.tone, copy, handleContactSubmit, handleRefreshLeads, isLoadingLeads, isSubmittingInquiry, leads, leadsError, locale, openFromIconWithAutoMaximize, selectProject, selectedProjectId],
+    [contactStatus?.message, contactStatus?.tone, copy, handleContactSubmit, isSubmittingInquiry, locale, openFromIconWithAutoMaximize, selectProject, selectedProjectId],
   );
 
   const acceptDesktopPrivacyNotice = () => {
@@ -1058,12 +1015,6 @@ export default function Home() {
         isSubmittingInquiry={isSubmittingInquiry}
         contactStatusMessage={contactStatus?.message ?? null}
         contactStatusTone={contactStatus?.tone ?? null}
-        adminKey={adminKey}
-        onAdminKeyChange={setAdminKey}
-        onRefreshLeads={handleRefreshLeads}
-        isLoadingLeads={isLoadingLeads}
-        leadsError={leadsError}
-        leads={leads}
         onChangeLocale={handleLocaleChange}
       />
     );

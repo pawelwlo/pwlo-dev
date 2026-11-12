@@ -1,4 +1,4 @@
-export type WindowId = "projects" | "about" | "tech" | "contact" | "speed" | "leads";
+export type WindowId = "projects" | "about" | "tech" | "contact" | "speed" | "offers";
 
 export type DesktopIconItem = {
   id: WindowId;
@@ -53,7 +53,7 @@ export const desktopIcons: DesktopIconItem[] = [
   { id: "tech", label: "Tech Stack", subtitle: "Toolkit", stat: "12+" },
   { id: "contact", label: "Contact", subtitle: "Start a project", stat: "24h" },
   { id: "speed", label: "Speed Optimization", subtitle: "Audit lab", stat: "95+" },
-  { id: "leads", label: "Leads", subtitle: "Protected view", stat: "ADM" },
+  { id: "offers", label: "Offers", subtitle: "Packages", stat: "3" },
 ];
 
 export const projects: Project[] = [

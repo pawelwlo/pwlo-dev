@@ -17,6 +17,7 @@ import {
   Mail,
   Search,
   Settings,
+  BadgePercent,
   ShieldCheck,
   Sparkles,
   SunMedium,
@@ -26,7 +27,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type FormEvent } from "react";
 
 import { BootSequence } from "@/components/BootSequence";
-import { LeadsWindow } from "@/components/portfolio/LeadsWindow";
+import { OffersWindow } from "@/components/portfolio/OffersWindow";
 import { AboutWindow, ContactWindow, SpeedTestForm, TechStackWindow } from "@/components/portfolio/UtilityWindows";
 import { TechIcon } from "@/components/portfolio/TechIcons";
 import { MobileAppIcon } from "@/components/MobileIcons";
@@ -48,7 +49,7 @@ type OsAppId =
   | "contact"
   | "tech"
   | "about"
-  | "leads"
+  | "offers"
   | "settings";
 
 type OsHomeLayoutProps = {
@@ -61,26 +62,6 @@ type OsHomeLayoutProps = {
   isSubmittingInquiry: boolean;
   contactStatusMessage: string | null;
   contactStatusTone: "success" | "error" | null;
-  adminKey: string;
-  onAdminKeyChange: (value: string) => void;
-  onRefreshLeads: () => void;
-  isLoadingLeads: boolean;
-  leadsError: string | null;
-  leads: Array<{
-    id: string;
-    name: string;
-    email: string;
-    project_type: string;
-    message: string;
-    locale: string;
-    page_origin: string | null;
-    submitted_at: string;
-    is_spam: boolean;
-    spam_reason: string | null;
-    alert_sent_at: string | null;
-    alert_error: string | null;
-    submission_duration_ms: number | null;
-  }>;
   onChangeLocale: (locale: Locale) => void;
 };
 
@@ -179,12 +160,6 @@ export function OsHomeLayout({
   isSubmittingInquiry,
   contactStatusMessage,
   contactStatusTone,
-  adminKey,
-  onAdminKeyChange,
-  onRefreshLeads,
-  isLoadingLeads,
-  leadsError,
-  leads,
   onChangeLocale,
 }: OsHomeLayoutProps) {
   const [activeApp, setActiveApp] = useState<OsAppId>("home");
@@ -308,10 +283,10 @@ export function OsHomeLayout({
       tintClass: "os-icon-tint-gray",
     },
     {
-      id: "leads",
-      label: copy.osLayout.apps.leads,
-      icon: ShieldCheck,
-      tintClass: "os-icon-tint-slate",
+      id: "offers",
+      label: copy.osLayout.apps.offers,
+      icon: BadgePercent,
+      tintClass: "os-icon-tint-green",
     },
     {
       id: "settings",
@@ -892,16 +867,11 @@ export function OsHomeLayout({
                 </div>
               ) : null}
 
-              {activeApp === "leads" ? (
+              {activeApp === "offers" ? (
                 <div className="os-app-window">
-                  <LeadsWindow
-                    copy={copy.leads}
-                    adminKey={adminKey}
-                    onAdminKeyChange={onAdminKeyChange}
-                    onRefresh={onRefreshLeads}
-                    isLoading={isLoadingLeads}
-                    errorMessage={leadsError}
-                    leads={leads}
+                  <OffersWindow
+                    copy={copy.offers}
+                    onContactCta={() => setActiveApp("contact")}
                   />
                 </div>
               ) : null}

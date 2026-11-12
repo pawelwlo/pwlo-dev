@@ -66,7 +66,7 @@ type CopyProps = {
       submitSuccess: string;
       submitError: string;
     };
-    leads: {};
+    offers: {};
   };
 };
 

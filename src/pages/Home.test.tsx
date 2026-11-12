@@ -2,19 +2,16 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { submitLeadMock, fetchAdminLeadsMock } = vi.hoisted(() => {
+const { submitLeadMock } = vi.hoisted(() => {
   const submitLead = vi.fn();
-  const fetchAdminLeads = vi.fn();
 
   return {
     submitLeadMock: submitLead,
-    fetchAdminLeadsMock: fetchAdminLeads,
   };
 });
 
 vi.mock("@/lib/leadsApi", () => ({
   submitLead: submitLeadMock,
-  fetchAdminLeads: fetchAdminLeadsMock,
 }));
 
 vi.mock("@/lib/sequenceLoader", () => {
@@ -129,9 +126,7 @@ beforeEach(() => {
   });
   window.localStorage.clear();
   submitLeadMock.mockClear();
-  fetchAdminLeadsMock.mockClear();
   submitLeadMock.mockResolvedValue({ ok: true });
-  fetchAdminLeadsMock.mockResolvedValue([]);
   useDesktopStore.setState({
     locale: "en",
     theme: "dark",
@@ -273,41 +268,13 @@ describe("Home", () => {
     expect(await screen.findByText(/Inquiry sent successfully./i)).toBeInTheDocument();
   });
 
-  it("loads protected leads with an admin key", async () => {
-    fetchAdminLeadsMock.mockResolvedValue([
-      {
-        id: "lead-1",
-        name: "Test User",
-        email: "test@example.com",
-        project_type: "Landing page",
-        message: "Need a redesign.",
-        locale: "en",
-        page_origin: "http://localhost/",
-        submitted_at: "2026-07-06T10:00:00.000Z",
-        is_spam: false,
-        spam_reason: null,
-        alert_sent_at: "2026-07-06T10:00:01.000Z",
-        alert_error: null,
-        submission_duration_ms: 5000,
-      },
-    ]);
+  it("opens offers window with package pricing", async () => {
+    await renderDesktopHome();
 
-    const { container } = await renderDesktopHome();
+    fireEvent.click(screen.getAllByRole("button", { name: /Offers: Packages/i })[0]);
 
-    fireEvent.click(screen.getAllByRole("button", { name: /Leads: Protected view/i })[0]);
-
-    const leadsInput = container.querySelector('.leads-admin-key input') as HTMLInputElement;
-    const loadButton = container.querySelector('.leads-controls button') as HTMLButtonElement;
-
-    fireEvent.change(leadsInput, {
-      target: { value: "secret-admin-key" },
-    });
-    fireEvent.click(loadButton);
-
-    await waitFor(() => {
-      expect(fetchAdminLeadsMock).toHaveBeenCalledWith("secret-admin-key");
-    });
-
-    expect(await screen.findByText("test@example.com")).toBeInTheDocument();
+    expect(await screen.findByText(/Three clear packages for specialists/i)).toBeInTheDocument();
+    expect(screen.getByText("Practice")).toBeInTheDocument();
+    expect(screen.getByText(/29,900 – 39,900 PLN/i)).toBeInTheDocument();
   });
 });

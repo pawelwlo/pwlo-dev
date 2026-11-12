@@ -99,7 +99,7 @@ export type Copy = {
       contact: string;
       tech: string;
       about: string;
-      leads: string;
+      offers: string;
       settings: string;
     };
   };
@@ -186,26 +186,26 @@ export type Copy = {
       message: string;
     };
   };
-  leads: {
+  offers: {
     eyebrow: string;
     title: string;
     description: string;
-    adminKeyLabel: string;
-    adminKeyPlaceholder: string;
-    loadLeads: string;
-    loadLeadsAction: string;
-    loading: string;
-    empty: string;
-    unauthorized: string;
-    alertSent: string;
-    alertPending: string;
-    spam: string;
-    clean: string;
-    email: string;
-    projectType: string;
-    locale: string;
-    submittedAt: string;
-    message: string;
+    recommended: string;
+    setupLabel: string;
+    monthlyLabel: string;
+    includesLabel: string;
+    excludesLabel: string;
+    cta: string;
+    packages: Array<{
+      id: string;
+      name: string;
+      badge?: string;
+      tagline: string;
+      setup: string;
+      monthly: string;
+      includes: string[];
+      excludes: string[];
+    }>;
   };
   windowControls: {
     drag: (title: string) => string;
@@ -572,7 +572,7 @@ export const copyByLocale: Record<Locale, Copy> = {
     heroEyebrow: "Desktop workspace",
     heroTitle: "pwloOS System Overview",
     heroSubtitle: "System metrics, modules, and workspace access.",
-    heroModules: ["Projects", "Tech Stack", "Speed", "Leads", "Contact"],
+    heroModules: ["Projects", "Tech Stack", "Speed", "Offers", "Contact"],
     viewProjects: "Open Projects",
     contactMe: "Open Contact",
     speedPanelLabel: "Live speed panel",
@@ -642,7 +642,7 @@ export const copyByLocale: Record<Locale, Copy> = {
         contact: "Contact",
         tech: "Tech Stack",
         about: "About Me",
-        leads: "Leads",
+        offers: "Offers",
         settings: "Settings",
       },
     },
@@ -652,7 +652,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       tech: "Tech Stack",
       contact: "Contact",
       speed: "SEO & Speed",
-      leads: "Leads",
+      offers: "Offers",
     },
     desktopIcons: {
       projects: { label: "Projects", subtitle: "Case studies" },
@@ -660,7 +660,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       tech: { label: "Tech Stack", subtitle: "Toolkit" },
       contact: { label: "Contact", subtitle: "Start a project" },
       speed: { label: "SEO & Speed", subtitle: "Audit lab" },
-      leads: { label: "Leads", subtitle: "Protected view" },
+      offers: { label: "Offers", subtitle: "Packages" },
     },
     projects: {
       eyebrow: "PROJECTS",
@@ -779,26 +779,69 @@ export const copyByLocale: Record<Locale, Copy> = {
         message: "Message",
       },
     },
-    leads: {
-      eyebrow: "PROTECTED LEADS",
-      title: "Latest inquiries",
-      description: "Load recent contact submissions with an admin key.\nThis window stays private behind an Edge Function check.",
-      adminKeyLabel: "Admin key",
-      adminKeyPlaceholder: "Enter your admin key",
-      loadLeads: "Load leads",
-      loadLeadsAction: "Load leads",
-      loading: "Loading...",
-      empty: "No submissions yet.",
-      unauthorized: "Admin key is invalid.",
-      alertSent: "Alert sent",
-      alertPending: "Alert pending",
-      spam: "Spam",
-      clean: "Clean",
-      email: "Email",
-      projectType: "Project type",
-      locale: "Locale",
-      submittedAt: "Submitted",
-      message: "Message",
+    offers: {
+      eyebrow: "COLLABORATION OFFER",
+      title: "Three clear packages for specialists",
+      description:
+        "Built on a live product (e.g. dietanacodzien.pl). Pick the scope that matches your business — shop only, bookings, or full client care.",
+      recommended: "Default recommendation: Practice (Gabinet). Presence if you do not book visits. Care if you need in-app chat and calls.",
+      setupLabel: "Setup (net)",
+      monthlyLabel: "Care / month",
+      includesLabel: "Included",
+      excludesLabel: "Not included",
+      cta: "Ask about this package",
+      packages: [
+        {
+          id: "presence",
+          name: "Presence",
+          tagline: "Brand site + digital product sales",
+          setup: "15,900 – 22,900 PLN",
+          monthly: "390 – 590 PLN",
+          includes: [
+            "Landing, offer, blog, FAQ, contact",
+            "User accounts",
+            "Catalog & shop",
+            "Przelewy24 payments",
+            "Digital file delivery",
+            "Admin: products + posts",
+            "PL legal pack (terms, GDPR, cookies)",
+          ],
+          excludes: ["Calendar & booking", "Chat and video calls", "Refunds / complaints panel"],
+        },
+        {
+          id: "practice",
+          name: "Practice",
+          badge: "Most popular",
+          tagline: "Book visits and get paid",
+          setup: "29,900 – 39,900 PLN",
+          monthly: "790 – 1,190 PLN",
+          includes: [
+            "Everything in Presence",
+            "Slot booking & cancellation rules",
+            "Google Calendar integration",
+            "Client visits panel",
+            "Transactional emails & reminders",
+            "Consultation consents at checkout",
+          ],
+          excludes: ["Encrypted chat", "Audio / video calls", "Full refunds workflow"],
+        },
+        {
+          id: "care",
+          name: "Care",
+          tagline: "Full client relationship in the app",
+          setup: "49,900 – 69,900 PLN",
+          monthly: "1,290 – 1,990 PLN",
+          includes: [
+            "Everything in Practice",
+            "Patient–specialist chat (E2EE)",
+            "Audio / video calls",
+            "Multi-session care packages",
+            "Full admin (clients, notifications, stats)",
+            "Refunds, withdrawals & complaints",
+          ],
+          excludes: ["White-label / multi-practice (add-on)", "Native iOS / Android apps"],
+        },
+      ],
     },
     windowControls: {
       drag: (title) => `Drag ${title}`,
@@ -824,7 +867,7 @@ export const copyByLocale: Record<Locale, Copy> = {
     heroEyebrow: "Przestrzeń robocza desktop",
     heroTitle: "pwloOS System Overview",
     heroSubtitle: "Metryki systemu, moduły i dostęp do przestrzeni roboczej.",
-    heroModules: ["Projekty", "Tech Stack", "Speed", "Leady", "Kontakt"],
+    heroModules: ["Projekty", "Tech Stack", "Speed", "Oferty", "Kontakt"],
     viewProjects: "Otwórz projekty",
     contactMe: "Otwórz kontakt",
     speedPanelLabel: "Panel wydajności na żywo",
@@ -894,7 +937,7 @@ export const copyByLocale: Record<Locale, Copy> = {
         contact: "Kontakt",
         tech: "Tech stack",
         about: "O mnie",
-        leads: "Leady",
+        offers: "Oferty",
         settings: "Ustawienia",
       },
     },
@@ -904,7 +947,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       tech: "Stack technologiczny",
       contact: "Kontakt",
       speed: "SEO i szybkość",
-      leads: "Leady",
+      offers: "Oferty",
     },
     desktopIcons: {
       projects: { label: "Projekty", subtitle: "Case studies" },
@@ -912,7 +955,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       tech: { label: "Tech stack", subtitle: "Narzędzia" },
       contact: { label: "Kontakt", subtitle: "Rozpocznij projekt" },
       speed: { label: "SEO i szybkość", subtitle: "Lab audytu" },
-      leads: { label: "Leady", subtitle: "Widok chroniony" },
+      offers: { label: "Oferty", subtitle: "Pakiety" },
     },
     projects: {
       eyebrow: "Case studies",
@@ -1031,26 +1074,70 @@ export const copyByLocale: Record<Locale, Copy> = {
         message: "Wiadomość",
       },
     },
-    leads: {
-      eyebrow: "Chronione leady",
-      title: "Najnowsze zapytania",
-      description: "Wczytaj ostatnie formularze kontaktowe przy pomocy klucza administratora. To okno pozostaje prywatne dzięki sprawdzeniu w Edge Function.",
-      adminKeyLabel: "Klucz administratora",
-      adminKeyPlaceholder: "Wpisz klucz administratora",
-      loadLeads: "Wczytaj leady",
-      loadLeadsAction: "Załaduj",
-      loading: "Wczytywanie...",
-      empty: "Brak zgłoszeń.",
-      unauthorized: "Klucz administratora jest nieprawidłowy.",
-      alertSent: "Alert wyslany",
-      alertPending: "Alert oczekuje",
-      spam: "Spam",
-      clean: "Czyste",
-      email: "Email",
-      projectType: "Typ projektu",
-      locale: "Język",
-      submittedAt: "Dodano",
-      message: "Wiadomość",
+    offers: {
+      eyebrow: "OFERTA WSPÓŁPRACY",
+      title: "Trzy jasne pakiety dla specjalistów",
+      description:
+        "Na bazie działającego produktu (m.in. dietanacodzien.pl). Wybierasz zakres: sklep, rezerwacje albo pełną opiekę klienta w aplikacji.",
+      recommended:
+        "Rekomendacja: zacznij od Gabinetu. Obecność — gdy nie umawiasz wizyt. Opieka — gdy potrzebujesz czatu i rozmów w aplikacji.",
+      setupLabel: "Wdrożenie (netto)",
+      monthlyLabel: "Utrzymanie / mies.",
+      includesLabel: "W pakiecie",
+      excludesLabel: "Poza pakietem",
+      cta: "Zapytaj o ten pakiet",
+      packages: [
+        {
+          id: "presence",
+          name: "Obecność",
+          tagline: "Strona + sprzedaż produktów cyfrowych",
+          setup: "15 900 – 22 900 zł",
+          monthly: "390 – 590 zł",
+          includes: [
+            "Landing, oferta, blog, FAQ, kontakt",
+            "Konta użytkowników",
+            "Katalog produktów i sklep",
+            "Płatności Przelewy24",
+            "Dostawa plików cyfrowych",
+            "Panel admina: produkty + wpisy",
+            "Pakiet prawny PL (regulamin, RODO, cookies)",
+          ],
+          excludes: ["Kalendarz i rezerwacje", "Czat i wideorozmowy", "Zwroty / reklamacje w panelu"],
+        },
+        {
+          id: "practice",
+          name: "Gabinet",
+          badge: "Najczęstszy wybór",
+          tagline: "Umów wizytę i przyjmij płatność",
+          setup: "29 900 – 39 900 zł",
+          monthly: "790 – 1 190 zł",
+          includes: [
+            "Wszystko z pakietu Obecność",
+            "Rezerwacja terminów i reguły odwołań",
+            "Integracja Google Calendar",
+            "Panel wizyt pacjenta",
+            "E-maile transakcyjne i przypomnienia",
+            "Zgody konsultacyjne przy zakupie",
+          ],
+          excludes: ["Szyfrowany czat", "Połączenia audio / wideo", "Pełny workflow zwrotów"],
+        },
+        {
+          id: "care",
+          name: "Opieka",
+          tagline: "Pełna relacja z klientem w aplikacji",
+          setup: "49 900 – 69 900 zł",
+          monthly: "1 290 – 1 990 zł",
+          includes: [
+            "Wszystko z pakietu Gabinet",
+            "Czat pacjent–specjalista (E2EE)",
+            "Rozmowy audio / wideo",
+            "Pakiety wielosesyjne",
+            "Rozbudowany panel admina",
+            "Zwroty, odstąpienia i reklamacje",
+          ],
+          excludes: ["White-label / multi-praktyka (dodatek)", "Aplikacja natywna iOS / Android"],
+        },
+      ],
     },
     windowControls: {
       drag: (title) => `Przesun ${title}`,
@@ -1076,7 +1163,7 @@ export const copyByLocale: Record<Locale, Copy> = {
     heroEyebrow: "Desktop-Arbeitsbereich",
     heroTitle: "pwloOS System Overview",
     heroSubtitle: "Systemmetriken, Module und Workspace-Zugriff.",
-    heroModules: ["Projekte", "Tech Stack", "Speed", "Leads", "Kontakt"],
+    heroModules: ["Projekte", "Tech Stack", "Speed", "Angebote", "Kontakt"],
     viewProjects: "Projekte öffnen",
     contactMe: "Kontakt öffnen",
     speedPanelLabel: "Live-Speed-Panel",
@@ -1146,7 +1233,7 @@ export const copyByLocale: Record<Locale, Copy> = {
         contact: "Kontakt",
         tech: "Tech Stack",
         about: "Über mich",
-        leads: "Leads",
+        offers: "Angebote",
         settings: "Einstellungen",
       },
     },
@@ -1156,7 +1243,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       tech: "Tech Stack",
       contact: "Kontakt",
       speed: "SEO & Speed",
-      leads: "Leads",
+      offers: "Angebote",
     },
     desktopIcons: {
       projects: { label: "Projekte", subtitle: "Case Studies" },
@@ -1164,7 +1251,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       tech: { label: "Tech Stack", subtitle: "Toolkit" },
       contact: { label: "Kontakt", subtitle: "Projekt starten" },
       speed: { label: "SEO & Speed", subtitle: "Audit-Lab" },
-      leads: { label: "Leads", subtitle: "Geschützte Ansicht" },
+      offers: { label: "Angebote", subtitle: "Pakete" },
     },
     projects: {
       eyebrow: "Case Studies",
@@ -1283,26 +1370,70 @@ export const copyByLocale: Record<Locale, Copy> = {
         message: "Nachricht",
       },
     },
-    leads: {
-      eyebrow: "Geschützte Leads",
-      title: "Neueste Anfragen",
-      description: "Laden Sie aktuelle Kontaktanfragen mit einem Admin-Schlüssel. Dieses Fenster bleibt privat hinter einer Edge-Function-Prüfung.",
-      adminKeyLabel: "Admin-Schlüssel",
-      adminKeyPlaceholder: "Admin-Schlüssel eingeben",
-      loadLeads: "Leads laden",
-      loadLeadsAction: "Laden",
-      loading: "Lädt...",
-      empty: "Noch keine Anfragen.",
-      unauthorized: "Der Admin-Schlüssel ist ungültig.",
-      alertSent: "Alert gesendet",
-      alertPending: "Alert offen",
-      spam: "Spam",
-      clean: "Sauber",
-      email: "E-Mail",
-      projectType: "Projekttyp",
-      locale: "Sprache",
-      submittedAt: "Eingegangen",
-      message: "Nachricht",
+    offers: {
+      eyebrow: "KOOPERATIONANGEBOT",
+      title: "Drei klare Pakete für Spezialisten",
+      description:
+        "Auf Basis eines laufenden Produkts (z. B. dietanacodzien.pl). Wählen Sie Shop, Terminbuchung oder volle Kundenbetreuung in der App.",
+      recommended:
+        "Empfehlung: Praxis (Gabinet) als Standard. Presence ohne Termine. Care mit Chat und Calls.",
+      setupLabel: "Umsetzung (netto)",
+      monthlyLabel: "Betreuung / Monat",
+      includesLabel: "Enthalten",
+      excludesLabel: "Nicht enthalten",
+      cta: "Zu diesem Paket anfragen",
+      packages: [
+        {
+          id: "presence",
+          name: "Presence",
+          tagline: "Website + Verkauf digitaler Produkte",
+          setup: "15.900 – 22.900 PLN",
+          monthly: "390 – 590 PLN",
+          includes: [
+            "Landing, Angebot, Blog, FAQ, Kontakt",
+            "Benutzerkonten",
+            "Katalog & Shop",
+            "Przelewy24-Zahlungen",
+            "Digitale Dateiauslieferung",
+            "Admin: Produkte + Beiträge",
+            "PL-Rechtspaket (AGB, DSGVO, Cookies)",
+          ],
+          excludes: ["Kalender & Buchung", "Chat und Videoanrufe", "Rückerstattungs-/Reklamationspanel"],
+        },
+        {
+          id: "practice",
+          name: "Praxis",
+          badge: "Beliebteste Wahl",
+          tagline: "Termine buchen und bezahlt werden",
+          setup: "29.900 – 39.900 PLN",
+          monthly: "790 – 1.190 PLN",
+          includes: [
+            "Alles aus Presence",
+            "Terminbuchung & Stornoregeln",
+            "Google-Calendar-Integration",
+            "Patienten-Terminpanel",
+            "Transaktions-E-Mails & Erinnerungen",
+            "Einwilligungen beim Checkout",
+          ],
+          excludes: ["Verschlüsselter Chat", "Audio-/Videoanrufe", "Voller Rückerstattungsprozess"],
+        },
+        {
+          id: "care",
+          name: "Care",
+          tagline: "Volle Kundenbeziehung in der App",
+          setup: "49.900 – 69.900 PLN",
+          monthly: "1.290 – 1.990 PLN",
+          includes: [
+            "Alles aus Praxis",
+            "Chat Patient–Spezialist (E2EE)",
+            "Audio-/Videoanrufe",
+            "Mehrsitzungs-Pakete",
+            "Voller Admin (Kunden, Benachrichtigungen, Stats)",
+            "Rückerstattungen, Widerrufe & Reklamationen",
+          ],
+          excludes: ["White-Label / Multi-Praxis (Add-on)", "Native iOS-/Android-Apps"],
+        },
+      ],
     },
     windowControls: {
       drag: (title) => `${title} bewegen`,
