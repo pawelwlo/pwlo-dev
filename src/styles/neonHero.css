@@ -308,6 +308,11 @@
   width: 100%;
   border-radius: 28px;
   overflow: hidden;
+  background: transparent;
+}
+
+.neon-hero--mobile .neon-hero__atmosphere {
+  display: none;
 }
 
 .os-home-layout--hero {
