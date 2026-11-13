@@ -1330,7 +1330,7 @@ html.locale-boot-pending body {
   padding-left: 4px;
 }
 
-.system-status-weather {
+.system-status-date {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -1342,7 +1342,7 @@ html.locale-boot-pending body {
   color: var(--text);
 }
 
-.system-status-weather-icon {
+.system-status-date-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1354,20 +1354,20 @@ html.locale-boot-pending body {
   color: rgba(61, 82, 104, 0.92);
 }
 
-.system-status-weather-copy {
+.system-status-date-copy {
   display: inline-flex;
   align-items: baseline;
   gap: 8px;
   min-width: 0;
 }
 
-.system-status-weather-copy strong {
+.system-status-date-copy strong {
   color: var(--text);
   font-size: 0.92rem;
   letter-spacing: -0.02em;
 }
 
-.system-status-weather-copy span {
+.system-status-date-copy span {
   min-width: 0;
   overflow: hidden;
   color: var(--text-soft);
@@ -1375,6 +1375,7 @@ html.locale-boot-pending body {
   white-space: nowrap;
   font-size: 0.8rem;
   font-weight: 700;
+  text-transform: capitalize;
 }
 
 .system-status-wifi {
@@ -1467,14 +1468,14 @@ html.locale-boot-pending body {
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-:root[data-theme="dark"] .system-status-weather,
+:root[data-theme="dark"] .system-status-date,
 :root[data-theme="dark"] .system-status-wifi,
 :root[data-theme="dark"] .system-status-control {
   border-color: var(--border);
   background: rgba(255, 255, 255, 0.04);
 }
 
-:root[data-theme="dark"] .system-status-weather-icon {
+:root[data-theme="dark"] .system-status-date-icon {
   background: rgba(115, 143, 173, 0.18);
   color: rgba(222, 231, 239, 0.9);
 }
@@ -3466,11 +3467,11 @@ html.locale-boot-pending body {
   text-transform: capitalize;
 }
 
-.os-weather-widget {
+.os-date-widget {
   width: 100%;
 }
 
-.os-weather-card {
+.os-date-card {
   border-radius: 18px;
   border: 1px solid var(--border);
   background: rgba(22, 29, 39, 0.34);
@@ -3481,29 +3482,31 @@ html.locale-boot-pending body {
   padding: 16px 16px 14px;
 }
 
-.os-weather-card-header,
-.os-weather-card-footer {
+.os-date-card-header,
+.os-date-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 14px;
 }
 
-.os-weather-card-footer {
+.os-date-card-footer {
   margin-top: 10px;
   color: rgba(244, 247, 251, 0.78);
   font-size: 0.92rem;
   font-weight: 500;
+  text-transform: capitalize;
 }
 
-.os-weather-location {
+.os-date-weekday {
   color: rgba(244, 247, 251, 0.82);
   font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: -0.01em;
+  text-transform: capitalize;
 }
 
-.os-weather-temperature {
+.os-date-day {
   margin-top: 6px;
   color: #fff;
   font-size: clamp(2rem, 7vw, 2.45rem);
@@ -3512,7 +3515,7 @@ html.locale-boot-pending body {
   font-weight: 400;
 }
 
-.os-weather-icon-shell {
+.os-date-icon-shell {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -3524,7 +3527,7 @@ html.locale-boot-pending body {
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
 }
 
-.os-weather-icon {
+.os-date-icon {
   color: #d7dfeb;
   filter: saturate(0.78);
 }
@@ -3660,7 +3663,7 @@ html.locale-boot-pending body {
   background: rgba(15, 23, 42, 0.28);
 }
 
-:root[data-theme="dark"] .os-weather-card {
+:root[data-theme="dark"] .os-date-card {
   border-color: var(--border);
   background: rgba(15, 20, 28, 0.34);
 }
@@ -3670,7 +3673,7 @@ html.locale-boot-pending body {
   background: rgba(15, 20, 28, 0.34);
 }
 
-:root[data-theme="dark"] .os-weather-icon-shell {
+:root[data-theme="dark"] .os-date-icon-shell {
   background: rgba(255, 255, 255, 0.08);
   border-color: var(--border);
 }
@@ -3701,6 +3704,16 @@ html.locale-boot-pending body {
   letter-spacing: -0.01em;
   justify-self: start;
   white-space: nowrap;
+}
+
+.os-topbar-date {
+  color: rgba(244, 247, 251, 0.92);
+  font-weight: 650;
+  text-transform: capitalize;
+}
+
+.os-topbar-time {
+  color: rgba(244, 247, 251, 0.72);
 }
 
 :root[data-theme="dark"] .os-topbar-left,
@@ -4004,9 +4017,6 @@ html.locale-boot-pending body {
   text-transform: capitalize;
 }
 
-.os-weather-card-home {
-  min-height: 132px;
-}
 
 .os-app-icon {
   display: flex;
@@ -4990,7 +5000,7 @@ html.locale-boot-pending body {
     font-size: 0.84rem;
   }
 
-  .system-status-weather {
+  .system-status-date {
     flex: 1 1 auto;
     justify-content: center;
     max-width: 420px;
@@ -5385,11 +5395,11 @@ html.locale-boot-pending body {
     max-width: 640px;
   }
 
-  .os-weather-card {
+  .os-date-card {
     padding: 18px 18px 16px;
   }
 
-  .os-weather-temperature {
+  .os-date-day {
     font-size: clamp(2.2rem, 5vw, 2.8rem);
   }
 
@@ -5423,8 +5433,7 @@ html.locale-boot-pending body {
     margin-bottom: 18px;
   }
 
-  .os-home-widget-card,
-  .os-weather-card-home {
+  .os-home-widget-card {
     min-height: 148px;
   }
 
@@ -5615,15 +5624,15 @@ html.locale-boot-pending body {
 /* --- PORTFOLIO UI/UX ENHANCEMENTS --- */
 
 /* LIGHT MODE TEXT CONTRAST & WIDGETS */
-:root:not([data-theme="dark"]) .os-weather-temperature,
+:root:not([data-theme="dark"]) .os-date-day,
 :root:not([data-theme="dark"]) .desktop-lockscreen-time,
 :root:not([data-theme="dark"]) .os-home-clock-time {
   color: rgba(15, 17, 23, 0.9);
   text-shadow: none;
 }
 
-:root:not([data-theme="dark"]) .os-weather-card-footer,
-:root:not([data-theme="dark"]) .os-weather-location,
+:root:not([data-theme="dark"]) .os-date-card-footer,
+:root:not([data-theme="dark"]) .os-date-weekday,
 :root:not([data-theme="dark"]) .desktop-lockscreen-date,
 :root:not([data-theme="dark"]) .os-home-clock-date {
   color: rgba(15, 17, 23, 0.82);

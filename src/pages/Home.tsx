@@ -10,12 +10,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import {
-  Cloud,
-  CloudFog,
-  CloudLightning,
-  CloudRain,
-  CloudSnow,
-  CloudSun,
+  CalendarDays,
   FolderKanban,
   Gauge,
   Languages,
@@ -23,7 +18,6 @@ import {
   Mail,
   Search,
   BadgePercent,
-  SunMedium,
   UserRound,
   Wifi,
   type LucideIcon,
@@ -118,79 +112,7 @@ const autoMaximizeWindowIds = new Set<WindowId>(["projects"]);
 const isSupabaseConfigured = Boolean(
   import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY,
 );
-const garmischWeatherUrl =
-  "https://api.open-meteo.com/v1/forecast?latitude=47.4917&longitude=11.0955&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1";
 const desktopPrivacyConsentStorageKey = "pwlo-desktop-privacy-consent";
-
-type WeatherSnapshot = {
-  temperature: number;
-  high: number;
-  low: number;
-  weatherCode: number;
-};
-
-const defaultWeatherSnapshot: WeatherSnapshot = {
-  temperature: 14,
-  high: 18,
-  low: 9,
-  weatherCode: 2,
-};
-
-function getWeatherPresentation(weatherCode: number, locale: Locale): { label: string; icon: LucideIcon } {
-  if (weatherCode === 0) {
-    return {
-      label: locale === "pl" ? "Bezchmurnie" : locale === "de" ? "Klar" : "Clear",
-      icon: SunMedium,
-    };
-  }
-
-  if (weatherCode === 1 || weatherCode === 2) {
-    return {
-      label: locale === "pl" ? "Częściowe zachmurzenie" : locale === "de" ? "Teilweise bewölkt" : "Partly Cloudy",
-      icon: CloudSun,
-    };
-  }
-
-  if (weatherCode === 3) {
-    return {
-      label: locale === "pl" ? "Pochmurno" : locale === "de" ? "Bewölkt" : "Cloudy",
-      icon: Cloud,
-    };
-  }
-
-  if (weatherCode === 45 || weatherCode === 48) {
-    return {
-      label: locale === "pl" ? "Mgła" : locale === "de" ? "Nebel" : "Fog",
-      icon: CloudFog,
-    };
-  }
-
-  if ((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82)) {
-    return {
-      label: locale === "pl" ? "Deszcz" : locale === "de" ? "Regen" : "Rain",
-      icon: CloudRain,
-    };
-  }
-
-  if ((weatherCode >= 71 && weatherCode <= 77) || weatherCode === 85 || weatherCode === 86) {
-    return {
-      label: locale === "pl" ? "Śnieg" : locale === "de" ? "Schnee" : "Snow",
-      icon: CloudSnow,
-    };
-  }
-
-  if (weatherCode >= 95) {
-    return {
-      label: locale === "pl" ? "Burza" : locale === "de" ? "Gewitter" : "Storm",
-      icon: CloudLightning,
-    };
-  }
-
-  return {
-    label: locale === "pl" ? "Zachmurzenie" : locale === "de" ? "Wolken" : "Cloudy",
-    icon: Cloud,
-  };
-}
 
 type WindowDragState = {
   id: WindowId;
@@ -284,7 +206,6 @@ export default function Home() {
       hour12: false,
     }).format(new Date()),
   );
-  const [weatherSnapshot, setWeatherSnapshot] = useState<WeatherSnapshot>(defaultWeatherSnapshot);
   const [isCompactLayout, setIsCompactLayout] = useState(getIsCompactLayout);
   const [desktopLockscreenState, setDesktopLockscreenState] = useState<"booting" | "locked" | "unlocking" | "unlocked">(() => {
     if (typeof window === "undefined") {
@@ -400,16 +321,17 @@ export default function Home() {
     document.documentElement.lang = locale;
   }, [locale]);
 
-  const weatherPresentation = useMemo(
-    () => getWeatherPresentation(weatherSnapshot.weatherCode, locale),
-    [weatherSnapshot.weatherCode, locale],
-  );
-  const WeatherIcon = weatherPresentation.icon;
+  const now = new Date();
   const desktopDate = new Intl.DateTimeFormat(locale, {
     weekday: "long",
     month: "long",
     day: "numeric",
-  }).format(new Date());
+  }).format(now);
+  const desktopDateDay = new Intl.DateTimeFormat(locale, { day: "numeric" }).format(now);
+  const desktopDateLabel = new Intl.DateTimeFormat(locale, {
+    weekday: "short",
+    month: "short",
+  }).format(now);
   const isDesktopLockscreenVisible = desktopLockscreenState !== "unlocked";
 
   useEffect(() => {
@@ -437,56 +359,6 @@ export default function Home() {
       window.clearInterval(intervalId);
     };
   }, [locale]);
-
-  useEffect(() => {
-    let isCancelled = false;
-
-    const loadWeather = async () => {
-      try {
-        const response = await fetch(garmischWeatherUrl);
-
-        if (!response.ok) {
-          throw new Error("Weather request failed");
-        }
-
-        const data = (await response.json()) as {
-          current?: {
-            temperature_2m?: number;
-            weather_code?: number;
-          };
-          daily?: {
-            temperature_2m_max?: number[];
-            temperature_2m_min?: number[];
-          };
-        };
-
-        if (isCancelled) {
-          return;
-        }
-
-        setWeatherSnapshot({
-          temperature: Math.round(data.current?.temperature_2m ?? defaultWeatherSnapshot.temperature),
-          high: Math.round(data.daily?.temperature_2m_max?.[0] ?? defaultWeatherSnapshot.high),
-          low: Math.round(data.daily?.temperature_2m_min?.[0] ?? defaultWeatherSnapshot.low),
-          weatherCode: data.current?.weather_code ?? defaultWeatherSnapshot.weatherCode,
-        });
-      } catch {
-        if (!isCancelled) {
-          setWeatherSnapshot(defaultWeatherSnapshot);
-        }
-      }
-    };
-
-    void loadWeather();
-    const refreshId = window.setInterval(() => {
-      void loadWeather();
-    }, 30 * 60 * 1000);
-
-    return () => {
-      isCancelled = true;
-      window.clearInterval(refreshId);
-    };
-  }, []);
 
   useEffect(
     () => () => {
@@ -1235,13 +1107,13 @@ export default function Home() {
               ) : null}
             </div>
           </div>
-          <div className="system-status-weather" aria-label="Weather in Garmisch-Partenkirchen">
-            <span className="system-status-weather-icon" aria-hidden="true">
-              <WeatherIcon size={16} />
+          <div className="system-status-date" aria-label={desktopDate}>
+            <span className="system-status-date-icon" aria-hidden="true">
+              <CalendarDays size={16} />
             </span>
-            <span className="system-status-weather-copy">
-              <strong>{weatherSnapshot.temperature}°C</strong>
-              <span>Garmisch-Partenkirchen</span>
+            <span className="system-status-date-copy">
+              <strong>{desktopDateDay}</strong>
+              <span>{desktopDateLabel}</span>
             </span>
           </div>
           <span

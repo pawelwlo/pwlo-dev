@@ -700,7 +700,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       title: "About me",
       name: "Paweł Włodarczyk",
       role: "Your partner in building modern websites.",
-      location: "Garmisch-Partenkirchen, DE",
+      location: "Garmisch-Partenkirchen, DE · Poznań, PL",
       photoPlaceholder: "Photo placeholder",
       bio: [
         "I'm Paweł — a freelancer specializing in fast, modern, and secure web apps.",
@@ -1103,7 +1103,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       title: "O mnie",
       name: "Paweł Włodarczyk",
       role: "Twój partner w tworzeniu nowoczesnych stron i aplikacji internetowych.",
-      location: "Garmisch-Partenkirchen, DE",
+      location: "Garmisch-Partenkirchen, DE · Poznań, PL",
       photoPlaceholder: "Miejsce na zdjęcie",
       bio: [
         "Specjalizuję się w tworzeniu szybkich, bezpiecznych i nowoczesnych stron oraz aplikacji internetowych.",
@@ -1505,7 +1505,7 @@ export const copyByLocale: Record<Locale, Copy> = {
       title: "Über mich",
       name: "Paweł Włodarczyk",
       role: "Ihr Partner für moderne Websites.",
-      location: "Garmisch-Partenkirchen, DE",
+      location: "Garmisch-Partenkirchen, DE · Poznań, PL",
       photoPlaceholder: "Platzhalter für Foto",
       bio: [
         "Ich bin Paweł — Freelancer mit Fokus auf schnelle, moderne und sichere Webanwendungen.",

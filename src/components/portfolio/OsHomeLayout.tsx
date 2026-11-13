@@ -3,13 +3,8 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
+  CalendarDays,
   ChevronRight,
-  Cloud,
-  CloudFog,
-  CloudLightning,
-  CloudRain,
-  CloudSnow,
-  CloudSun,
   FolderKanban,
   Gauge,
   Globe,
@@ -19,9 +14,7 @@ import {
   BadgePercent,
   ShieldCheck,
   Sparkles,
-  SunMedium,
   UserRound,
-  type LucideIcon,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type FormEvent } from "react";
 
@@ -73,78 +66,6 @@ type OsIconConfig = {
 };
 
 const privacyConsentStorageKey = "pwlo-privacy-accepted-v2";
-const garmischWeatherUrl =
-  "https://api.open-meteo.com/v1/forecast?latitude=47.4917&longitude=11.0955&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1";
-
-type WeatherSnapshot = {
-  temperature: number;
-  high: number;
-  low: number;
-  weatherCode: number;
-};
-
-const defaultWeatherSnapshot: WeatherSnapshot = {
-  temperature: 14,
-  high: 18,
-  low: 9,
-  weatherCode: 2,
-};
-
-function getWeatherPresentation(weatherCode: number, locale: Locale): { label: string; icon: LucideIcon } {
-  if (weatherCode === 0) {
-    return {
-      label: locale === "pl" ? "Bezchmurnie" : locale === "de" ? "Klar" : "Clear",
-      icon: SunMedium,
-    };
-  }
-
-  if (weatherCode === 1 || weatherCode === 2) {
-    return {
-      label: locale === "pl" ? "Częściowe zachmurzenie" : locale === "de" ? "Teilweise bewölkt" : "Partly Cloudy",
-      icon: CloudSun,
-    };
-  }
-
-  if (weatherCode === 3) {
-    return {
-      label: locale === "pl" ? "Pochmurno" : locale === "de" ? "Bewölkt" : "Cloudy",
-      icon: Cloud,
-    };
-  }
-
-  if (weatherCode === 45 || weatherCode === 48) {
-    return {
-      label: locale === "pl" ? "Mgła" : locale === "de" ? "Nebel" : "Fog",
-      icon: CloudFog,
-    };
-  }
-
-  if ((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82)) {
-    return {
-      label: locale === "pl" ? "Deszcz" : locale === "de" ? "Regen" : "Rain",
-      icon: CloudRain,
-    };
-  }
-
-  if ((weatherCode >= 71 && weatherCode <= 77) || weatherCode === 85 || weatherCode === 86) {
-    return {
-      label: locale === "pl" ? "Śnieg" : locale === "de" ? "Schnee" : "Snow",
-      icon: CloudSnow,
-    };
-  }
-
-  if (weatherCode >= 95) {
-    return {
-      label: locale === "pl" ? "Burza" : locale === "de" ? "Gewitter" : "Storm",
-      icon: CloudLightning,
-    };
-  }
-
-  return {
-    label: locale === "pl" ? "Zachmurzenie" : locale === "de" ? "Wolken" : "Cloudy",
-    icon: Cloud,
-  };
-}
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -196,7 +117,6 @@ export function OsHomeLayout({
   });
   const [isBootExiting, setIsBootExiting] = useState(false);
   const [isPrivacyInfoExpanded, setIsPrivacyInfoExpanded] = useState(false);
-  const [weatherSnapshot, setWeatherSnapshot] = useState<WeatherSnapshot>(defaultWeatherSnapshot);
   const [isTablet, setIsTablet] = useState(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
       return false;
@@ -234,16 +154,19 @@ export function OsHomeLayout({
     () => projects.find((project) => project.id === selectedProjectId) ?? projects[0],
     [selectedProjectId],
   );
+  const lockscreenNow = new Date();
   const lockscreenDate = new Intl.DateTimeFormat(locale, {
     weekday: "long",
     month: "long",
     day: "numeric",
-  }).format(new Date());
-  const weatherPresentation = useMemo(
-    () => getWeatherPresentation(weatherSnapshot.weatherCode, locale),
-    [weatherSnapshot.weatherCode, locale],
-  );
-  const WeatherIcon = weatherPresentation.icon;
+  }).format(lockscreenNow);
+  const lockscreenDay = new Intl.DateTimeFormat(locale, { day: "numeric" }).format(lockscreenNow);
+  const lockscreenWeekday = new Intl.DateTimeFormat(locale, { weekday: "long" }).format(lockscreenNow);
+  const lockscreenMonthShort = new Intl.DateTimeFormat(locale, { month: "short" }).format(lockscreenNow);
+  const lockscreenMonthYear = new Intl.DateTimeFormat(locale, {
+    month: "long",
+    year: "numeric",
+  }).format(lockscreenNow);
 
   const icons: OsIconConfig[] = [
     {
@@ -351,56 +274,6 @@ export function OsHomeLayout({
     [],
   );
 
-  useEffect(() => {
-    let isCancelled = false;
-
-    const loadWeather = async () => {
-      try {
-        const response = await fetch(garmischWeatherUrl);
-
-        if (!response.ok) {
-          throw new Error("Weather request failed");
-        }
-
-        const data = (await response.json()) as {
-          current?: {
-            temperature_2m?: number;
-            weather_code?: number;
-          };
-          daily?: {
-            temperature_2m_max?: number[];
-            temperature_2m_min?: number[];
-          };
-        };
-
-        if (isCancelled) {
-          return;
-        }
-
-        setWeatherSnapshot({
-          temperature: Math.round(data.current?.temperature_2m ?? defaultWeatherSnapshot.temperature),
-          high: Math.round(data.daily?.temperature_2m_max?.[0] ?? defaultWeatherSnapshot.high),
-          low: Math.round(data.daily?.temperature_2m_min?.[0] ?? defaultWeatherSnapshot.low),
-          weatherCode: data.current?.weather_code ?? defaultWeatherSnapshot.weatherCode,
-        });
-      } catch {
-        if (!isCancelled) {
-          setWeatherSnapshot(defaultWeatherSnapshot);
-        }
-      }
-    };
-
-    void loadWeather();
-    const refreshId = window.setInterval(() => {
-      void loadWeather();
-    }, 30 * 60 * 1000);
-
-    return () => {
-      isCancelled = true;
-      window.clearInterval(refreshId);
-    };
-  }, []);
-
   const openApp = (appId: OsAppId) => {
     if (transitionTimerRef.current) {
       window.clearTimeout(transitionTimerRef.current);
@@ -496,23 +369,20 @@ export function OsHomeLayout({
               <div className="os-lockscreen-date">{lockscreenDate}</div>
             </div>
 
-            <section className="os-weather-widget" aria-label="Weather in Garmisch-Partenkirchen">
-              <div className="os-weather-card">
-                <div className="os-weather-card-header">
+            <section className="os-date-widget" aria-label={lockscreenDate}>
+              <div className="os-date-card">
+                <div className="os-date-card-header">
                   <div>
-                    <div className="os-weather-location">Garmisch-Partenkirchen</div>
-                    <div className="os-weather-temperature">{weatherSnapshot.temperature}°C</div>
+                    <div className="os-date-weekday">{lockscreenWeekday}</div>
+                    <div className="os-date-day">{lockscreenDay}</div>
                   </div>
-                  <span className="os-weather-icon-shell" aria-hidden="true">
-                    <WeatherIcon className="os-weather-icon" size={26} />
+                  <span className="os-date-icon-shell" aria-hidden="true">
+                    <CalendarDays className="os-date-icon" size={26} />
                   </span>
                 </div>
 
-                <div className="os-weather-card-footer">
-                  <span>{weatherPresentation.label}</span>
-                  <span>
-                    H:{weatherSnapshot.high}° L:{weatherSnapshot.low}°
-                  </span>
+                <div className="os-date-card-footer">
+                  <span>{lockscreenMonthYear}</span>
                 </div>
               </div>
             </section>
@@ -549,7 +419,12 @@ export function OsHomeLayout({
       ) : null}
 
       <header className="os-topbar mobile-status-bar" aria-label={homeTitle} aria-hidden={isLockscreenVisible}>
-        <div className="os-topbar-left">{localTime}</div>
+        <div className="os-topbar-left" aria-label={lockscreenDate}>
+          <span className="os-topbar-date">
+            {lockscreenDay} {lockscreenMonthShort}
+          </span>
+          <span className="os-topbar-time">{localTime}</span>
+        </div>
         <div className="os-topbar-title">
           <span>{navTitle}</span>
         </div>

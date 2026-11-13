@@ -177,7 +177,7 @@
   backdrop-filter: blur(30px) saturate(1.2);
 }
 
-.os-shell .os-weather-card {
+.os-shell .os-date-card {
   border: 1px solid rgba(255, 255, 255, 0.28);
   background: rgba(255, 255, 255, 0.14);
   box-shadow:
@@ -192,7 +192,7 @@
 
 :root[data-theme="dark"] .os-shell .os-topbar.mobile-status-bar,
 :root[data-theme="dark"] .os-shell .os-home-widget-card,
-:root[data-theme="dark"] .os-shell .os-weather-card {
+:root[data-theme="dark"] .os-shell .os-date-card {
   background: rgba(18, 22, 30, 0.34);
   border-color: rgba(255, 255, 255, 0.12);
 }
