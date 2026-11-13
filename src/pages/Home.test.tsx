@@ -278,12 +278,12 @@ describe("Home", () => {
     expect(screen.getByRole("tab", { name: /Local business/i })).toBeInTheDocument();
     expect(screen.getByText("Starter")).toBeInTheDocument();
     expect(screen.getByText("Practice")).toBeInTheDocument();
-    expect(screen.getByText(/2,000 – 2,500 PLN/i)).toBeInTheDocument();
-    expect(screen.getByText(/12,000 – 18,000 PLN/i)).toBeInTheDocument();
+    expect(screen.getByText(/450 – 600 EUR/i)).toBeInTheDocument();
+    expect(screen.getByText(/2,800 – 4,200 EUR/i)).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("tab", { name: /Local business/i }));
     expect(await screen.findByText(/restaurants, guest houses/i)).toBeInTheDocument();
     expect(screen.getByText("Bookings")).toBeInTheDocument();
-    expect(screen.getAllByText(/2,000 – 2,500 PLN/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/450 – 600 EUR/i).length).toBeGreaterThan(0);
   });
 });

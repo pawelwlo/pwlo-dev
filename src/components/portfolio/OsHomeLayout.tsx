@@ -28,6 +28,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, 
 import { BootSequence } from "@/components/BootSequence";
 import { NeonHero } from "@/components/portfolio/NeonHero";
 import { OffersWindow } from "@/components/portfolio/OffersWindow";
+import { ProjectsWindow } from "@/components/portfolio/ProjectsWindow";
 import { AboutWindow, ContactWindow, SpeedTestForm, TechStackWindow } from "@/components/portfolio/UtilityWindows";
 import { TechIcon } from "@/components/portfolio/TechIcons";
 import { MobileBackground } from "@/components/MobileBackground";
@@ -614,43 +615,18 @@ export function OsHomeLayout({
               {activeApp === "projects" ? (
                 <div className="os-projects">
                   {projectView === "grid" ? (
-                    <div className="os-app-style-grid">
-                      {projects.map((project) => {
-                        const projectCopy = getProjectTranslation(locale, project.id);
-
-                        return (
-                          <div key={project.id} className="os-app-style-item">
-                            <button
-                              className="os-app-style-item-trigger"
-                              type="button"
-                              onClick={() => {
-                                onSelectProject(project.id);
-                                setProjectView("detail");
-                                scrollToTop();
-                              }}
-                            >
-                              <div className="os-app-style-icon" aria-hidden="true">
-                                <img
-                                  className="os-app-style-icon-img"
-                                  src={project.screenshotSrc}
-                                  alt=""
-                                  loading="lazy"
-                                  decoding="async"
-                                />
-                              </div>
-                            </button>
-                            <a
-                              className="os-app-style-title"
-                              href={project.previewUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {projectCopy.title}
-                            </a>
-                          </div>
-                        );
-                      })}
-                    </div>
+                    <ProjectsWindow
+                      locale={locale}
+                      copy={{
+                        title: copy.projects.title,
+                        openProjectAction: copy.projects.openProjectAction,
+                      }}
+                      onSelectProject={(projectId) => {
+                        onSelectProject(projectId);
+                        setProjectView("detail");
+                        scrollToTop();
+                      }}
+                    />
                   ) : (
                     <div className="os-project-detail">
                       <button className="os-inline-back" type="button" onClick={() => setProjectView("grid")}>

@@ -1,4 +1,4 @@
-import { ChevronRight, Mail, Rocket } from "lucide-react";
+import { ChevronRight, Mail } from "lucide-react";
 
 export type NeonHeroCopy = {
   tagline: [string, string, string];
@@ -118,7 +118,6 @@ export function NeonHero({
             className="neon-hero__btn neon-hero__btn--primary"
             onClick={onExplore}
           >
-            <Rocket size={16} aria-hidden="true" />
             <span>{copy.explore}</span>
             <ChevronRight size={16} aria-hidden="true" />
           </button>

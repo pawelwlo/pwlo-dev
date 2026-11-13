@@ -1043,8 +1043,7 @@ html.locale-boot-pending body {
 }
 
 .metric-badge,
-.performance-pill,
-.tech-pill {
+.performance-pill {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1055,8 +1054,13 @@ html.locale-boot-pending body {
   font-weight: 700;
 }
 
-.metric-badge,
 .tech-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.metric-badge {
   background: rgba(26, 115, 232, 0.07);
 }
 
@@ -2020,66 +2024,52 @@ html.locale-boot-pending body {
 }
 
 .project-card {
-  transition:
-    transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 220ms ease,
-    border-color 220ms ease;
   cursor: pointer;
-}
-
-.project-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
-  border-color: rgba(0, 0, 0, 0.12);
-}
-
-:root[data-theme="dark"] .project-card:hover {
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
-  border-color: var(--border);
+  min-height: 100%;
 }
 
 .project-shot {
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.08));
   overflow: hidden;
-}
-
-:root[data-theme="dark"] .project-shot {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
 }
 
 .project-shot-bar {
   display: flex;
-  gap: 6px;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
+  align-items: center;
 }
 
 .project-shot-bar span {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: rgba(26, 115, 232, 0.18);
+  flex-shrink: 0;
 }
 
 .project-shot-screen {
   display: block;
-  aspect-ratio: 16 / 10;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(15, 23, 42, 0.5);
   overflow: hidden;
 }
 
 .project-shot-image {
   display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
 }
 
-.project-shot-screen:hover .project-shot-image {
-  transform: scale(1.01);
+@media (prefers-reduced-motion: no-preference) {
+  .project-shot-image {
+    transition: transform 300ms ease;
+  }
+
+  .project-card:hover .project-shot-image,
+  .project-card.group:hover .project-shot-image {
+    transform: scale(1.02);
+  }
+
+  .project-domain-link {
+    transition:
+      color 180ms ease,
+      translate 180ms ease;
+  }
+
+  .project-card:hover .project-domain-link {
+    translate: 4px 0;
+  }
 }
 
 .project-shot-screen strong,
@@ -2113,8 +2103,6 @@ html.locale-boot-pending body {
 .project-content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 12px;
 }
 
 .project-category {
@@ -2421,6 +2409,12 @@ html.locale-boot-pending body {
 
 .stack-card {
   padding: 24px;
+  color: var(--color-text, #f4f7f8);
+}
+
+.stack-card h3,
+.tech-stack-layout > div > h3 {
+  color: var(--color-text, #f4f7f8);
 }
 
 .tech-list {
@@ -2450,8 +2444,8 @@ html.locale-boot-pending body {
   place-items: center;
   border-radius: 10px;
   border: 1px solid var(--border);
-  background: var(--surface-strong);
-  color: var(--text-secondary);
+  background: rgba(44, 76, 92, 0.55);
+  color: var(--color-accent, #f3e308);
 }
 
 .tech-item-icon svg {
@@ -2465,14 +2459,14 @@ html.locale-boot-pending body {
 }
 
 .tech-item-name {
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 2px;
-  color: var(--text);
+  color: #ffffff;
 }
 
 .tech-item-purpose {
-  font-weight: 300;
-  color: var(--text-secondary);
+  font-weight: 400;
+  color: rgba(244, 247, 248, 0.82);
   font-size: 0.9rem;
   line-height: 1.4;
 }
@@ -5744,11 +5738,69 @@ html.locale-boot-pending body {
   inset: 0;
   z-index: 9999;
   background: #2c4c5c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  animation: boot-screen-fade-in 0.3s ease-out;
 }
 
 .os-boot-screen--exiting {
-  animation: boot-screen-exit 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: boot-screen-exit 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
   pointer-events: none;
+}
+
+.os-boot-screen--exiting .boot-content {
+  animation: boot-content-zoom-in 680ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.boot-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #f2f2f2;
+}
+
+.boot-logo {
+  margin-bottom: 24px;
+}
+
+.boot-text {
+  font-weight: 300;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+
+.boot-percentage {
+  font-weight: 100;
+  font-size: 2.5rem;
+  font-variant-numeric: tabular-nums;
+  margin-top: 12px;
+}
+
+@keyframes boot-screen-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes boot-content-zoom-in {
+  from {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1.08);
+    filter: blur(6px);
+  }
 }
 
 .desktop-brand {
