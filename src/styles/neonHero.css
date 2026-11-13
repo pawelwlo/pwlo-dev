@@ -295,6 +295,12 @@
 /* Desktop placement inside workspace */
 .neon-hero--desktop {
   border-radius: inherit;
+  background: transparent;
+}
+
+.neon-hero--desktop .neon-hero__atmosphere,
+.neon-hero--mobile .neon-hero__atmosphere {
+  display: none;
 }
 
 /* Mobile / tablet home surface */
@@ -309,10 +315,6 @@
   border-radius: 28px;
   overflow: hidden;
   background: transparent;
-}
-
-.neon-hero--mobile .neon-hero__atmosphere {
-  display: none;
 }
 
 .os-home-layout--hero {
