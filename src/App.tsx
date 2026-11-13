@@ -5,6 +5,7 @@ import { redirectToGeoLocaleIfNeeded } from "@/lib/geoLocale";
 import "@/styles/background.css";
 import "@/styles/icons.css";
 import "@/styles/mobile.css";
+import "@/styles/neonHero.css";
 import "@/styles/scrollAnimation.css";
 import "@/styles/tokens.css";
 

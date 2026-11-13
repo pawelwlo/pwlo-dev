@@ -32,6 +32,14 @@ export type Copy = {
   heroModules: string[];
   viewProjects: string;
   contactMe: string;
+  neonHero: {
+    tagline: [string, string, string];
+    introLine1: string;
+    introLine2: string;
+    explore: string;
+    contact: string;
+    scrollLabel: string;
+  };
   speedPanelLabel: string;
   speedPanelTitle: string;
   performance: string;
@@ -188,23 +196,27 @@ export type Copy = {
   };
   offers: {
     eyebrow: string;
-    title: string;
-    description: string;
-    recommended: string;
     setupLabel: string;
     monthlyLabel: string;
     includesLabel: string;
     excludesLabel: string;
     cta: string;
-    packages: Array<{
+    tracks: Array<{
       id: string;
-      name: string;
-      badge?: string;
-      tagline: string;
-      setup: string;
-      monthly: string;
-      includes: string[];
-      excludes: string[];
+      label: string;
+      title: string;
+      description: string;
+      recommended: string;
+      packages: Array<{
+        id: string;
+        name: string;
+        badge?: string;
+        tagline: string;
+        setup: string;
+        monthly: string;
+        includes: string[];
+        excludes: string[];
+      }>;
     }>;
   };
   windowControls: {
@@ -575,6 +587,14 @@ export const copyByLocale: Record<Locale, Copy> = {
     heroModules: ["Projects", "Tech Stack", "Speed", "Offers", "Contact"],
     viewProjects: "Open Projects",
     contactMe: "Open Contact",
+    neonHero: {
+      tagline: ["Build", "Create", "Innovate"],
+      introLine1: "Software developer, dad, and lifelong learner.",
+      introLine2: "Turning ideas into useful and beautiful products.",
+      explore: "Explore my work",
+      contact: "Get in touch",
+      scrollLabel: "Scroll to continue",
+    },
     speedPanelLabel: "Live speed panel",
     speedPanelTitle: "Precision tuned for Lighthouse and Core Web Vitals.",
     performance: "Performance",
@@ -781,65 +801,165 @@ export const copyByLocale: Record<Locale, Copy> = {
     },
     offers: {
       eyebrow: "COLLABORATION OFFER",
-      title: "Three clear packages for specialists",
-      description:
-        "Built on a live product (e.g. dietanacodzien.pl). Pick the scope that matches your business — shop only, bookings, or full client care.",
-      recommended: "Default recommendation: Practice (Gabinet). Presence if you do not book visits. Care if you need in-app chat and calls.",
       setupLabel: "Setup (net)",
       monthlyLabel: "Care / month",
       includesLabel: "Included",
       excludesLabel: "Not included",
       cta: "Ask about this package",
-      packages: [
+      tracks: [
         {
-          id: "presence",
-          name: "Presence",
-          tagline: "Brand site + digital product sales",
-          setup: "15,900 – 22,900 PLN",
-          monthly: "390 – 590 PLN",
-          includes: [
-            "Landing, offer, blog, FAQ, contact",
-            "User accounts",
-            "Catalog & shop",
-            "Przelewy24 payments",
-            "Digital file delivery",
-            "Admin: products + posts",
-            "PL legal pack (terms, GDPR, cookies)",
+          id: "specialists",
+          label: "Specialists",
+          title: "Four clear packages for specialists",
+          description:
+            "Built on a live product (e.g. dietanacodzien.pl). Pick the scope that matches your practice — simple presence, shop, bookings, or full client care.",
+          recommended:
+            "Default recommendation: Practice. Starter for a simple landing. Presence if you sell digital products. Care if you need in-app chat and calls.",
+          packages: [
+            {
+              id: "starter",
+              name: "Starter",
+              tagline: "Landing page + offer + contact",
+              setup: "2,000 – 2,500 PLN",
+              monthly: "80 – 120 PLN",
+              includes: [
+                "One-page / multi-section landing",
+                "Products / services presentation",
+                "About, FAQ, and contact form",
+                "Responsive design (mobile + desktop)",
+                "Basic SEO setup",
+                "Cookie banner & privacy basics",
+              ],
+              excludes: ["Online shop & payments", "User accounts", "Blog / CMS", "Booking calendar"],
+            },
+            {
+              id: "presence",
+              name: "Presence",
+              tagline: "Brand site + digital product sales",
+              setup: "5,500 – 8,500 PLN",
+              monthly: "180 – 280 PLN",
+              includes: [
+                "Everything in Starter",
+                "Blog",
+                "User accounts",
+                "Catalog & shop",
+                "Przelewy24 payments",
+                "Digital file delivery",
+                "Admin: products + posts",
+                "PL legal pack (terms, GDPR, cookies)",
+              ],
+              excludes: ["Calendar & booking", "Chat and video calls", "Refunds / complaints panel"],
+            },
+            {
+              id: "practice",
+              name: "Practice",
+              badge: "Most popular",
+              tagline: "Book visits and get paid",
+              setup: "12,000 – 18,000 PLN",
+              monthly: "350 – 550 PLN",
+              includes: [
+                "Everything in Presence",
+                "Slot booking & cancellation rules",
+                "Google Calendar integration",
+                "Client visits panel",
+                "Transactional emails & reminders",
+                "Consultation consents at checkout",
+              ],
+              excludes: ["Encrypted chat", "Audio / video calls", "Full refunds workflow"],
+            },
+            {
+              id: "care",
+              name: "Care",
+              tagline: "Full client relationship in the app",
+              setup: "22,000 – 32,000 PLN",
+              monthly: "650 – 950 PLN",
+              includes: [
+                "Everything in Practice",
+                "Patient–specialist chat (E2EE)",
+                "Audio / video calls",
+                "Multi-session care packages",
+                "Full admin (clients, notifications, stats)",
+                "Refunds, withdrawals & complaints",
+              ],
+              excludes: ["White-label / multi-practice (add-on)", "Native iOS / Android apps"],
+            },
           ],
-          excludes: ["Calendar & booking", "Chat and video calls", "Refunds / complaints panel"],
         },
         {
-          id: "practice",
-          name: "Practice",
-          badge: "Most popular",
-          tagline: "Book visits and get paid",
-          setup: "29,900 – 39,900 PLN",
-          monthly: "790 – 1,190 PLN",
-          includes: [
-            "Everything in Presence",
-            "Slot booking & cancellation rules",
-            "Google Calendar integration",
-            "Client visits panel",
-            "Transactional emails & reminders",
-            "Consultation consents at checkout",
+          id: "local-business",
+          label: "Local business",
+          title: "Four packages for restaurants, guest houses & local services",
+          description:
+            "For places like restaurants, guest houses, workshops, and local brands (e.g. hekomimoto.com). Clear website presence that turns visitors into calls and bookings.",
+          recommended:
+            "Default recommendation: Bookings. Starter for a simple card site. Local if you need gallery + SEO. Growth when you want orders, payments, and multi-language.",
+          packages: [
+            {
+              id: "biz-starter",
+              name: "Starter",
+              tagline: "Business card site that converts",
+              setup: "2,000 – 2,500 PLN",
+              monthly: "80 – 120 PLN",
+              includes: [
+                "Landing with services / menu overview",
+                "About, hours, and contact form",
+                "Phone / WhatsApp click-to-call",
+                "Google Maps embed & address",
+                "Responsive mobile-first design",
+                "Basic local SEO + cookies",
+              ],
+              excludes: ["Photo gallery CMS", "Online booking", "Online ordering / payments", "Multi-language"],
+            },
+            {
+              id: "biz-local",
+              name: "Local",
+              tagline: "Brand site for walk-ins and discovery",
+              setup: "4,500 – 6,500 PLN",
+              monthly: "150 – 250 PLN",
+              includes: [
+                "Everything in Starter",
+                "Multi-page site (menu / rooms / services)",
+                "Photo gallery & highlights",
+                "Google reviews / social embeds",
+                "Local SEO pages (city + offer)",
+                "Easy content updates admin",
+              ],
+              excludes: ["Reservation calendar", "Online payments", "Table / room inventory", "Multi-language"],
+            },
+            {
+              id: "biz-bookings",
+              name: "Bookings",
+              badge: "Most popular",
+              tagline: "Tables, rooms, and appointments online",
+              setup: "8,500 – 12,500 PLN",
+              monthly: "290 – 450 PLN",
+              includes: [
+                "Everything in Local",
+                "Online reservation / booking form",
+                "Availability calendar & rules",
+                "Email / SMS confirmations",
+                "Admin panel for requests",
+                "Google Calendar sync (optional)",
+              ],
+              excludes: ["Online menu ordering with cart", "Deposit / card payments", "Channel manager / OTAs"],
+            },
+            {
+              id: "biz-growth",
+              name: "Growth",
+              tagline: "Orders, payments, and multi-language reach",
+              setup: "15,000 – 22,000 PLN",
+              monthly: "490 – 750 PLN",
+              includes: [
+                "Everything in Bookings",
+                "Online ordering or deposit payments",
+                "Przelewy24 / Stripe checkout",
+                "PL + EN (or DE) language versions",
+                "Newsletter / promo pages",
+                "Analytics & conversion tracking",
+              ],
+              excludes: ["Native mobile apps", "Full PMS / POS integration", "Marketplace / multi-location SaaS"],
+            },
           ],
-          excludes: ["Encrypted chat", "Audio / video calls", "Full refunds workflow"],
-        },
-        {
-          id: "care",
-          name: "Care",
-          tagline: "Full client relationship in the app",
-          setup: "49,900 – 69,900 PLN",
-          monthly: "1,290 – 1,990 PLN",
-          includes: [
-            "Everything in Practice",
-            "Patient–specialist chat (E2EE)",
-            "Audio / video calls",
-            "Multi-session care packages",
-            "Full admin (clients, notifications, stats)",
-            "Refunds, withdrawals & complaints",
-          ],
-          excludes: ["White-label / multi-practice (add-on)", "Native iOS / Android apps"],
         },
       ],
     },
@@ -870,6 +990,14 @@ export const copyByLocale: Record<Locale, Copy> = {
     heroModules: ["Projekty", "Tech Stack", "Speed", "Oferty", "Kontakt"],
     viewProjects: "Otwórz projekty",
     contactMe: "Otwórz kontakt",
+    neonHero: {
+      tagline: ["Buduj", "Twórz", "Innowuj"],
+      introLine1: "Programista, tata i wieczny uczeń.",
+      introLine2: "Zamieniam pomysły w użyteczne i piękne produkty.",
+      explore: "Zobacz moje prace",
+      contact: "Napisz do mnie",
+      scrollLabel: "Przewiń dalej",
+    },
     speedPanelLabel: "Panel wydajności na żywo",
     speedPanelTitle: "Precyzyjnie dostrojone pod Lighthouse i Core Web Vitals.",
     performance: "Wydajność",
@@ -1076,66 +1204,165 @@ export const copyByLocale: Record<Locale, Copy> = {
     },
     offers: {
       eyebrow: "OFERTA WSPÓŁPRACY",
-      title: "Trzy jasne pakiety dla specjalistów",
-      description:
-        "Na bazie działającego produktu (m.in. dietanacodzien.pl). Wybierasz zakres: sklep, rezerwacje albo pełną opiekę klienta w aplikacji.",
-      recommended:
-        "Rekomendacja: zacznij od Gabinetu. Obecność — gdy nie umawiasz wizyt. Opieka — gdy potrzebujesz czatu i rozmów w aplikacji.",
       setupLabel: "Wdrożenie (netto)",
       monthlyLabel: "Utrzymanie / mies.",
       includesLabel: "W pakiecie",
       excludesLabel: "Poza pakietem",
       cta: "Zapytaj o ten pakiet",
-      packages: [
+      tracks: [
         {
-          id: "presence",
-          name: "Obecność",
-          tagline: "Strona + sprzedaż produktów cyfrowych",
-          setup: "15 900 – 22 900 zł",
-          monthly: "390 – 590 zł",
-          includes: [
-            "Landing, oferta, blog, FAQ, kontakt",
-            "Konta użytkowników",
-            "Katalog produktów i sklep",
-            "Płatności Przelewy24",
-            "Dostawa plików cyfrowych",
-            "Panel admina: produkty + wpisy",
-            "Pakiet prawny PL (regulamin, RODO, cookies)",
+          id: "specialists",
+          label: "Specjaliści",
+          title: "Cztery jasne pakiety dla specjalistów",
+          description:
+            "Na bazie działającego produktu (m.in. dietanacodzien.pl). Wybierasz zakres: prostą wizytówkę, sklep, rezerwacje albo pełną opiekę klienta w aplikacji.",
+          recommended:
+            "Rekomendacja: Gabinet jako standard. Start — prosta landing. Obecność — sprzedaż produktów cyfrowych. Opieka — czat i rozmowy w aplikacji.",
+          packages: [
+            {
+              id: "starter",
+              name: "Start",
+              tagline: "Landing + prezentacja oferty + kontakt",
+              setup: "2 000 – 2 500 zł",
+              monthly: "80 – 120 zł",
+              includes: [
+                "Landing one-page / wielosekcyjny",
+                "Prezentacja produktów / usług",
+                "O mnie, FAQ i formularz kontaktowy",
+                "Responsywny design (mobile + desktop)",
+                "Podstawowe SEO",
+                "Baner cookies i podstawy RODO",
+              ],
+              excludes: ["Sklep online i płatności", "Konta użytkowników", "Blog / CMS", "Kalendarz rezerwacji"],
+            },
+            {
+              id: "presence",
+              name: "Obecność",
+              tagline: "Strona + sprzedaż produktów cyfrowych",
+              setup: "5 500 – 8 500 zł",
+              monthly: "180 – 280 zł",
+              includes: [
+                "Wszystko z pakietu Start",
+                "Blog",
+                "Konta użytkowników",
+                "Katalog produktów i sklep",
+                "Płatności Przelewy24",
+                "Dostawa plików cyfrowych",
+                "Panel admina: produkty + wpisy",
+                "Pakiet prawny PL (regulamin, RODO, cookies)",
+              ],
+              excludes: ["Kalendarz i rezerwacje", "Czat i wideorozmowy", "Zwroty / reklamacje w panelu"],
+            },
+            {
+              id: "practice",
+              name: "Gabinet",
+              badge: "Najczęstszy wybór",
+              tagline: "Umów wizytę i przyjmij płatność",
+              setup: "12 000 – 18 000 zł",
+              monthly: "350 – 550 zł",
+              includes: [
+                "Wszystko z pakietu Obecność",
+                "Rezerwacja terminów i reguły odwołań",
+                "Integracja Google Calendar",
+                "Panel wizyt pacjenta",
+                "E-maile transakcyjne i przypomnienia",
+                "Zgody konsultacyjne przy zakupie",
+              ],
+              excludes: ["Szyfrowany czat", "Połączenia audio / wideo", "Pełny workflow zwrotów"],
+            },
+            {
+              id: "care",
+              name: "Opieka",
+              tagline: "Pełna relacja z klientem w aplikacji",
+              setup: "22 000 – 32 000 zł",
+              monthly: "650 – 950 zł",
+              includes: [
+                "Wszystko z pakietu Gabinet",
+                "Czat pacjent–specjalista (E2EE)",
+                "Rozmowy audio / wideo",
+                "Pakiety wielosesyjne",
+                "Rozbudowany panel admina",
+                "Zwroty, odstąpienia i reklamacje",
+              ],
+              excludes: ["White-label / multi-praktyka (dodatek)", "Aplikacja natywna iOS / Android"],
+            },
           ],
-          excludes: ["Kalendarz i rezerwacje", "Czat i wideorozmowy", "Zwroty / reklamacje w panelu"],
         },
         {
-          id: "practice",
-          name: "Gabinet",
-          badge: "Najczęstszy wybór",
-          tagline: "Umów wizytę i przyjmij płatność",
-          setup: "29 900 – 39 900 zł",
-          monthly: "790 – 1 190 zł",
-          includes: [
-            "Wszystko z pakietu Obecność",
-            "Rezerwacja terminów i reguły odwołań",
-            "Integracja Google Calendar",
-            "Panel wizyt pacjenta",
-            "E-maile transakcyjne i przypomnienia",
-            "Zgody konsultacyjne przy zakupie",
+          id: "local-business",
+          label: "Lokalny biznes",
+          title: "Cztery pakiety dla restauracji, pensjonatów i lokalnych usług",
+          description:
+            "Dla miejsc takich jak restauracje, pensjonaty, warsztaty i lokalne marki (np. hekomimoto.com). Strona, która zamienia odwiedzających w telefony i rezerwacje.",
+          recommended:
+            "Rekomendacja: Rezerwacje. Start — prosta wizytówka. Lokal — galeria i SEO. Rozwój — zamówienia, płatności i wersje językowe.",
+          packages: [
+            {
+              id: "biz-starter",
+              name: "Start",
+              tagline: "Wizytówka, która konwertuje",
+              setup: "2 000 – 2 500 zł",
+              monthly: "80 – 120 zł",
+              includes: [
+                "Landing z usługami / menu",
+                "O firmie, godziny i formularz kontaktowy",
+                "Kliknij, aby zadzwonić / WhatsApp",
+                "Mapa Google i adres",
+                "Responsywny design mobile-first",
+                "Podstawowe SEO lokalne + cookies",
+              ],
+              excludes: ["Galeria ze zarządzaniem zdjęciami", "Rezerwacje online", "Zamówienia / płatności", "Wersje językowe"],
+            },
+            {
+              id: "biz-local",
+              name: "Lokal",
+              tagline: "Strona wizerunkowa pod discovery i wizyty",
+              setup: "4 500 – 6 500 zł",
+              monthly: "150 – 250 zł",
+              includes: [
+                "Wszystko z pakietu Start",
+                "Wiele podstron (menu / pokoje / usługi)",
+                "Galeria zdjęć i wyróżniki",
+                "Opinie Google / social embeds",
+                "SEO lokalne (miasto + oferta)",
+                "Prosty panel do edycji treści",
+              ],
+              excludes: ["Kalendarz rezerwacji", "Płatności online", "Zarządzanie stolikami / pokojami", "Wersje językowe"],
+            },
+            {
+              id: "biz-bookings",
+              name: "Rezerwacje",
+              badge: "Najczęstszy wybór",
+              tagline: "Stoliki, pokoje i terminy online",
+              setup: "8 500 – 12 500 zł",
+              monthly: "290 – 450 zł",
+              includes: [
+                "Wszystko z pakietu Lokal",
+                "Formularz rezerwacji online",
+                "Kalendarz dostępności i reguły",
+                "Potwierdzenia e-mail / SMS",
+                "Panel admina do zapytań",
+                "Sync Google Calendar (opcjonalnie)",
+              ],
+              excludes: ["Zamówienia z koszykiem", "Zaliczki / płatności kartą", "Channel manager / OTA"],
+            },
+            {
+              id: "biz-growth",
+              name: "Rozwój",
+              tagline: "Zamówienia, płatności i zasięg wielojęzyczny",
+              setup: "15 000 – 22 000 zł",
+              monthly: "490 – 750 zł",
+              includes: [
+                "Wszystko z pakietu Rezerwacje",
+                "Zamówienia online lub zaliczki",
+                "Checkout Przelewy24 / Stripe",
+                "Wersje PL + EN (lub DE)",
+                "Newsletter / strony promo",
+                "Analityka i śledzenie konwersji",
+              ],
+              excludes: ["Aplikacje natywne", "Pełna integracja PMS / POS", "Marketplace / multi-lokalizacja SaaS"],
+            },
           ],
-          excludes: ["Szyfrowany czat", "Połączenia audio / wideo", "Pełny workflow zwrotów"],
-        },
-        {
-          id: "care",
-          name: "Opieka",
-          tagline: "Pełna relacja z klientem w aplikacji",
-          setup: "49 900 – 69 900 zł",
-          monthly: "1 290 – 1 990 zł",
-          includes: [
-            "Wszystko z pakietu Gabinet",
-            "Czat pacjent–specjalista (E2EE)",
-            "Rozmowy audio / wideo",
-            "Pakiety wielosesyjne",
-            "Rozbudowany panel admina",
-            "Zwroty, odstąpienia i reklamacje",
-          ],
-          excludes: ["White-label / multi-praktyka (dodatek)", "Aplikacja natywna iOS / Android"],
         },
       ],
     },
@@ -1166,6 +1393,14 @@ export const copyByLocale: Record<Locale, Copy> = {
     heroModules: ["Projekte", "Tech Stack", "Speed", "Angebote", "Kontakt"],
     viewProjects: "Projekte öffnen",
     contactMe: "Kontakt öffnen",
+    neonHero: {
+      tagline: ["Bauen", "Gestalten", "Innovieren"],
+      introLine1: "Softwareentwickler, Vater und lebenslanger Lerner.",
+      introLine2: "Ich verwandle Ideen in nützliche und schöne Produkte.",
+      explore: "Meine Arbeit entdecken",
+      contact: "Kontakt aufnehmen",
+      scrollLabel: "Weiter scrollen",
+    },
     speedPanelLabel: "Live-Speed-Panel",
     speedPanelTitle: "Präzise abgestimmt auf Lighthouse und Core Web Vitals.",
     performance: "Performance",
@@ -1372,66 +1607,165 @@ export const copyByLocale: Record<Locale, Copy> = {
     },
     offers: {
       eyebrow: "KOOPERATIONANGEBOT",
-      title: "Drei klare Pakete für Spezialisten",
-      description:
-        "Auf Basis eines laufenden Produkts (z. B. dietanacodzien.pl). Wählen Sie Shop, Terminbuchung oder volle Kundenbetreuung in der App.",
-      recommended:
-        "Empfehlung: Praxis (Gabinet) als Standard. Presence ohne Termine. Care mit Chat und Calls.",
       setupLabel: "Umsetzung (netto)",
       monthlyLabel: "Betreuung / Monat",
       includesLabel: "Enthalten",
       excludesLabel: "Nicht enthalten",
       cta: "Zu diesem Paket anfragen",
-      packages: [
+      tracks: [
         {
-          id: "presence",
-          name: "Presence",
-          tagline: "Website + Verkauf digitaler Produkte",
-          setup: "15.900 – 22.900 PLN",
-          monthly: "390 – 590 PLN",
-          includes: [
-            "Landing, Angebot, Blog, FAQ, Kontakt",
-            "Benutzerkonten",
-            "Katalog & Shop",
-            "Przelewy24-Zahlungen",
-            "Digitale Dateiauslieferung",
-            "Admin: Produkte + Beiträge",
-            "PL-Rechtspaket (AGB, DSGVO, Cookies)",
+          id: "specialists",
+          label: "Spezialisten",
+          title: "Vier klare Pakete für Spezialisten",
+          description:
+            "Auf Basis eines laufenden Produkts (z. B. dietanacodzien.pl). Wählen Sie einfache Präsenz, Shop, Terminbuchung oder volle Kundenbetreuung in der App.",
+          recommended:
+            "Empfehlung: Praxis als Standard. Start für eine einfache Landingpage. Presence für digitale Produkte. Care mit Chat und Calls.",
+          packages: [
+            {
+              id: "starter",
+              name: "Start",
+              tagline: "Landingpage + Angebot + Kontakt",
+              setup: "2.000 – 2.500 PLN",
+              monthly: "80 – 120 PLN",
+              includes: [
+                "One-Page / mehrteilige Landingpage",
+                "Produkte- / Leistungspräsentation",
+                "Über mich, FAQ und Kontaktformular",
+                "Responsives Design (Mobile + Desktop)",
+                "Basis-SEO",
+                "Cookie-Banner & Datenschutz-Basics",
+              ],
+              excludes: ["Online-Shop & Zahlungen", "Benutzerkonten", "Blog / CMS", "Buchungskalender"],
+            },
+            {
+              id: "presence",
+              name: "Presence",
+              tagline: "Website + Verkauf digitaler Produkte",
+              setup: "5.500 – 8.500 PLN",
+              monthly: "180 – 280 PLN",
+              includes: [
+                "Alles aus Start",
+                "Blog",
+                "Benutzerkonten",
+                "Katalog & Shop",
+                "Przelewy24-Zahlungen",
+                "Digitale Dateiauslieferung",
+                "Admin: Produkte + Beiträge",
+                "PL-Rechtspaket (AGB, DSGVO, Cookies)",
+              ],
+              excludes: ["Kalender & Buchung", "Chat und Videoanrufe", "Rückerstattungs-/Reklamationspanel"],
+            },
+            {
+              id: "practice",
+              name: "Praxis",
+              badge: "Beliebteste Wahl",
+              tagline: "Termine buchen und bezahlt werden",
+              setup: "12.000 – 18.000 PLN",
+              monthly: "350 – 550 PLN",
+              includes: [
+                "Alles aus Presence",
+                "Terminbuchung & Stornoregeln",
+                "Google-Calendar-Integration",
+                "Patienten-Terminpanel",
+                "Transaktions-E-Mails & Erinnerungen",
+                "Einwilligungen beim Checkout",
+              ],
+              excludes: ["Verschlüsselter Chat", "Audio-/Videoanrufe", "Voller Rückerstattungsprozess"],
+            },
+            {
+              id: "care",
+              name: "Care",
+              tagline: "Volle Kundenbeziehung in der App",
+              setup: "22.000 – 32.000 PLN",
+              monthly: "650 – 950 PLN",
+              includes: [
+                "Alles aus Praxis",
+                "Chat Patient–Spezialist (E2EE)",
+                "Audio-/Videoanrufe",
+                "Mehrsitzungs-Pakete",
+                "Voller Admin (Kunden, Benachrichtigungen, Stats)",
+                "Rückerstattungen, Widerrufe & Reklamationen",
+              ],
+              excludes: ["White-Label / Multi-Praxis (Add-on)", "Native iOS-/Android-Apps"],
+            },
           ],
-          excludes: ["Kalender & Buchung", "Chat und Videoanrufe", "Rückerstattungs-/Reklamationspanel"],
         },
         {
-          id: "practice",
-          name: "Praxis",
-          badge: "Beliebteste Wahl",
-          tagline: "Termine buchen und bezahlt werden",
-          setup: "29.900 – 39.900 PLN",
-          monthly: "790 – 1.190 PLN",
-          includes: [
-            "Alles aus Presence",
-            "Terminbuchung & Stornoregeln",
-            "Google-Calendar-Integration",
-            "Patienten-Terminpanel",
-            "Transaktions-E-Mails & Erinnerungen",
-            "Einwilligungen beim Checkout",
+          id: "local-business",
+          label: "Lokales Business",
+          title: "Vier Pakete für Restaurants, Pensionen & lokale Services",
+          description:
+            "Für Orte wie Restaurants, Gästehäuser, Werkstätten und lokale Marken (z. B. hekomimoto.com). Eine Website, die Besucher in Anrufe und Buchungen verwandelt.",
+          recommended:
+            "Empfehlung: Buchungen. Start für eine einfache Visitenkarte. Lokal für Galerie + SEO. Wachstum für Bestellungen, Zahlungen und Mehrsprachigkeit.",
+          packages: [
+            {
+              id: "biz-starter",
+              name: "Start",
+              tagline: "Visitenkarte, die konvertiert",
+              setup: "2.000 – 2.500 PLN",
+              monthly: "80 – 120 PLN",
+              includes: [
+                "Landing mit Leistungen / Speisekarte",
+                "Über uns, Öffnungszeiten und Kontaktformular",
+                "Klick-zum-Anrufen / WhatsApp",
+                "Google Maps & Adresse",
+                "Responsives Mobile-first Design",
+                "Basis Local SEO + Cookies",
+              ],
+              excludes: ["Fotogalerie-CMS", "Online-Buchung", "Bestellungen / Zahlungen", "Mehrsprachigkeit"],
+            },
+            {
+              id: "biz-local",
+              name: "Lokal",
+              tagline: "Markenwebsite für Discovery und Laufkundschaft",
+              setup: "4.500 – 6.500 PLN",
+              monthly: "150 – 250 PLN",
+              includes: [
+                "Alles aus Start",
+                "Mehrseitige Website (Menü / Zimmer / Services)",
+                "Fotogalerie & Highlights",
+                "Google-Bewertungen / Social Embeds",
+                "Lokale SEO-Seiten (Stadt + Angebot)",
+                "Einfaches Content-Admin",
+              ],
+              excludes: ["Buchungskalender", "Online-Zahlungen", "Tisch- / Zimmerverwaltung", "Mehrsprachigkeit"],
+            },
+            {
+              id: "biz-bookings",
+              name: "Buchungen",
+              badge: "Beliebteste Wahl",
+              tagline: "Tische, Zimmer und Termine online",
+              setup: "8.500 – 12.500 PLN",
+              monthly: "290 – 450 PLN",
+              includes: [
+                "Alles aus Lokal",
+                "Online-Reservierungsformular",
+                "Verfügbarkeitskalender & Regeln",
+                "E-Mail- / SMS-Bestätigungen",
+                "Admin-Panel für Anfragen",
+                "Google-Calendar-Sync (optional)",
+              ],
+              excludes: ["Bestellungen mit Warenkorb", "Anzahlungen / Kartenzahlungen", "Channel-Manager / OTAs"],
+            },
+            {
+              id: "biz-growth",
+              name: "Wachstum",
+              tagline: "Bestellungen, Zahlungen und mehrsprachige Reichweite",
+              setup: "15.000 – 22.000 PLN",
+              monthly: "490 – 750 PLN",
+              includes: [
+                "Alles aus Buchungen",
+                "Online-Bestellungen oder Anzahlungen",
+                "Przelewy24- / Stripe-Checkout",
+                "Sprachversionen PL + EN (oder DE)",
+                "Newsletter / Promo-Seiten",
+                "Analytics & Conversion-Tracking",
+              ],
+              excludes: ["Native Apps", "Volle PMS- / POS-Integration", "Marketplace / Multi-Standort-SaaS"],
+            },
           ],
-          excludes: ["Verschlüsselter Chat", "Audio-/Videoanrufe", "Voller Rückerstattungsprozess"],
-        },
-        {
-          id: "care",
-          name: "Care",
-          tagline: "Volle Kundenbeziehung in der App",
-          setup: "49.900 – 69.900 PLN",
-          monthly: "1.290 – 1.990 PLN",
-          includes: [
-            "Alles aus Praxis",
-            "Chat Patient–Spezialist (E2EE)",
-            "Audio-/Videoanrufe",
-            "Mehrsitzungs-Pakete",
-            "Voller Admin (Kunden, Benachrichtigungen, Stats)",
-            "Rückerstattungen, Widerrufe & Reklamationen",
-          ],
-          excludes: ["White-Label / Multi-Praxis (Add-on)", "Native iOS-/Android-Apps"],
         },
       ],
     },

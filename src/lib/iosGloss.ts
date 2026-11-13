@@ -10,16 +10,16 @@ export type IosIconTint =
   | "violet"
   | "slate";
 
-/** Semantic icon palette — derived from design tokens, not arbitrary pastels. */
+/** Semantic icon palette — derived from #E5EEC1 · #A2D4AB · #3EACA8 · #547A82 · #5A5050 */
 export const IOS_ICON_GRADIENTS: Record<IosIconTint, { from: string; to: string }> = {
-  blue: { from: "#3D66E6", to: "#6B93FF" },       /* Projects — primary accent */
-  purple: { from: "#7C4FE0", to: "#A78BFA" },     /* Tech / secondary accent */
-  violet: { from: "#7C4FE0", to: "#A78BFA" },     /* Tech stack */
-  green: { from: "#0D9668", to: "#34D399" },      /* SEO / success */
-  orange: { from: "#D97706", to: "#FBBF24" },     /* Contact / warning */
-  pink: { from: "#D97706", to: "#FBBF24" },       /* Alias → contact */
-  gray: { from: "#4B5563", to: "#9CA3AF" },       /* Settings / neutral */
-  slate: { from: "#4B5563", to: "#9CA3AF" },      /* Neutral utility */
+  blue: { from: "#2F8F8B", to: "#3EACA8" },       /* Projects — teal accent */
+  purple: { from: "#547A82", to: "#3EACA8" },     /* Tech */
+  violet: { from: "#547A82", to: "#A2D4AB" },     /* Tech stack */
+  green: { from: "#3EACA8", to: "#A2D4AB" },      /* SEO */
+  orange: { from: "#547A82", to: "#E5EEC1" },     /* Contact */
+  pink: { from: "#547A82", to: "#A2D4AB" },       /* Alias → mint */
+  gray: { from: "#5A5050", to: "#547A82" },       /* Settings / neutral */
+  slate: { from: "#5A5050", to: "#547A82" },      /* Neutral utility */
 };
 
 export const IOS_GLOSS = {
@@ -37,7 +37,7 @@ export const IOS_WALLPAPER = {
   brightness: 1,
   bloom: "transparent",
   gloss: "transparent",
-  diagonal: "#04060A",
+  diagonal: "#5A5050",
 } as const;
 
 /** Maps CSS tint classes to semantic icon colors. */

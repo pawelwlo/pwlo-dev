@@ -15,7 +15,6 @@ import {
   Globe,
   Layers3,
   Mail,
-  Search,
   Settings,
   BadgePercent,
   ShieldCheck,
@@ -27,10 +26,10 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type FormEvent } from "react";
 
 import { BootSequence } from "@/components/BootSequence";
+import { NeonHero } from "@/components/portfolio/NeonHero";
 import { OffersWindow } from "@/components/portfolio/OffersWindow";
 import { AboutWindow, ContactWindow, SpeedTestForm, TechStackWindow } from "@/components/portfolio/UtilityWindows";
 import { TechIcon } from "@/components/portfolio/TechIcons";
-import { MobileAppIcon } from "@/components/MobileIcons";
 import { MobileBackground } from "@/components/MobileBackground";
 import { MobileDock } from "@/components/MobileDock";
 import { projects } from "@/data/portfolioData";
@@ -167,7 +166,6 @@ export function OsHomeLayout({
   const [projectView, setProjectView] = useState<"grid" | "detail">("grid");
   const [openSourceView, setOpenSourceView] = useState<"list" | "detail">("list");
   const [selectedOpenSource, setSelectedOpenSource] = useState<any>(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const transitionTimerRef = useRef<number | null>(null);
   const unlockTimerRef = useRef<number | null>(null);
   const [lockscreenState, setLockscreenState] = useState<"locked" | "unlocking" | "booting" | "unlocked">(() => {
@@ -227,6 +225,7 @@ export function OsHomeLayout({
 
   const completeMobileBootSequence = useCallback(() => {
     clearLocaleBootSession();
+    setIsBootExiting(false);
     setLockscreenState("unlocked");
   }, []);
 
@@ -296,19 +295,26 @@ export function OsHomeLayout({
     },
   ];
 
+  const topbarIcons: OsIconConfig[] = [
+    icons.find((item) => item.id === "openSource")!,
+    icons.find((item) => item.id === "settings")!,
+  ];
+
   const dockIcons: OsIconConfig[] = isTablet
     ? [
       icons.find((item) => item.id === "projects")!,
-      icons.find((item) => item.id === "openSource")!,
-      icons.find((item) => item.id === "seo")!,
-      icons.find((item) => item.id === "contact")!,
+      icons.find((item) => item.id === "about")!,
       icons.find((item) => item.id === "tech")!,
+      icons.find((item) => item.id === "contact")!,
+      icons.find((item) => item.id === "seo")!,
+      icons.find((item) => item.id === "offers")!,
     ]
     : [
       icons.find((item) => item.id === "projects")!,
-      icons.find((item) => item.id === "seo")!,
+      icons.find((item) => item.id === "about")!,
       icons.find((item) => item.id === "contact")!,
-      icons.find((item) => item.id === "openSource")!,
+      icons.find((item) => item.id === "offers")!,
+      icons.find((item) => item.id === "seo")!,
     ];
 
   const openSourceCards = useMemo(
@@ -402,7 +408,6 @@ export function OsHomeLayout({
     setActiveApp(appId);
     setProjectView("grid");
     setAppTransitionState("opening");
-    setSearchQuery("");
     scrollToTop();
 
     transitionTimerRef.current = window.setTimeout(() => {
@@ -458,19 +463,7 @@ export function OsHomeLayout({
         : "os-app-overlay";
 
   const getDockLabel = (itemId: OsIconConfig["id"]) => {
-    if (itemId === "projects") {
-      return copy.osLayout.dock.projects;
-    }
-
-    if (itemId === "contact") {
-      return copy.osLayout.dock.contact;
-    }
-
-    if (itemId === "seo") {
-      return copy.osLayout.dock.seo;
-    }
-
-    return copy.osLayout.dock.openSource;
+    return copy.osLayout.apps[itemId] ?? copy.osLayout.dock.openSource;
   };
 
   const navTitle = activeApp === "home" ? homeTitle : copy.osLayout.apps[activeApp as Exclude<OsAppId, "home">];
@@ -559,13 +552,22 @@ export function OsHomeLayout({
         <div className="os-topbar-title">
           <span>{navTitle}</span>
         </div>
-        <div className="os-topbar-right" aria-hidden="true" title={copy.statusBar.online}>
-          <span className="os-signal-bars" aria-hidden="true">
-            <span className="os-signal-bar os-signal-bar-1" />
-            <span className="os-signal-bar os-signal-bar-2" />
-            <span className="os-signal-bar os-signal-bar-3" />
-            <span className="os-signal-bar os-signal-bar-4" />
-          </span>
+        <div className="os-topbar-right os-topbar-actions">
+          {topbarIcons.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className={`os-topbar-action${activeApp === item.id ? " os-topbar-action--active" : ""}`}
+                aria-label={item.label}
+                disabled={isLockscreenVisible}
+                onClick={() => openApp(item.id)}
+              >
+                <Icon size={16} />
+              </button>
+            );
+          })}
         </div>
       </header>
 
@@ -573,62 +575,17 @@ export function OsHomeLayout({
         className={`os-home-surface ${isHomeActive ? "" : "os-home-surface-hidden"}`}
         aria-hidden={!isHomeActive || isLockscreenVisible}
       >
-        <div className="os-home-layout">
-          <section className="os-home-grid" aria-label={homeTitle}>
-            <div className="os-home-widgets" aria-label="Home widgets">
-              <article className="os-home-widget-card os-home-clock-card" aria-label="Clock widget">
-                <div className="os-home-clock-time">{localTime}</div>
-                <div className="os-home-clock-date">{lockscreenDate}</div>
-              </article>
-
-              <article className="os-home-widget-card os-weather-card os-weather-card-home" aria-label="Weather in Garmisch-Partenkirchen">
-                <div className="os-weather-card-header">
-                  <div>
-                    <div className="os-weather-location">Garmisch-Partenkirchen</div>
-                    <div className="os-weather-temperature">{weatherSnapshot.temperature}°C</div>
-                  </div>
-                  <span className="os-weather-icon-shell" aria-hidden="true">
-                    <WeatherIcon className="os-weather-icon" size={26} />
-                  </span>
-                </div>
-
-                <div className="os-weather-card-footer">
-                  <span>{weatherPresentation.label}</span>
-                  <span>
-                    H:{weatherSnapshot.high}° L:{weatherSnapshot.low}°
-                  </span>
-                </div>
-              </article>
-            </div>
-
-            <div className="os-home-search-bar" aria-label="Search apps">
-              <Search className="os-home-search-bar-icon" size={16} aria-hidden="true" />
-              <input
-                id="os-home-search-input"
-                className="os-home-search-bar-input"
-                type="search"
-                placeholder="Search apps"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                aria-label="Search apps"
+        <div className="os-home-layout os-home-layout--hero">
+          {lockscreenState === "unlocked" ? (
+            <div className="os-home-brand-slot">
+              <NeonHero
+                variant="mobile"
+                copy={copy.neonHero}
+                onExplore={() => openApp("projects")}
+                onContact={() => openApp("contact")}
               />
             </div>
-
-            {icons
-              .filter((item) =>
-                searchQuery.trim() === "" ||
-                item.label.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-              .map((item) => (
-                <MobileAppIcon
-                  key={item.id}
-                  icon={item.icon}
-                  tintClass={item.tintClass}
-                  label={item.label}
-                  onClick={() => openApp(item.id)}
-                />
-              ))}
-          </section>
+          ) : null}
         </div>
       </div>
 
@@ -641,7 +598,7 @@ export function OsHomeLayout({
         />
       ) : null}
 
-      {!isHomeActive ? (
+      {!isHomeActive && lockscreenState === "unlocked" ? (
         <div className={overlayClassName} aria-label={navTitle} aria-hidden={isLockscreenVisible}>
           <section className={appShellClassName}>
             <header className="os-app-nav">

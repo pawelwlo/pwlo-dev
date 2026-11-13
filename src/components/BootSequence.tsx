@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState, type AnimationEvent } from "react";
 
-const BOOT_DURATION_MS = 2000;
-const HOLD_AT_100_MS = 280;
-const EXIT_ANIMATION_MS = 680;
+const BOOT_DURATION_MS = 480;
+const EXIT_ANIMATION_MS = 520;
 
 type BootSequenceProps = {
   message: string;
@@ -10,8 +9,8 @@ type BootSequenceProps = {
   onComplete: () => void;
 };
 
-export function BootSequence({ message, onExitStart, onComplete }: BootSequenceProps) {
-  const [progress, setProgress] = useState(0);
+/** Brief blank boot veil — brand animation lives on the desktop itself. */
+export function BootSequence({ message: _message, onExitStart, onComplete }: BootSequenceProps) {
   const [isExiting, setIsExiting] = useState(false);
   const onCompleteRef = useRef(onComplete);
   const onExitStartRef = useRef(onExitStart);
@@ -36,36 +35,18 @@ export function BootSequence({ message, onExitStart, onComplete }: BootSequenceP
   }, [onExitStart]);
 
   useEffect(() => {
-    const startTime = Date.now();
-    let animationFrameId = 0;
-    let holdTimeoutId = 0;
-
-    const tick = () => {
-      const elapsed = Date.now() - startTime;
-      const nextProgress = Math.min(100, Math.floor((elapsed / BOOT_DURATION_MS) * 100));
-      setProgress(nextProgress);
-
-      if (nextProgress < 100) {
-        animationFrameId = requestAnimationFrame(tick);
+    const timeoutId = window.setTimeout(() => {
+      if (hasStartedExitRef.current) {
         return;
       }
 
-      holdTimeoutId = window.setTimeout(() => {
-        if (hasStartedExitRef.current) {
-          return;
-        }
-
-        hasStartedExitRef.current = true;
-        onExitStartRef.current?.();
-        setIsExiting(true);
-      }, HOLD_AT_100_MS);
-    };
-
-    animationFrameId = requestAnimationFrame(tick);
+      hasStartedExitRef.current = true;
+      onExitStartRef.current?.();
+      setIsExiting(true);
+    }, BOOT_DURATION_MS);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      clearTimeout(holdTimeoutId);
+      clearTimeout(timeoutId);
     };
   }, []);
 
@@ -74,7 +55,7 @@ export function BootSequence({ message, onExitStart, onComplete }: BootSequenceP
       return;
     }
 
-    const timeoutId = window.setTimeout(finishBootSequence, EXIT_ANIMATION_MS + 100);
+    const timeoutId = window.setTimeout(finishBootSequence, EXIT_ANIMATION_MS + 80);
 
     return () => {
       clearTimeout(timeoutId);
@@ -94,21 +75,9 @@ export function BootSequence({ message, onExitStart, onComplete }: BootSequenceP
       className={`os-boot-screen${isExiting ? " os-boot-screen--exiting" : ""}`}
       onAnimationEnd={handleExitAnimationEnd}
       style={isExiting ? { animationDuration: `${EXIT_ANIMATION_MS}ms` } : undefined}
-    >
-      <div className="boot-content">
-        <div className="boot-logo">
-          <img
-            src="/logo.png"
-            alt=""
-            width={100}
-            height={100}
-            style={{ objectFit: "contain", opacity: 0.9 }}
-            aria-hidden="true"
-          />
-        </div>
-        <div className="boot-text">{message}</div>
-        <div className="boot-percentage">{progress}%</div>
-      </div>
-    </div>
+      role="status"
+      aria-live="polite"
+      aria-label="Loading"
+    />
   );
 }

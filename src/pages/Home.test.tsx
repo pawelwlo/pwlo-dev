@@ -273,8 +273,17 @@ describe("Home", () => {
 
     fireEvent.click(screen.getAllByRole("button", { name: /Offers: Packages/i })[0]);
 
-    expect(await screen.findByText(/Three clear packages for specialists/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Four clear packages for specialists/i)).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /Specialists/i })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /Local business/i })).toBeInTheDocument();
+    expect(screen.getByText("Starter")).toBeInTheDocument();
     expect(screen.getByText("Practice")).toBeInTheDocument();
-    expect(screen.getByText(/29,900 – 39,900 PLN/i)).toBeInTheDocument();
+    expect(screen.getByText(/2,000 – 2,500 PLN/i)).toBeInTheDocument();
+    expect(screen.getByText(/12,000 – 18,000 PLN/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("tab", { name: /Local business/i }));
+    expect(await screen.findByText(/restaurants, guest houses/i)).toBeInTheDocument();
+    expect(screen.getByText("Bookings")).toBeInTheDocument();
+    expect(screen.getAllByText(/2,000 – 2,500 PLN/i).length).toBeGreaterThan(0);
   });
 });

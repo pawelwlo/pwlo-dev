@@ -40,8 +40,8 @@ const initialTheme: ThemeMode = "dark";
 export const useDesktopStore = create<DesktopStore>((set) => ({
   locale: initialLocale,
   theme: initialTheme,
-  openWindows: ["projects"],
-  activeWindow: "projects",
+  openWindows: [],
+  activeWindow: null,
   selectedProjectId: projects[0].id,
   setLocale: (locale) => set({ locale }),
   setTheme: (theme) => set({ theme }),

@@ -16,7 +16,7 @@ function imageFromCanvas(canvas: HTMLCanvasElement): Promise<HTMLImageElement> {
   });
 }
 
-const WALLPAPER_COLOR = "#04060A";
+const WALLPAPER_COLOR = "#5A5050";
 
 function paintSoftColorBackground(
   context: CanvasRenderingContext2D,

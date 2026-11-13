@@ -35,6 +35,7 @@ import { WindowFrame, type ResizeDirection } from "@/components/os/WindowFrame";
 import { Desktop } from "@/components/Desktop";
 import { Hero } from "@/components/Hero";
 import { ScrollAnimation, type ScrollAnimationHandle } from "@/components/ScrollAnimation";
+import { NeonHero } from "@/components/portfolio/NeonHero";
 import { OffersWindow } from "@/components/portfolio/OffersWindow";
 import { OsHomeLayout } from "@/components/portfolio/OsHomeLayout";
 import { ProjectsWindow } from "@/components/portfolio/ProjectsWindow";
@@ -82,7 +83,7 @@ const initialWindowRects: Record<WindowId, WindowRect> = {
   tech: { x: 160, y: 120, width: 520, height: 440, minWidth: 420, minHeight: 380 },
   contact: { x: 220, y: 160, width: 560, height: 540, minWidth: 460, minHeight: 480 },
   speed: { x: 640, y: 200, width: 580, height: 460, minWidth: 460, minHeight: 380 },
-  offers: { x: 220, y: 120, width: 920, height: 620, minWidth: 640, minHeight: 520 },
+  offers: { x: 160, y: 100, width: 1100, height: 640, minWidth: 720, minHeight: 520 },
 };
 
 type WindowState = {
@@ -350,6 +351,7 @@ export default function Home() {
 
   const completeDesktopBootSequence = useCallback(() => {
     clearLocaleBootSession();
+    setIsBootExiting(false);
     setDesktopLockscreenState("unlocked");
   }, []);
 
@@ -1259,42 +1261,52 @@ export default function Home() {
         hero={<Hero time={localTime} date={desktopDate} welcome={copy.osLayout.lockscreen.welcome} />}
         desktop={
           <Desktop surfaceRef={desktopSurfaceRef}>
+            {desktopLockscreenState === "unlocked" ? (
+              <NeonHero
+                variant="desktop"
+                copy={copy.neonHero}
+                onExplore={() => openFromIconWithAutoMaximize("projects")}
+                onContact={() => openFromIconWithAutoMaximize("contact")}
+              />
+            ) : null}
             <div className="windows-layer">
-              {openWindows
-                .filter((windowId) => !windowStates[windowId].minimized)
-                .map((windowId, index) => (
-                  <WindowFrame
-                    key={windowId}
-                    title={copy.windowTitles[windowId]}
-                    locale={locale}
-                    controlsCopy={copy.windowControls}
-                    className={cn(
-                      "floating-window",
-                      windowDragStateRef.current?.id === windowId && "window-dragging"
-                    )}
-                    isActive={activeWindow === windowId}
-                    isMaximized={windowStates[windowId].maximized}
-                    onFocus={() => focusWindow(windowId)}
-                    onDragStart={(event) => startWindowDrag(windowId, event)}
-                    onMinimize={() => minimizeWindow(windowId)}
-                    onToggleMaximize={() => toggleMaximizeWindow(windowId)}
-                    onClose={() => closeWindowWithState(windowId)}
-                    onResizeStart={(direction, event) => startResize(windowId, direction, event)}
-                    style={{
-                      zIndex: index + 10,
-                      ...(isCompactLayout
-                        ? {}
-                        : {
-                          left: `${windowRects[windowId].x}px`,
-                          top: `${windowRects[windowId].y}px`,
-                          width: `${windowRects[windowId].width}px`,
-                          height: `${windowRects[windowId].height}px`,
-                        }),
-                    }}
-                  >
-                    {windowContent[windowId]}
-                  </WindowFrame>
-                ))}
+              {desktopLockscreenState === "unlocked"
+                ? openWindows
+                    .filter((windowId) => !windowStates[windowId].minimized)
+                    .map((windowId, index) => (
+                      <WindowFrame
+                        key={windowId}
+                        title={copy.windowTitles[windowId]}
+                        locale={locale}
+                        controlsCopy={copy.windowControls}
+                        className={cn(
+                          "floating-window",
+                          windowDragStateRef.current?.id === windowId && "window-dragging"
+                        )}
+                        isActive={activeWindow === windowId}
+                        isMaximized={windowStates[windowId].maximized}
+                        onFocus={() => focusWindow(windowId)}
+                        onDragStart={(event) => startWindowDrag(windowId, event)}
+                        onMinimize={() => minimizeWindow(windowId)}
+                        onToggleMaximize={() => toggleMaximizeWindow(windowId)}
+                        onClose={() => closeWindowWithState(windowId)}
+                        onResizeStart={(direction, event) => startResize(windowId, direction, event)}
+                        style={{
+                          zIndex: index + 10,
+                          ...(isCompactLayout
+                            ? {}
+                            : {
+                              left: `${windowRects[windowId].x}px`,
+                              top: `${windowRects[windowId].y}px`,
+                              width: `${windowRects[windowId].width}px`,
+                              height: `${windowRects[windowId].height}px`,
+                            }),
+                        }}
+                      >
+                        {windowContent[windowId]}
+                      </WindowFrame>
+                    ))
+                : null}
             </div>
           </Desktop>
         }
@@ -1302,7 +1314,11 @@ export default function Home() {
 
       {desktopLockscreenState === "unlocked" && typeof document !== "undefined"
         ? createPortal(
-            <div className="desktop-dock desktop-dock--viewport" aria-label="macOS style dock">
+            <div
+              className="desktop-dock desktop-dock--viewport"
+              aria-label="macOS style dock"
+              tabIndex={-1}
+            >
               {desktopIcons.map((item) => {
                 const Icon = iconMap[item.id];
                 const iconCopy = copy.desktopIcons[item.id];

@@ -53,7 +53,7 @@ export const desktopIcons: DesktopIconItem[] = [
   { id: "tech", label: "Tech Stack", subtitle: "Toolkit", stat: "12+" },
   { id: "contact", label: "Contact", subtitle: "Start a project", stat: "24h" },
   { id: "speed", label: "Speed Optimization", subtitle: "Audit lab", stat: "95+" },
-  { id: "offers", label: "Offers", subtitle: "Packages", stat: "3" },
+  { id: "offers", label: "Offers", subtitle: "Packages", stat: "8" },
 ];
 
 export const projects: Project[] = [

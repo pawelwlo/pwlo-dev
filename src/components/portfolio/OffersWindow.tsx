@@ -1,3 +1,5 @@
+import { useMemo, useState } from "react";
+
 type OfferPackage = {
   id: string;
   name: string;
@@ -9,34 +11,66 @@ type OfferPackage = {
   excludes: string[];
 };
 
+type OfferTrack = {
+  id: string;
+  label: string;
+  title: string;
+  description: string;
+  recommended: string;
+  packages: OfferPackage[];
+};
+
 type OffersWindowProps = {
   copy: {
     eyebrow: string;
-    title: string;
-    description: string;
-    recommended: string;
     setupLabel: string;
     monthlyLabel: string;
     includesLabel: string;
     excludesLabel: string;
     cta: string;
-    packages: OfferPackage[];
+    tracks: OfferTrack[];
   };
   onContactCta?: () => void;
 };
 
 export function OffersWindow({ copy, onContactCta }: OffersWindowProps) {
+  const [activeTrackId, setActiveTrackId] = useState(copy.tracks[0]?.id ?? "");
+  const activeTrack = useMemo(
+    () => copy.tracks.find((track) => track.id === activeTrackId) ?? copy.tracks[0],
+    [activeTrackId, copy.tracks],
+  );
+
+  if (!activeTrack) {
+    return null;
+  }
+
   return (
     <div className="offers-layout">
       <div className="offers-intro">
         <p className="offers-eyebrow">{copy.eyebrow}</p>
-        <h3>{copy.title}</h3>
-        <p>{copy.description}</p>
-        <p className="offers-note">{copy.recommended}</p>
+        {copy.tracks.length > 1 ? (
+          <div className="offers-track-switch" role="tablist" aria-label={copy.eyebrow}>
+            {copy.tracks.map((track) => (
+              <button
+                key={track.id}
+                type="button"
+                role="tab"
+                aria-selected={track.id === activeTrack.id}
+                className={`offers-track-button${track.id === activeTrack.id ? " active" : ""}`}
+                onClick={() => setActiveTrackId(track.id)}
+              >
+                {track.label}
+              </button>
+            ))}
+          </div>
+        ) : null}
+        <h3>{activeTrack.title}</h3>
+        <p>{activeTrack.description}</p>
+        <p className="offers-note">{activeTrack.recommended}</p>
       </div>
 
       <div className="offers-grid">
-        {copy.packages.map((pkg) => (
+        {activeTrack.packages.map((pkg) => (
           <article key={pkg.id} className={`offer-card${pkg.badge ? " offer-card-featured" : ""}`}>
             <div className="offer-card-top">
               <h4>{pkg.name}</h4>

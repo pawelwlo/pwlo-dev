@@ -23,7 +23,7 @@ describe("iosGloss", () => {
   it("maps legacy tint classes and exposes css variables", () => {
     expect(resolveIosTint("os-icon-tint-blue")).toBe("blue");
     expect(getIconCssVariables("pink")).toMatchObject({
-      "--ios-icon-gradient": expect.stringContaining("#D97706"),
+      "--ios-icon-gradient": expect.stringContaining("#547A82"),
       "--ios-icon-shadow": expect.stringContaining("0 6px 18px"),
     });
   });
