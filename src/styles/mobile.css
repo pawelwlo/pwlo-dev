@@ -177,22 +177,13 @@
   backdrop-filter: blur(30px) saturate(1.2);
 }
 
-.os-shell .os-date-card {
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.14);
-  box-shadow:
-    0 14px 32px rgba(0, 0, 0, 0.12),
-    var(--ios-inner-highlight);
-}
-
 :root[data-theme="dark"] .os-shell {
   --ios-glass-surface: rgba(18, 22, 30, 0.42);
   --ios-glass-border: rgba(255, 255, 255, 0.14);
 }
 
 :root[data-theme="dark"] .os-shell .os-topbar.mobile-status-bar,
-:root[data-theme="dark"] .os-shell .os-home-widget-card,
-:root[data-theme="dark"] .os-shell .os-date-card {
+:root[data-theme="dark"] .os-shell .os-home-widget-card {
   background: rgba(18, 22, 30, 0.34);
   border-color: rgba(255, 255, 255, 0.12);
 }

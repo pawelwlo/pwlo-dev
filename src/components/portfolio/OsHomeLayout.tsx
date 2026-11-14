@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
-  CalendarDays,
   ChevronRight,
   FolderKanban,
   Gauge,
@@ -161,12 +160,7 @@ export function OsHomeLayout({
     day: "numeric",
   }).format(lockscreenNow);
   const lockscreenDay = new Intl.DateTimeFormat(locale, { day: "numeric" }).format(lockscreenNow);
-  const lockscreenWeekday = new Intl.DateTimeFormat(locale, { weekday: "long" }).format(lockscreenNow);
   const lockscreenMonthShort = new Intl.DateTimeFormat(locale, { month: "short" }).format(lockscreenNow);
-  const lockscreenMonthYear = new Intl.DateTimeFormat(locale, {
-    month: "long",
-    year: "numeric",
-  }).format(lockscreenNow);
 
   const icons: OsIconConfig[] = [
     {
@@ -367,31 +361,22 @@ export function OsHomeLayout({
             <div className="os-lockscreen-clock" aria-live="polite">
               <div className="os-lockscreen-time">{localTime}</div>
               <div className="os-lockscreen-date">{lockscreenDate}</div>
-            </div>
-
-            <section className="os-date-widget" aria-label={lockscreenDate}>
-              <div className="os-date-card">
-                <div className="os-date-card-header">
-                  <div>
-                    <div className="os-date-weekday">{lockscreenWeekday}</div>
-                    <div className="os-date-day">{lockscreenDay}</div>
+              <div className="os-lockscreen-welcome">
+                {copy.osLayout.lockscreen.welcome.split("\n\n").map((line, i, arr) => (
+                  <div
+                    key={i}
+                    className={i === arr.length - 1 ? "os-lockscreen-credit" : "os-lockscreen-welcome-line"}
+                  >
+                    {line}
                   </div>
-                  <span className="os-date-icon-shell" aria-hidden="true">
-                    <CalendarDays className="os-date-icon" size={26} />
-                  </span>
-                </div>
-
-                <div className="os-date-card-footer">
-                  <span>{lockscreenMonthYear}</span>
-                </div>
+                ))}
               </div>
-            </section>
+            </div>
           </div>
 
           <section className="os-lockscreen-panel" aria-label={copy.osLayout.lockscreen.title}>
             <div className="os-lockscreen-panel-body">
               <div className="os-lockscreen-panel-copy">
-                <span className="eyebrow">pwloOS</span>
                 <h2>{copy.osLayout.lockscreen.title}</h2>
                 <p>{copy.osLayout.lockscreen.message}</p>
               </div>
